@@ -1,4 +1,6 @@
 class WebsitesController < ApplicationController
+  layout 'dashboard'
+  before_action :authenticate_user!
   before_action :set_website, only: [:show, :edit, :update, :destroy, :monitor, :audit_history]
   before_action :check_website_limit, only: [:new, :create]
   

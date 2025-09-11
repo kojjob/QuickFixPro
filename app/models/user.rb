@@ -10,6 +10,9 @@ class User < ApplicationRecord
   has_many :websites, foreign_key: 'created_by_id', dependent: :nullify
   has_many :triggered_audits, class_name: 'AuditReport', foreign_key: 'triggered_by_id', dependent: :nullify
 
+  # Callbacks
+  before_validation :normalize_names
+
   # Validations
   validates :first_name, :last_name, presence: true
   validates :email, uniqueness: { scope: :account_id }

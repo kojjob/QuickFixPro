@@ -12,7 +12,7 @@ class PerformanceMetric < ApplicationRecord
   validates :threshold_status, presence: true
 
   # Enums
-  enum threshold_status: { good: 0, needs_improvement: 1, poor: 2 }
+  enum :threshold_status, { good: 0, needs_improvement: 1, poor: 2 }
 
   # Constants for Core Web Vitals thresholds (in milliseconds)
   THRESHOLDS = {

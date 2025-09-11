@@ -13,12 +13,21 @@ class ApplicationController < ActionController::Base
   # Security and performance headers
   before_action :set_security_headers
   
+  # Configure Devise parameters
+  before_action :configure_permitted_parameters, if: :devise_controller?
+  
   # Global exception handling
   rescue_from ActiveRecord::RecordNotFound, with: :render_not_found
   rescue_from ActionController::ParameterMissing, with: :render_bad_request
   rescue_from Pundit::NotAuthorizedError, with: :render_forbidden if defined?(Pundit)
   
   private
+  
+  # Configure additional parameters for Devise
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:first_name, :last_name])
+    devise_parameter_sanitizer.permit(:account_update, keys: [:first_name, :last_name])
+  end
   
   # Multi-tenant account management
   def set_current_account
@@ -31,6 +40,7 @@ class ApplicationController < ActionController::Base
   def current_account
     Current.account
   end
+  helper_method :current_account
   
   def ensure_account_active
     return unless user_signed_in? && current_account
@@ -87,7 +97,19 @@ class ApplicationController < ActionController::Base
   # Helper methods for controllers
   def scoped_to_account(relation)
     return relation.none unless current_account
-    relation.where(account: current_account)
+    
+    # Check if the model has a direct account association
+    if relation.column_names.include?('account_id')
+      relation.where(account_id: current_account.id)
+    # Handle models that belong to account through website
+    elsif relation.reflect_on_association(:website)
+      relation.joins(:website).where(websites: { account_id: current_account.id })
+    # Handle models that have account association
+    elsif relation.reflect_on_association(:account)
+      relation.where(account: current_account)
+    else
+      relation.none
+    end
   end
   
   def build_for_account(relation, attributes = {})

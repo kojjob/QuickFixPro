@@ -12,6 +12,9 @@ class Account < ApplicationRecord
             format: { with: /\A[a-z0-9-]+\z/, message: "can only contain lowercase letters, numbers, and hyphens" },
             length: { in: 3..63 }
 
+  # Callbacks
+  before_validation :normalize_subdomain
+
   # Enums
   enum :status, { trial: 0, active: 1, suspended: 2, cancelled: 3 }
 
@@ -29,6 +32,11 @@ class Account < ApplicationRecord
 
   def current_subscription
     subscriptions.active.first
+  end
+  
+  # Alias for convenience
+  def subscription
+    current_subscription
   end
 
   def within_usage_limits?(feature, current_usage = 0)

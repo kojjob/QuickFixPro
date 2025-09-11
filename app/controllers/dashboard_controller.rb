@@ -1,4 +1,5 @@
 class DashboardController < ApplicationController
+  layout 'dashboard'
   before_action :authenticate_user!
   
   def index
@@ -13,13 +14,19 @@ class DashboardController < ApplicationController
     
     # Usage statistics
     @current_usage = calculate_current_usage
-    @usage_limits = current_account.subscription&.plan_limits || {}
+    @usage_limits = current_account.current_subscription&.plan_limits || {}
     
     # Performance trends (last 30 days)
     @performance_trends = calculate_performance_trends
     
     # Recent activity
     @recent_activity = gather_recent_activity
+    
+    # Critical recommendations for dashboard
+    @critical_recommendations = scoped_to_account(OptimizationRecommendation)
+                                  .where(priority: :critical, status: :pending)
+                                  .includes(:website, :audit_report)
+                                  .limit(10)
     
     respond_to do |format|
       format.html
@@ -35,7 +42,7 @@ class DashboardController < ApplicationController
       completed_audits: scoped_to_account(AuditReport).completed.count,
       average_performance_score: calculate_average_score,
       total_recommendations: scoped_to_account(OptimizationRecommendation).count,
-      critical_issues: scoped_to_account(OptimizationRecommendation).critical.pending.count
+      critical_issues: scoped_to_account(OptimizationRecommendation).where(priority: :critical, status: :pending).count
     }
     
     respond_to do |format|
@@ -65,7 +72,7 @@ class DashboardController < ApplicationController
   end
   
   def usage_stats
-    subscription = current_account.subscription
+    subscription = current_account.current_subscription
     return head :not_found unless subscription
     
     @usage_data = {
@@ -99,8 +106,7 @@ class DashboardController < ApplicationController
   
   def alerts
     @critical_recommendations = scoped_to_account(OptimizationRecommendation)
-                                  .critical
-                                  .pending
+                                  .where(priority: :critical, status: :pending)
                                   .includes(:website, :audit_report)
                                   .limit(10)
     
@@ -161,7 +167,7 @@ class DashboardController < ApplicationController
   end
   
   def calculate_current_usage
-    subscription = current_account.subscription
+    subscription = current_account.current_subscription
     return {} unless subscription
     
     {
@@ -180,12 +186,40 @@ class DashboardController < ApplicationController
                       .where(completed_at: thirty_days_ago..Time.current)
                       .where.not(overall_score: nil)
     
-    # Group by day and calculate average scores
-    daily_scores = audit_reports.group_by_day(:completed_at, last: 30)
-                                .average(:overall_score)
+    # Group by day manually and calculate average scores
+    daily_scores = {}
     
-    # Format for charting
-    daily_scores.map { |date, score| { date: date.strftime('%Y-%m-%d'), score: score&.round(1) || 0 } }
+    # Generate dates for the last 30 days
+    (0..29).each do |days_ago|
+      date = Date.today - days_ago.days
+      daily_scores[date.to_s] = 0
+    end
+    
+    # Group reports by date and calculate averages
+    audit_reports.each do |report|
+      date_key = report.completed_at.to_date.to_s
+      if daily_scores[date_key]
+        # Track sum and count for averaging
+        if daily_scores[date_key] == 0
+          daily_scores[date_key] = { sum: report.overall_score, count: 1 }
+        else
+          if daily_scores[date_key].is_a?(Hash)
+            daily_scores[date_key][:sum] += report.overall_score
+            daily_scores[date_key][:count] += 1
+          end
+        end
+      end
+    end
+    
+    # Calculate averages and format for charting
+    daily_scores.map do |date, value|
+      score = if value.is_a?(Hash) && value[:count] > 0
+                (value[:sum].to_f / value[:count]).round(1)
+              else
+                0
+              end
+      { date: date, score: score }
+    end.sort_by { |item| item[:date] }
   end
   
   def gather_recent_activity
@@ -215,7 +249,11 @@ class DashboardController < ApplicationController
     end
     
     # Recent critical recommendations
-    scoped_to_account(OptimizationRecommendation).critical.recent.limit(3).each do |recommendation|
+    scoped_to_account(OptimizationRecommendation)
+      .where(priority: :critical)
+      .order(created_at: :desc)
+      .limit(3)
+      .each do |recommendation|
       activities << {
         type: 'critical_issue',
         message: "Critical issue found: #{recommendation.title}",
@@ -255,10 +293,10 @@ class DashboardController < ApplicationController
   end
   
   def check_usage_warnings
-    return [] unless current_account.subscription
+    return [] unless current_account.current_subscription
     
     warnings = []
-    subscription = current_account.subscription
+    subscription = current_account.current_subscription
     
     # Check each usage type
     %w[websites monthly_audits users api_requests].each do |feature|

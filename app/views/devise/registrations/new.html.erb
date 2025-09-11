@@ -1,0 +1,296 @@
+<% content_for :main_classes, "min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 flex items-center justify-center p-4" %>
+<% content_for :no_header, true %>
+<% content_for :no_footer, true %>
+
+<div class="w-full max-w-6xl bg-white rounded-2xl shadow-2xl overflow-hidden">
+  <div class="flex flex-col lg:flex-row">
+    <!-- Left Column - Illustration & Branding -->
+    <div class="lg:w-1/2 bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-700 p-12 flex flex-col justify-center relative overflow-hidden">
+      <!-- Background Pattern -->
+      <div class="absolute inset-0 opacity-10">
+        <div class="absolute top-20 left-20 w-40 h-40 bg-white rounded-full"></div>
+        <div class="absolute bottom-10 right-20 w-32 h-32 bg-white rounded-full"></div>
+        <div class="absolute top-1/4 right-10 w-20 h-20 bg-white rounded-full"></div>
+        <div class="absolute bottom-1/3 left-10 w-24 h-24 bg-white rounded-full"></div>
+      </div>
+      
+      <!-- Logo -->
+      <div class="relative z-10 mb-8">
+        <%= link_to unauthenticated_root_path, class: "text-4xl font-bold text-white flex items-center" do %>
+          <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center mr-4">
+            <svg class="w-8 h-8 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M13 7H7v6h6V7z" clip-rule="evenodd"/>
+              <path fill-rule="evenodd" d="M13 15H7a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v6a2 2 0 01-2 2zM7 6a1 1 0 00-1 1v6a1 1 0 001 1h6a1 1 0 001-1V7a1 1 0 00-1-1H7z" clip-rule="evenodd"/>
+            </svg>
+          </div>
+          QuickFixPro
+        <% end %>
+      </div>
+
+      <!-- Illustration -->
+      <div class="relative z-10 text-center mb-8">
+        <div class="inline-block p-8 bg-white bg-opacity-20 rounded-3xl backdrop-blur-sm">
+          <svg class="w-48 h-48 mx-auto text-white" fill="currentColor" viewBox="0 0 100 100">
+            <!-- Rocket Launch Illustration -->
+            <g opacity="0.9">
+              <!-- Rocket Body -->
+              <ellipse cx="40" cy="45" rx="8" ry="20" opacity="0.8"/>
+              <circle cx="40" cy="30" r="6" opacity="0.9"/>
+              
+              <!-- Rocket Fins -->
+              <path d="M32 55 L36 65 L44 65 L48 55" opacity="0.7"/>
+              
+              <!-- Rocket Flames -->
+              <g opacity="0.6">
+                <path d="M36 65 Q38 75 40 70 Q42 75 44 65" fill="#ff6b6b"/>
+                <path d="M37 70 Q39 78 40 73 Q41 78 43 70" fill="#ffa500"/>
+              </g>
+              
+              <!-- Stars and Planets -->
+              <circle cx="65" cy="20" r="2" opacity="0.9"/>
+              <circle cx="75" cy="35" r="1.5" opacity="0.7"/>
+              <circle cx="80" cy="15" r="1" opacity="0.9"/>
+              <circle cx="25" cy="20" r="1" opacity="0.8"/>
+              
+              <!-- Orbit Rings -->
+              <circle cx="70" cy="60" r="12" fill="none" stroke="currentColor" stroke-width="2" opacity="0.4"/>
+              <circle cx="70" cy="60" r="8" opacity="0.6"/>
+              
+              <!-- Growth Chart -->
+              <g opacity="0.7">
+                <rect x="15" y="75" width="4" height="8"/>
+                <rect x="20" y="72" width="4" height="11"/>
+                <rect x="25" y="68" width="4" height="15"/>
+                <rect x="30" y="65" width="4" height="18"/>
+              </g>
+              
+              <!-- Speed Lines -->
+              <g opacity="0.3">
+                <path d="M10 30 L25 35" stroke="currentColor" stroke-width="2"/>
+                <path d="M8 40 L23 43" stroke="currentColor" stroke-width="2"/>
+                <path d="M12 50 L27 52" stroke="currentColor" stroke-width="2"/>
+              </g>
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Welcome Text -->
+      <div class="relative z-10 text-center text-white">
+        <h2 class="text-3xl font-bold mb-4">Launch Your Success!</h2>
+        <p class="text-xl opacity-90 leading-relaxed">
+          Join thousands of professionals optimizing their websites. 
+          <br>Get started with your free account today.
+        </p>
+      </div>
+
+      <!-- Benefits List -->
+      <div class="relative z-10 mt-8 space-y-3">
+        <div class="flex items-center text-white text-sm opacity-90">
+          <svg class="w-5 h-5 mr-3 text-emerald-300" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          Free 14-day trial - no credit card required
+        </div>
+        <div class="flex items-center text-white text-sm opacity-90">
+          <svg class="w-5 h-5 mr-3 text-emerald-300" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          Complete website performance audits
+        </div>
+        <div class="flex items-center text-white text-sm opacity-90">
+          <svg class="w-5 h-5 mr-3 text-emerald-300" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          24/7 monitoring and instant alerts
+        </div>
+        <div class="flex items-center text-white text-sm opacity-90">
+          <svg class="w-5 h-5 mr-3 text-emerald-300" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          Expert recommendations & support
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column - Signup Form -->
+    <div class="lg:w-1/2 p-12 flex flex-col justify-center">
+      <div class="max-w-md mx-auto w-full">
+        <!-- Header -->
+        <div class="text-center mb-8">
+          <h1 class="text-3xl font-bold text-gray-900 mb-2">Create Account</h1>
+          <p class="text-gray-600">Start your free trial and optimize your website performance</p>
+        </div>
+
+        <!-- Signup Form -->
+        <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "space-y-6" }) do |f| %>
+          <!-- Name Fields Row -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- First Name -->
+            <div>
+              <%= f.label :first_name, class: "block text-sm font-medium text-gray-700 mb-2" do %>
+                <div class="flex items-center">
+                  <svg class="w-4 h-4 mr-2 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                  </svg>
+                  First Name
+                </div>
+              <% end %>
+              <%= f.text_field :first_name, 
+                  autofocus: true,
+                  class: "mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors",
+                  placeholder: "John" %>
+            </div>
+
+            <!-- Last Name -->
+            <div>
+              <%= f.label :last_name, class: "block text-sm font-medium text-gray-700 mb-2" do %>
+                <div class="flex items-center">
+                  <svg class="w-4 h-4 mr-2 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                  </svg>
+                  Last Name
+                </div>
+              <% end %>
+              <%= f.text_field :last_name, 
+                  class: "mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors",
+                  placeholder: "Doe" %>
+            </div>
+          </div>
+
+          <!-- Email Field -->
+          <div>
+            <%= f.label :email, class: "block text-sm font-medium text-gray-700 mb-2" do %>
+              <div class="flex items-center">
+                <svg class="w-4 h-4 mr-2 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+                  <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+                </svg>
+                Email Address
+              </div>
+            <% end %>
+            <%= f.email_field :email, 
+                autocomplete: "email",
+                class: "mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors",
+                placeholder: "john.doe@company.com" %>
+          </div>
+
+          <!-- Password Field -->
+          <div>
+            <%= f.label :password, class: "block text-sm font-medium text-gray-700 mb-2" do %>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <svg class="w-4 h-4 mr-2 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
+                  </svg>
+                  Password
+                </div>
+                <% if @minimum_password_length %>
+                  <span class="text-xs text-gray-500">(<%= @minimum_password_length %> characters minimum)</span>
+                <% end %>
+              </div>
+            <% end %>
+            <%= f.password_field :password, 
+                autocomplete: "new-password",
+                class: "mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors",
+                placeholder: "Create a secure password" %>
+          </div>
+
+          <!-- Password Confirmation Field -->
+          <div>
+            <%= f.label :password_confirmation, class: "block text-sm font-medium text-gray-700 mb-2" do %>
+              <div class="flex items-center">
+                <svg class="w-4 h-4 mr-2 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
+                </svg>
+                Confirm Password
+              </div>
+            <% end %>
+            <%= f.password_field :password_confirmation, 
+                autocomplete: "new-password",
+                class: "mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors",
+                placeholder: "Confirm your password" %>
+          </div>
+
+          <!-- Submit Button -->
+          <div>
+            <%= f.submit "Create Free Account", 
+                class: "w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-all duration-200 transform hover:scale-105" %>
+          </div>
+
+          <!-- Error Messages -->
+          <% if resource.errors.any? %>
+            <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+              <div class="flex">
+                <svg class="w-5 h-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                </svg>
+                <div class="ml-3">
+                  <h3 class="text-sm font-medium text-red-800">Please fix the following errors:</h3>
+                  <ul class="mt-2 text-sm text-red-700 list-disc list-inside">
+                    <% resource.errors.full_messages.each do |message| %>
+                      <li><%= message %></li>
+                    <% end %>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+
+        <!-- Terms and Privacy -->
+        <div class="mt-6 text-center">
+          <p class="text-xs text-gray-500">
+            By creating an account, you agree to our 
+            <%= link_to "Terms of Service", terms_path, class: "text-emerald-600 hover:text-emerald-500 font-medium" %> 
+            and 
+            <%= link_to "Privacy Policy", privacy_path, class: "text-emerald-600 hover:text-emerald-500 font-medium" %>
+          </p>
+        </div>
+
+        <!-- Sign In Link -->
+        <div class="mt-8 text-center">
+          <p class="text-sm text-gray-600">
+            Already have an account?
+            <%= link_to "Sign in here", new_session_path(resource_name), 
+                class: "font-medium text-emerald-600 hover:text-emerald-500 transition-colors" %>
+          </p>
+        </div>
+
+        <!-- Divider -->
+        <div class="mt-6">
+          <div class="relative">
+            <div class="absolute inset-0 flex items-center">
+              <div class="w-full border-t border-gray-300"></div>
+            </div>
+            <div class="relative flex justify-center text-sm">
+              <span class="px-2 bg-white text-gray-500">Trusted by professionals</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Trust Indicators -->
+        <div class="mt-4 flex justify-center space-x-6">
+          <div class="flex items-center text-xs text-gray-500">
+            <svg class="w-4 h-4 mr-1 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+            </svg>
+            Free Trial
+          </div>
+          <div class="flex items-center text-xs text-gray-500">
+            <svg class="w-4 h-4 mr-1 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M18 8a6 6 0 01-7.743 5.743L10 14l-0.257-.257A6 6 0 1118 8zM10 7a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
+            </svg>
+            No Setup Fees
+          </div>
+          <div class="flex items-center text-xs text-gray-500">
+            <svg class="w-4 h-4 mr-1 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+            </svg>
+            Cancel Anytime
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
