@@ -200,7 +200,7 @@
                   </svg>
                   Settings
                 <% end %>
-                <%= link_to "#", class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center" do %>
+                <%= link_to billing_path, class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center" do %>
                   <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                   </svg>
@@ -293,6 +293,27 @@
               <% end %>
             </li>
             
+            <!-- Billing Dropdown -->
+            <li class="relative group">
+              <button class="text-sm font-medium #{current_page?(billing_path) || current_page?(billing_subscription_path) || current_page?(billing_payment_history_path) ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600'} transition-colors flex items-center">
+                Billing
+                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </button>
+              <div class="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                <%= link_to billing_path, class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-t-lg #{'bg-blue-50 text-blue-600' if current_page?(billing_path)}" do %>
+                  Dashboard
+                <% end %>
+                <%= link_to billing_subscription_path, class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 #{'bg-blue-50 text-blue-600' if current_page?(billing_subscription_path)}" do %>
+                  Plans & Pricing
+                <% end %>
+                <%= link_to billing_payment_history_path, class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-b-lg #{'bg-blue-50 text-blue-600' if current_page?(billing_payment_history_path)}" do %>
+                  Payment History
+                <% end %>
+              </div>
+            </li>
+            
             <!-- Settings Mega Menu -->
             <li class="relative group">
               <button class="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors flex items-center">
@@ -308,8 +329,15 @@
                     <ul class="space-y-2">
                       <li><%= link_to "Profile Settings", account_path, class: "text-sm text-gray-600 hover:text-blue-600" %></li>
                       <li><%= link_to "Team Members", "#", class: "text-sm text-gray-600 hover:text-blue-600" %></li>
-                      <li><%= link_to "Billing & Plans", "#", class: "text-sm text-gray-600 hover:text-blue-600" %></li>
                       <li><%= link_to "API Keys", "#", class: "text-sm text-gray-600 hover:text-blue-600" %></li>
+                    </ul>
+                    
+                    <h3 class="text-sm font-semibold text-gray-900 mb-3 mt-6">Billing</h3>
+                    <ul class="space-y-2">
+                      <li><%= link_to "Billing Dashboard", billing_path, class: "text-sm text-gray-600 hover:text-blue-600" %></li>
+                      <li><%= link_to "Plans & Pricing", billing_subscription_path, class: "text-sm text-gray-600 hover:text-blue-600" %></li>
+                      <li><%= link_to "Payment History", billing_payment_history_path, class: "text-sm text-gray-600 hover:text-blue-600" %></li>
+                      <li><%= link_to "Usage & Limits", billing_path, class: "text-sm text-gray-600 hover:text-blue-600" %></li>
                     </ul>
                   </div>
                   <div>
@@ -360,6 +388,7 @@
             <li><%= link_to "Optimizations", "#", class: "block px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100" %></li>
             <li><%= link_to "Analytics", "#", class: "block px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100" %></li>
             <li><%= link_to "Reports", "#", class: "block px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100" %></li>
+            <li><%= link_to "Billing", billing_path, class: "block px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100" %></li>
             <li><%= link_to "Settings", account_path, class: "block px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100" %></li>
           </ul>
         </div>
