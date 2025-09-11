@@ -23,21 +23,32 @@ Rails.application.routes.draw do
   # Website management
   resources :websites do
     member do
-      post :run_audit
-      patch :toggle_monitoring
+      post :monitor
+      get :audit_history
     end
     
     resources :audit_reports, only: [:index, :show] do
       member do
-        get :raw_results
-        post :rerun
+        get :performance_details
+        get :optimization_suggestions
+        get :export
+      end
+      
+      collection do
+        get :compare
       end
     end
     
-    resources :optimization_recommendations, only: [:index, :show, :update] do
+    resources :monitoring_alerts, only: [:index, :show] do
       member do
-        patch :mark_completed
+        patch :acknowledge
+        patch :resolve
         patch :dismiss
+      end
+      
+      collection do
+        patch :bulk_acknowledge
+        patch :bulk_dismiss
       end
     end
     
