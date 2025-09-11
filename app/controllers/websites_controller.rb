@@ -28,9 +28,9 @@ class WebsitesController < ApplicationController
   def show
     @latest_audit = @website.audit_reports.completed.order('audit_reports.created_at DESC').first
     @performance_metrics = @latest_audit&.performance_metrics&.recent || []
-    @audit_history = @website.audit_reports.completed
-                            .order('audit_reports.created_at DESC')
-                            .limit(10)
+    @recent_audit_reports = @website.audit_reports.completed
+                                   .order('audit_reports.created_at DESC')
+                                   .limit(5)
     @monitoring_alerts = @website.monitoring_alerts.active.recent
   end
   

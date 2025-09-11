@@ -1,0 +1,180 @@
+<div class="px-4 sm:px-6 lg:px-8">
+  <div class="sm:flex sm:items-center">
+    <div class="sm:flex-auto">
+      <h1 class="text-2xl font-semibold leading-6 text-gray-900">Audit Reports</h1>
+      <p class="mt-2 text-sm text-gray-700">
+        A complete history of performance audits for your websites.
+      </p>
+    </div>
+    <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+      <%= link_to "Back to Websites", websites_path, 
+          class: "block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="mt-6 bg-white shadow sm:rounded-lg">
+    <div class="px-4 py-5 sm:p-6">
+      <%= form_with url: audit_reports_path, method: :get, local: true, class: "sm:flex sm:items-center sm:space-x-4" do |form| %>
+        <div class="w-full sm:max-w-xs">
+          <%= form.select :website_id, 
+              options_from_collection_for_select(current_account.websites, :id, :name, params[:website_id]),
+              { prompt: 'All websites' },
+              { class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" } %>
+        </div>
+        <div class="w-full sm:max-w-xs mt-4 sm:mt-0">
+          <%= form.select :status, 
+              options_for_select([
+                ['All statuses', ''],
+                ['Completed', 'completed'],
+                ['Failed', 'failed'],
+                ['In Progress', 'in_progress']
+              ], params[:status]),
+              {},
+              { class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" } %>
+        </div>
+        <div class="mt-4 sm:mt-0">
+          <%= form.submit "Filter", 
+              class: "inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Audit Reports Table -->
+  <div class="mt-8 flow-root">
+    <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+      <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+        <% if @audit_reports.any? %>
+          <table class="min-w-full divide-y divide-gray-300">
+            <thead>
+              <tr>
+                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Website</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Date</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Status</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Overall Score</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Performance</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">SEO</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Best Practices</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Accessibility</th>
+                <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-0">
+                  <span class="sr-only">Actions</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 bg-white">
+              <% @audit_reports.each do |report| %>
+                <tr>
+                  <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
+                    <%= link_to report.website.name, website_path(report.website), 
+                        class: "text-indigo-600 hover:text-indigo-900" %>
+                  </td>
+                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                    <%= report.created_at.strftime("%b %d, %Y at %I:%M %p") %>
+                  </td>
+                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                    <% case report.status %>
+                    <% when 'completed' %>
+                      <span class="inline-flex items-center rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+                        Completed
+                      </span>
+                    <% when 'failed' %>
+                      <span class="inline-flex items-center rounded-full bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/20">
+                        Failed
+                      </span>
+                    <% when 'in_progress' %>
+                      <span class="inline-flex items-center rounded-full bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-700 ring-1 ring-inset ring-yellow-600/20">
+                        In Progress
+                      </span>
+                    <% else %>
+                      <span class="inline-flex items-center rounded-full bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
+                        <%= report.status.humanize %>
+                      </span>
+                    <% end %>
+                  </td>
+                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                    <% if report.overall_score %>
+                      <span class="<%= report.overall_score >= 90 ? 'text-green-600' : report.overall_score >= 50 ? 'text-yellow-600' : 'text-red-600' %> font-medium">
+                        <%= report.overall_score %>
+                      </span>
+                    <% else %>
+                      <span class="text-gray-400">—</span>
+                    <% end %>
+                  </td>
+                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                    <% if report.performance_score %>
+                      <span class="<%= report.performance_score >= 90 ? 'text-green-600' : report.performance_score >= 50 ? 'text-yellow-600' : 'text-red-600' %>">
+                        <%= report.performance_score %>
+                      </span>
+                    <% else %>
+                      <span class="text-gray-400">—</span>
+                    <% end %>
+                  </td>
+                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                    <% if report.seo_score %>
+                      <span class="<%= report.seo_score >= 90 ? 'text-green-600' : report.seo_score >= 50 ? 'text-yellow-600' : 'text-red-600' %>">
+                        <%= report.seo_score %>
+                      </span>
+                    <% else %>
+                      <span class="text-gray-400">—</span>
+                    <% end %>
+                  </td>
+                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                    <% if report.best_practices_score %>
+                      <span class="<%= report.best_practices_score >= 90 ? 'text-green-600' : report.best_practices_score >= 50 ? 'text-yellow-600' : 'text-red-600' %>">
+                        <%= report.best_practices_score %>
+                      </span>
+                    <% else %>
+                      <span class="text-gray-400">—</span>
+                    <% end %>
+                  </td>
+                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                    <% if report.accessibility_score %>
+                      <span class="<%= report.accessibility_score >= 90 ? 'text-green-600' : report.accessibility_score >= 50 ? 'text-yellow-600' : 'text-red-600' %>">
+                        <%= report.accessibility_score %>
+                      </span>
+                    <% else %>
+                      <span class="text-gray-400">—</span>
+                    <% end %>
+                  </td>
+                  <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
+                    <%= link_to "View", audit_report_path(report), 
+                        class: "text-indigo-600 hover:text-indigo-900" %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+
+          <!-- Pagination -->
+          <div class="mt-4 flex items-center justify-between">
+            <div class="text-sm text-gray-700">
+              Showing page <%= params[:page] || 1 %>
+            </div>
+            <div class="flex space-x-2">
+              <% if params[:page].to_i > 1 %>
+                <%= link_to "Previous", audit_reports_path(page: params[:page].to_i - 1, website_id: params[:website_id], status: params[:status]), 
+                    class: "relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" %>
+              <% end %>
+              
+              <%= link_to "Next", audit_reports_path(page: (params[:page] || 1).to_i + 1, website_id: params[:website_id], status: params[:status]), 
+                  class: "relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" %>
+            </div>
+          </div>
+        <% else %>
+          <div class="text-center py-12">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+            <h3 class="mt-2 text-sm font-semibold text-gray-900">No audit reports</h3>
+            <p class="mt-1 text-sm text-gray-500">Get started by monitoring your websites.</p>
+            <div class="mt-6">
+              <%= link_to "View Websites", websites_path, 
+                  class: "inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

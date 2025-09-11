@@ -1,0 +1,305 @@
+<div class="px-4 sm:px-6 lg:px-8">
+  <!-- Header -->
+  <div class="sm:flex sm:items-center sm:justify-between">
+    <div class="min-w-0 flex-1">
+      <nav class="flex" aria-label="Breadcrumb">
+        <ol class="flex items-center space-x-4">
+          <li>
+            <%= link_to "Websites", websites_path, class: "text-gray-400 hover:text-gray-500" %>
+          </li>
+          <li class="flex items-center">
+            <svg class="h-5 w-5 flex-shrink-0 text-gray-300" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
+            </svg>
+            <%= link_to @audit_report.website.name, website_path(@audit_report.website), class: "ml-4 text-gray-400 hover:text-gray-500" %>
+          </li>
+          <li class="flex items-center">
+            <svg class="h-5 w-5 flex-shrink-0 text-gray-300" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
+            </svg>
+            <span class="ml-4 text-gray-500">Audit Report</span>
+          </li>
+        </ol>
+      </nav>
+      
+      <h1 class="mt-2 text-2xl font-semibold leading-6 text-gray-900">
+        Audit Report
+      </h1>
+      <div class="mt-1 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap sm:space-x-6">
+        <div class="mt-2 flex items-center text-sm text-gray-500">
+          <svg class="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z" clip-rule="evenodd" />
+          </svg>
+          <%= @audit_report.created_at.strftime("%b %d, %Y at %I:%M %p") %>
+        </div>
+        <div class="mt-2 flex items-center text-sm text-gray-500">
+          <% case @audit_report.status %>
+          <% when 'completed' %>
+            <span class="inline-flex items-center rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+              Completed
+            </span>
+          <% when 'failed' %>
+            <span class="inline-flex items-center rounded-full bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/20">
+              Failed
+            </span>
+          <% when 'in_progress' %>
+            <span class="inline-flex items-center rounded-full bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-700 ring-1 ring-inset ring-yellow-600/20">
+              In Progress
+            </span>
+          <% else %>
+            <span class="inline-flex items-center rounded-full bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
+              <%= @audit_report.status.humanize %>
+            </span>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+      <%= button_to "Run New Audit", monitor_website_path(@audit_report.website), 
+          method: :post,
+          class: "inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
+          data: { turbo: true } %>
+    </div>
+  </div>
+
+  <% if @audit_report.status == 'completed' %>
+    <!-- Score Overview -->
+    <div class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+        <dt class="truncate text-sm font-medium text-gray-500">Overall Score</dt>
+        <dd class="mt-1 text-3xl font-semibold tracking-tight">
+          <span class="<%= @audit_report.overall_score >= 90 ? 'text-green-600' : @audit_report.overall_score >= 50 ? 'text-yellow-600' : 'text-red-600' %>">
+            <%= @audit_report.overall_score %>
+          </span>
+        </dd>
+      </div>
+      
+      <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+        <dt class="truncate text-sm font-medium text-gray-500">Performance</dt>
+        <dd class="mt-1 text-3xl font-semibold tracking-tight">
+          <% if @audit_report.performance_score %>
+            <span class="<%= @audit_report.performance_score >= 90 ? 'text-green-600' : @audit_report.performance_score >= 50 ? 'text-yellow-600' : 'text-red-600' %>">
+              <%= @audit_report.performance_score %>
+            </span>
+          <% else %>
+            <span class="text-gray-400">—</span>
+          <% end %>
+        </dd>
+      </div>
+      
+      <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+        <dt class="truncate text-sm font-medium text-gray-500">SEO</dt>
+        <dd class="mt-1 text-3xl font-semibold tracking-tight">
+          <% if @audit_report.seo_score %>
+            <span class="<%= @audit_report.seo_score >= 90 ? 'text-green-600' : @audit_report.seo_score >= 50 ? 'text-yellow-600' : 'text-red-600' %>">
+              <%= @audit_report.seo_score %>
+            </span>
+          <% else %>
+            <span class="text-gray-400">—</span>
+          <% end %>
+        </dd>
+      </div>
+      
+      <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+        <dt class="truncate text-sm font-medium text-gray-500">Best Practices</dt>
+        <dd class="mt-1 text-3xl font-semibold tracking-tight">
+          <% if @audit_report.best_practices_score %>
+            <span class="<%= @audit_report.best_practices_score >= 90 ? 'text-green-600' : @audit_report.best_practices_score >= 50 ? 'text-yellow-600' : 'text-red-600' %>">
+              <%= @audit_report.best_practices_score %>
+            </span>
+          <% else %>
+            <span class="text-gray-400">—</span>
+          <% end %>
+        </dd>
+      </div>
+      
+      <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+        <dt class="truncate text-sm font-medium text-gray-500">Accessibility</dt>
+        <dd class="mt-1 text-3xl font-semibold tracking-tight">
+          <% if @audit_report.accessibility_score %>
+            <span class="<%= @audit_report.accessibility_score >= 90 ? 'text-green-600' : @audit_report.accessibility_score >= 50 ? 'text-yellow-600' : 'text-red-600' %>">
+              <%= @audit_report.accessibility_score %>
+            </span>
+          <% else %>
+            <span class="text-gray-400">—</span>
+          <% end %>
+        </dd>
+      </div>
+    </div>
+
+    <!-- Performance Metrics -->
+    <% if @performance_metrics.any? %>
+      <div class="mt-8">
+        <div class="overflow-hidden rounded-lg bg-white shadow">
+          <div class="px-4 py-5 sm:p-6">
+            <h3 class="text-lg font-medium leading-6 text-gray-900">Core Web Vitals</h3>
+            <div class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
+              <% @performance_metrics.each do |metric| %>
+                <div class="rounded-lg border border-gray-200 bg-white px-6 py-5">
+                  <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                      <% case metric.metric_name %>
+                      <% when 'largest_contentful_paint' %>
+                        <div class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100">
+                          <span class="text-sm font-medium text-blue-600">LCP</span>
+                        </div>
+                      <% when 'first_input_delay' %>
+                        <div class="flex h-8 w-8 items-center justify-center rounded-full bg-green-100">
+                          <span class="text-sm font-medium text-green-600">FID</span>
+                        </div>
+                      <% when 'cumulative_layout_shift' %>
+                        <div class="flex h-8 w-8 items-center justify-center rounded-full bg-purple-100">
+                          <span class="text-sm font-medium text-purple-600">CLS</span>
+                        </div>
+                      <% else %>
+                        <div class="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100">
+                          <span class="text-sm font-medium text-gray-600">M</span>
+                        </div>
+                      <% end %>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                      <dl>
+                        <dt class="truncate text-sm font-medium text-gray-500">
+                          <%= metric.metric_name.humanize %>
+                        </dt>
+                        <dd>
+                          <div class="text-lg font-medium text-gray-900">
+                            <%= metric.value %>
+                            <% if metric.metric_name.include?('time') || metric.metric_name.include?('paint') || metric.metric_name.include?('delay') %>
+                              ms
+                            <% end %>
+                          </div>
+                        </dd>
+                      </dl>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Recommendations -->
+    <% if @recommendations.any? %>
+      <div class="mt-8">
+        <div class="overflow-hidden rounded-lg bg-white shadow">
+          <div class="px-4 py-5 sm:p-6">
+            <h3 class="text-lg font-medium leading-6 text-gray-900">Optimization Recommendations</h3>
+            <div class="mt-5">
+              <div class="space-y-6">
+                <% @recommendations.each do |recommendation| %>
+                  <div class="flex">
+                    <div class="flex-shrink-0">
+                      <% case recommendation.priority %>
+                      <% when 'high' %>
+                        <div class="flex h-6 w-6 items-center justify-center rounded-full bg-red-100">
+                          <svg class="h-4 w-4 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                          </svg>
+                        </div>
+                      <% when 'medium' %>
+                        <div class="flex h-6 w-6 items-center justify-center rounded-full bg-yellow-100">
+                          <svg class="h-4 w-4 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                          </svg>
+                        </div>
+                      <% else %>
+                        <div class="flex h-6 w-6 items-center justify-center rounded-full bg-blue-100">
+                          <svg class="h-4 w-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                          </svg>
+                        </div>
+                      <% end %>
+                    </div>
+                    <div class="ml-3 flex-1">
+                      <h4 class="text-sm font-medium text-gray-900">
+                        <%= recommendation.title %>
+                      </h4>
+                      <p class="mt-1 text-sm text-gray-500">
+                        <%= recommendation.description %>
+                      </p>
+                      <% if recommendation.impact_description %>
+                        <p class="mt-2 text-sm text-gray-600">
+                          <strong>Impact:</strong> <%= recommendation.impact_description %>
+                        </p>
+                      <% end %>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+  <% elsif @audit_report.status == 'failed' %>
+    <!-- Error State -->
+    <div class="mt-8 rounded-md bg-red-50 p-4">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-red-800">
+            Audit Failed
+          </h3>
+          <div class="mt-2 text-sm text-red-700">
+            <p>This audit could not be completed. This may be due to:</p>
+            <ul class="list-disc list-inside mt-2">
+              <li>The website was not accessible during the audit</li>
+              <li>A network timeout occurred</li>
+              <li>The website returned an error response</li>
+              <li>An internal system error occurred</li>
+            </ul>
+            <% if @audit_report.error_message %>
+              <div class="mt-4 p-3 bg-red-100 rounded">
+                <p class="font-medium">Error details:</p>
+                <p class="mt-1 font-mono text-xs"><%= @audit_report.error_message %></p>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <% else %>
+    <!-- In Progress State -->
+    <div class="mt-8 rounded-md bg-yellow-50 p-4">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-yellow-400 animate-spin" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+        </div>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-yellow-800">
+            Audit In Progress
+          </h3>
+          <div class="mt-2 text-sm text-yellow-700">
+            <p>This audit is currently being processed. Please check back in a few minutes for the results.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Raw Data (for debugging - can be removed in production) -->
+  <% if Rails.env.development? && @audit_report.raw_lighthouse_data.present? %>
+    <div class="mt-8">
+      <details class="overflow-hidden rounded-lg bg-gray-50 shadow">
+        <summary class="px-4 py-5 sm:p-6 cursor-pointer">
+          <h3 class="text-lg font-medium leading-6 text-gray-900">Raw Lighthouse Data (Development Only)</h3>
+        </summary>
+        <div class="px-4 py-5 sm:p-6 bg-gray-100">
+          <pre class="text-xs overflow-auto"><%= JSON.pretty_generate(@audit_report.raw_lighthouse_data) %></pre>
+        </div>
+      </details>
+    </div>
+  <% end %>
+</div>

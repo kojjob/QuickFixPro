@@ -24,10 +24,13 @@ class AuditReportsController < ApplicationController
   end
   
   def show
-    @performance_metrics = @audit_report.performance_metrics.by_category
+    @performance_metrics = @audit_report.performance_metrics.where(category: 'core_web_vitals').limit(6)
     @core_web_vitals = @audit_report.performance_metrics.core_web_vitals
     @insights = @audit_report.analysis_data['insights'] || []
     @scores = @audit_report.analysis_data['scores'] || {}
+    
+    # Generate optimization recommendations if available
+    @recommendations = @audit_report.optimization_recommendations.order(:priority, :created_at) || []
     
     # Generate optimization suggestions if not cached
     if @audit_report.optimization_suggestions.blank?
