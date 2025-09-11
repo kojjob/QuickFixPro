@@ -1,0 +1,138 @@
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+  <!-- Hero Section -->
+  <div class="bg-white border-b">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="text-center">
+        <h1 class="text-4xl font-bold text-gray-900 sm:text-5xl lg:text-6xl">
+          Powerful Features for Every Need
+        </h1>
+        <p class="mt-6 text-xl text-gray-600 max-w-3xl mx-auto">
+          Comprehensive website monitoring and performance optimization tools designed to help you maintain peak performance and exceptional user experiences.
+        </p>
+        <div class="mt-8">
+          <%= link_to "Start Free Trial", new_user_registration_path,
+              class: "inline-flex items-center px-8 py-3 border border-transparent text-lg font-medium rounded-lg text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200" %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Features Grid -->
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <% @feature_categories.each_with_index do |category, index| %>
+      <div class="<%= index > 0 ? 'mt-20' : '' %>">
+        <!-- Category Header -->
+        <div class="text-center mb-12">
+          <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 text-white text-2xl font-bold mb-4">
+            <% case category[:name] %>
+            <% when "Performance Monitoring" %>
+              ⚡
+            <% when "Automated Audits" %>
+              📊
+            <% when "Optimization Recommendations" %>
+              🚀
+            <% else %>
+              ✨
+            <% end %>
+          </div>
+          <h2 class="text-3xl font-bold text-gray-900"><%= category[:name] %></h2>
+          <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto"><%= category[:description] %></p>
+        </div>
+
+        <!-- Features List -->
+        <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+          <ul class="space-y-4">
+            <% category[:features].each do |feature| %>
+              <li class="flex items-start">
+                <svg class="w-6 h-6 text-green-500 mt-0.5 mr-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
+                <span class="text-lg text-gray-700"><%= feature %></span>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Integration Partners Section -->
+  <% if @integration_partners.present? %>
+    <div class="bg-white py-16">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold text-gray-900">Seamless Integrations</h2>
+          <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
+            Connect with your favorite tools and services for a complete monitoring ecosystem
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <% @integration_partners.each do |partner| %>
+            <div class="flex items-start p-6 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors duration-200">
+              <div class="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-lg mr-4 flex-shrink-0">
+                <%= partner[:name].first.upcase %>
+              </div>
+              <div>
+                <h3 class="text-sm font-semibold text-gray-900 mb-1"><%= partner[:name] %></h3>
+                <p class="text-xs text-gray-600"><%= partner[:description] %></p>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Upcoming Features Section -->
+  <% if @upcoming_features.present? %>
+    <div class="bg-gradient-to-br from-blue-50 to-purple-50 py-16">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold text-gray-900">Coming Soon</h2>
+          <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
+            Exciting new features and improvements on our roadmap
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <% @upcoming_features.each do |feature| %>
+            <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-semibold text-gray-900"><%= feature[:title] %></h3>
+                <span class="px-3 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
+                  Coming Soon
+                </span>
+              </div>
+              <p class="text-gray-600 leading-relaxed mb-4"><%= feature[:description] %></p>
+              <div class="flex items-center text-sm text-gray-500">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                Expected: <%= feature[:eta] %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Call to Action -->
+  <div class="bg-gradient-to-r from-blue-600 to-purple-600 py-16">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl font-bold text-white sm:text-4xl">
+        Ready to optimize your website performance?
+      </h2>
+      <p class="mt-4 text-xl text-blue-100">
+        Join thousands of developers and businesses who trust QuickFixPro for their website monitoring needs.
+      </p>
+      <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+        <%= link_to "Start Free Trial", new_user_registration_path,
+            class: "inline-flex items-center justify-center px-8 py-3 border border-transparent text-lg font-medium rounded-lg text-blue-600 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white transition-all duration-200" %>
+        <%= link_to "View Pricing", pricing_path,
+            class: "inline-flex items-center justify-center px-8 py-3 border-2 border-white text-lg font-medium rounded-lg text-white hover:bg-white hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white transition-all duration-200" %>
+      </div>
+    </div>
+  </div>
+</div>
