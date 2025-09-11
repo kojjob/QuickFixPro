@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-# Ensure Kaminari hooks are loaded for ActiveRecord
-require 'kaminari'
-require 'kaminari/activerecord' if defined?(ActiveRecord)
-
 Kaminari.configure do |config|
   config.default_per_page = 25
   # config.max_per_page = nil

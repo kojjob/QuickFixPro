@@ -4,7 +4,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Development Commands
 
+- `TDD` - Test-Driven Development
+- `RSpec` - Ruby testing framework
+- `FactoryBot` - Factory creation for testing
+- `Capybara` - Feature testing
+- `Webpacker` - JavaScript bundling
+- `TailwindCSS` - Utility-first CSS framework
+- `ESBuild` - JavaScript bundling
+- `Puma` - Web server
+- `Kamal` - Modern Rails deployment tooling
+
+
 ### Setup & Installation
+
 - `bin/setup` - Full project setup (installs dependencies, prepares database, starts server)
 - `bin/setup --skip-server` - Setup without starting the development server
 - `bundle install` - Install Ruby dependencies only

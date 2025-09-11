@@ -4,7 +4,8 @@ class ApplicationJob < ActiveJob::Base
   
   # Automatically retry jobs that encounter temporary failures
   retry_on StandardError, wait: :exponentially_longer, attempts: 5
-  retry_on Net::TimeoutError, wait: 2.seconds, attempts: 10
+  retry_on Net::OpenTimeout, wait: 2.seconds, attempts: 10
+  retry_on Net::ReadTimeout, wait: 2.seconds, attempts: 10
   retry_on Errno::ECONNREFUSED, wait: 5.seconds, attempts: 8
   retry_on ActiveRecord::Deadlocked, wait: :exponentially_longer, attempts: 3
   

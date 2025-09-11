@@ -1,6 +1,7 @@
 class Subscription < ApplicationRecord
   # Associations
   belongs_to :account
+  has_many :payments, dependent: :destroy
 
   # Validations
   validates :plan_name, presence: true, inclusion: { in: %w[starter professional enterprise] }
@@ -100,11 +101,11 @@ class Subscription < ApplicationRecord
   end
 
   def trial_active?
-    trial? && trial_ends_at.present? && trial_ends_at > Time.current
+    subscription_trial? && trial_ends_at.present? && trial_ends_at > Time.current
   end
 
   def trial_expired?
-    trial? && trial_ends_at.present? && trial_ends_at <= Time.current
+    subscription_trial? && trial_ends_at.present? && trial_ends_at <= Time.current
   end
 
   def days_until_trial_expires
@@ -151,7 +152,7 @@ class Subscription < ApplicationRecord
   end
 
   def set_trial_period
-    return unless trial?
+    return unless subscription_trial?
     self.trial_ends_at = 14.days.from_now unless trial_ends_at.present?
   end
 

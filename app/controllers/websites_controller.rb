@@ -6,9 +6,10 @@ class WebsitesController < ApplicationController
   before_action :check_website_limit, only: [:new, :create]
   
   def index
-    @websites = current_account.websites.includes(:audit_reports)
-                       .order(created_at: :desc)
-                       .page(params[:page])
+    # Use Kaminari directly
+    websites_scope = current_account.websites.includes(:audit_reports)
+                                   .order(created_at: :desc)
+    @websites = Kaminari.paginate_array(websites_scope.to_a).page(params[:page]).per(25)
     
     @statistics = {
       total_websites: current_account.websites.count,

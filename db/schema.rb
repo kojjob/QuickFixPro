@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_10_113914) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_11_082450) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -78,6 +78,29 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_10_113914) do
     t.index ["website_id", "priority"], name: "index_optimization_recommendations_on_website_id_and_priority"
     t.index ["website_id", "status"], name: "index_optimization_recommendations_on_website_id_and_status"
     t.index ["website_id"], name: "index_optimization_recommendations_on_website_id"
+  end
+
+  create_table "payments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "subscription_id", null: false
+    t.decimal "amount", precision: 10, scale: 2, null: false
+    t.string "status", default: "pending", null: false
+    t.string "payment_method", null: false
+    t.string "stripe_payment_intent_id"
+    t.string "stripe_charge_id"
+    t.decimal "tax_rate", precision: 5, scale: 4, default: "0.0"
+    t.datetime "refunded_at"
+    t.datetime "failed_at"
+    t.text "failure_reason"
+    t.string "invoice_number"
+    t.integer "retry_count", default: 0
+    t.jsonb "metadata", default: {}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_payments_on_created_at"
+    t.index ["invoice_number"], name: "index_payments_on_invoice_number", unique: true
+    t.index ["status"], name: "index_payments_on_status"
+    t.index ["stripe_payment_intent_id"], name: "index_payments_on_stripe_payment_intent_id", unique: true
+    t.index ["subscription_id"], name: "index_payments_on_subscription_id"
   end
 
   create_table "performance_metrics", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -186,6 +209,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_10_113914) do
   add_foreign_key "audit_reports", "websites"
   add_foreign_key "optimization_recommendations", "audit_reports"
   add_foreign_key "optimization_recommendations", "websites"
+  add_foreign_key "payments", "subscriptions"
   add_foreign_key "performance_metrics", "audit_reports"
   add_foreign_key "performance_metrics", "websites"
   add_foreign_key "subscriptions", "accounts"
