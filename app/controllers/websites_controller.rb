@@ -1,19 +1,20 @@
 class WebsitesController < ApplicationController
   layout 'dashboard'
   before_action :authenticate_user!
+  before_action :ensure_account_context
   before_action :set_website, only: [:show, :edit, :update, :destroy, :monitor, :audit_history]
   before_action :check_website_limit, only: [:new, :create]
   
   def index
-    @websites = Current.account.websites.includes(:audit_reports)
+    @websites = current_account.websites.includes(:audit_reports)
                        .order(created_at: :desc)
                        .page(params[:page])
     
     @statistics = {
-      total_websites: Current.account.websites.count,
-      active_websites: Current.account.websites.active.count,
-      total_audits: Current.account.audit_reports.count,
-      audits_this_month: Current.account.audit_reports.where('created_at > ?', 1.month.ago).count
+      total_websites: current_account.websites.count,
+      active_websites: current_account.websites.active.count,
+      total_audits: current_account.audit_reports.count,
+      audits_this_month: current_account.audit_reports.where('created_at > ?', 1.month.ago).count
     }
   end
   
@@ -27,11 +28,11 @@ class WebsitesController < ApplicationController
   end
   
   def new
-    @website = Current.account.websites.build
+    @website = current_account.websites.build
   end
   
   def create
-    @website = Current.account.websites.build(website_params)
+    @website = current_account.websites.build(website_params)
     
     if @website.save
       # Queue initial audit
@@ -104,8 +105,15 @@ class WebsitesController < ApplicationController
   
   private
   
+  def ensure_account_context
+    unless current_account
+      redirect_to root_path, alert: 'Please select an account first.'
+      return
+    end
+  end
+  
   def set_website
-    @website = Current.account.websites.find(params[:id])
+    @website = current_account.websites.find(params[:id])
   rescue ActiveRecord::RecordNotFound
     redirect_to websites_path, alert: 'Website not found.'
   end
@@ -126,11 +134,11 @@ class WebsitesController < ApplicationController
   end
   
   def check_website_limit
-    subscription = Current.account.subscription
+    subscription = current_account.subscription
     return unless subscription
     
     website_limit = subscription.plan_limits['website_limit'] || 10
-    current_count = Current.account.websites.count
+    current_count = current_account.websites.count
     
     if current_count >= website_limit
       redirect_to websites_path, 
