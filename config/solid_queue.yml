@@ -1,0 +1,104 @@
+# Solid Queue configuration for SpeedBoost Performance Monitoring
+# Rails 8 Solid Queue provides Redis-free background jobs with database persistence
+
+production: &production
+  dispatchers:
+    - polling_interval: 1
+      batch_size: 500
+      concurrency_maintenance_interval: 600
+      
+  workers:
+    # High-priority real-time jobs
+    - queues: "notifications,alerts"
+      threads: 3
+      processes: 2
+      priority: 1
+    
+    # Performance audits - main workload
+    - queues: "audits,monitoring" 
+      threads: 5
+      processes: 3
+      priority: 5
+    
+    # Analysis and recommendations
+    - queues: "analysis,recommendations"
+      threads: 3  
+      processes: 2
+      priority: 8
+    
+    # Low-priority maintenance tasks
+    - queues: "maintenance,cleanup"
+      threads: 2
+      processes: 1
+      priority: 10
+    
+    # Catch-all for default queue
+    - queues: "*"
+      threads: 2
+      processes: 1
+      priority: 7
+
+development:
+  <<: *production
+  workers:
+    # Simplified setup for development
+    - queues: "notifications,alerts,audits,monitoring"
+      threads: 2
+      processes: 1
+    - queues: "*"
+      threads: 1
+      processes: 1
+
+test:
+  dispatchers:
+    - polling_interval: 0.1
+      batch_size: 10
+  workers:
+    - queues: "*"
+      threads: 1
+      processes: 1
+      
+# Recurring jobs configuration
+# These jobs run automatically on schedule using Solid Queue's cron-like functionality
+recurring_jobs:
+  scheduled_monitoring:
+    class: ScheduledMonitoringRecurringJob
+    schedule: "*/15 * * * *"  # Every 15 minutes
+    args: []
+    
+  daily_cleanup:
+    class: DailyCleanupJob  
+    schedule: "0 2 * * *"     # Daily at 2 AM
+    args: []
+    
+  weekly_cleanup:
+    class: WeeklyCleanupJob
+    schedule: "0 3 * * 0"     # Weekly on Sunday at 3 AM
+    args: []
+    
+  monthly_cleanup:
+    class: MonthlyCleanupJob
+    schedule: "0 4 1 * *"     # Monthly on the 1st at 4 AM  
+    args: []
+
+# Job retention and cleanup settings
+job_retention:
+  # How long to keep completed job records
+  finished_jobs: 3.days
+  
+  # How long to keep failed job records
+  failed_jobs: 7.days
+  
+  # How long to keep job arguments and results
+  job_data: 7.days
+  
+# Performance tuning
+performance:
+  # How often to clean up old job records (seconds)
+  cleanup_interval: 3600  # 1 hour
+  
+  # Maximum number of jobs to process in a single cleanup run
+  cleanup_batch_size: 1000
+  
+  # Database connection pool settings for job processing
+  database_pool_size: 25

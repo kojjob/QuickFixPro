@@ -1,0 +1,319 @@
+<% content_for :main_classes, "bg-white" %>
+
+<!-- Hero Section with SEO-optimized content -->
+<section class="relative overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-100 py-16 sm:py-24">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center">
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-8">
+        Boost Your Website Performance
+        <span class="block text-blue-600">Improve Core Web Vitals</span>
+      </h1>
+      
+      <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+        Professional website performance optimization and Core Web Vitals monitoring. 
+        Get automated <strong>Lighthouse audits</strong>, actionable recommendations, 
+        and real-time performance tracking to improve your <strong>search rankings</strong> 
+        and <strong>user experience</strong>.
+      </p>
+      
+      <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+        <%= link_to new_user_registration_path, 
+            class: "bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors",
+            'data-gtag': 'cta_start_trial_hero' do %>
+          Start Free 14-Day Trial
+        <% end %>
+        
+        <%= link_to features_path, 
+            class: "border-2 border-blue-600 text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-50 transition-colors" do %>
+          View Features
+        <% end %>
+      </div>
+      
+      <!-- Social Proof -->
+      <div class="flex flex-wrap justify-center items-center gap-8 text-sm text-gray-500">
+        <div class="flex items-center">
+          <span class="text-2xl font-bold text-blue-600"><%= number_with_delimiter(@total_websites_monitored) %>+</span>
+          <span class="ml-2">websites monitored</span>
+        </div>
+        <div class="flex items-center">
+          <span class="text-2xl font-bold text-green-600"><%= @average_performance_improvement %>%</span>
+          <span class="ml-2">average improvement</span>
+        </div>
+        <div class="flex items-center">
+          <span class="text-2xl font-bold text-purple-600">99.9%</span>
+          <span class="ml-2">uptime SLA</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Core Web Vitals Explanation -->
+<section class="py-16 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl font-bold text-gray-900 mb-4">
+        Master Core Web Vitals for Better Rankings
+      </h2>
+      <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+        Google's Core Web Vitals are now a ranking factor. SpeedBoost monitors 
+        all critical metrics and provides actionable insights to improve your scores.
+      </p>
+    </div>
+    
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="text-center p-6 bg-gray-50 rounded-lg">
+        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+          </svg>
+        </div>
+        <h3 class="text-xl font-semibold text-gray-900 mb-2">LCP</h3>
+        <p class="text-gray-600 mb-4">
+          <strong>Largest Contentful Paint</strong> - Measures loading performance. 
+          Should occur within 2.5 seconds.
+        </p>
+        <div class="text-sm text-blue-600 font-medium">Target: &lt; 2.5s</div>
+      </div>
+      
+      <div class="text-center p-6 bg-gray-50 rounded-lg">
+        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path>
+          </svg>
+        </div>
+        <h3 class="text-xl font-semibold text-gray-900 mb-2">FID</h3>
+        <p class="text-gray-600 mb-4">
+          <strong>First Input Delay</strong> - Measures interactivity. 
+          Should be less than 100 milliseconds.
+        </p>
+        <div class="text-sm text-green-600 font-medium">Target: &lt; 100ms</div>
+      </div>
+      
+      <div class="text-center p-6 bg-gray-50 rounded-lg">
+        <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"></path>
+          </svg>
+        </div>
+        <h3 class="text-xl font-semibold text-gray-900 mb-2">CLS</h3>
+        <p class="text-gray-600 mb-4">
+          <strong>Cumulative Layout Shift</strong> - Measures visual stability. 
+          Should maintain a score under 0.1.
+        </p>
+        <div class="text-sm text-purple-600 font-medium">Target: &lt; 0.1</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Overview -->
+<section class="py-16 bg-gray-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl font-bold text-gray-900 mb-4">
+        Everything You Need for Peak Performance
+      </h2>
+      <p class="text-lg text-gray-600">
+        Comprehensive website performance optimization tools and insights
+      </p>
+    </div>
+    
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div class="bg-white p-6 rounded-lg shadow-sm">
+        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+          <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+          </svg>
+        </div>
+        <h3 class="text-xl font-semibold text-gray-900 mb-2">Real-Time Monitoring</h3>
+        <p class="text-gray-600">
+          Continuous Core Web Vitals tracking with instant alerts when performance degrades.
+        </p>
+      </div>
+      
+      <div class="bg-white p-6 rounded-lg shadow-sm">
+        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+          <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <h3 class="text-xl font-semibold text-gray-900 mb-2">Automated Audits</h3>
+        <p class="text-gray-600">
+          Scheduled Lighthouse audits with detailed performance, SEO, and accessibility reports.
+        </p>
+      </div>
+      
+      <div class="bg-white p-6 rounded-lg shadow-sm">
+        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+          <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+          </svg>
+        </div>
+        <h3 class="text-xl font-semibold text-gray-900 mb-2">Actionable Insights</h3>
+        <p class="text-gray-600">
+          AI-powered recommendations with step-by-step implementation guides to improve your scores.
+        </p>
+      </div>
+      
+      <div class="bg-white p-6 rounded-lg shadow-sm">
+        <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
+          <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+          </svg>
+        </div>
+        <h3 class="text-xl font-semibold text-gray-900 mb-2">Team Collaboration</h3>
+        <p class="text-gray-600">
+          Share performance insights with your team and track improvements across multiple websites.
+        </p>
+      </div>
+      
+      <div class="bg-white p-6 rounded-lg shadow-sm">
+        <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mb-4">
+          <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+          </svg>
+        </div>
+        <h3 class="text-xl font-semibold text-gray-900 mb-2">API Integration</h3>
+        <p class="text-gray-600">
+          Integrate performance monitoring into your CI/CD pipeline with our powerful REST API.
+        </p>
+      </div>
+      
+      <div class="bg-white p-6 rounded-lg shadow-sm">
+        <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
+          <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <h3 class="text-xl font-semibold text-gray-900 mb-2">Historical Analysis</h3>
+        <p class="text-gray-600">
+          Track performance trends over time and measure the impact of your optimizations.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Customer Testimonials -->
+<section class="py-16 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl font-bold text-gray-900 mb-4">
+        Trusted by Performance-Conscious Teams
+      </h2>
+      <p class="text-lg text-gray-600">
+        See how SpeedBoost has helped teams improve their website performance and search rankings
+      </p>
+    </div>
+    
+    <div class="grid md:grid-cols-3 gap-8">
+      <% @customer_testimonials.each do |testimonial| %>
+        <div class="bg-gray-50 p-6 rounded-lg">
+          <div class="flex items-center mb-4">
+            <% testimonial[:rating].times do %>
+              <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+              </svg>
+            <% end %>
+          </div>
+          <blockquote class="text-gray-600 mb-4">
+            "<%= testimonial[:content] %>"
+          </blockquote>
+          <div class="flex items-center">
+            <div>
+              <div class="font-semibold text-gray-900"><%= testimonial[:name] %></div>
+              <div class="text-sm text-gray-500"><%= testimonial[:title] %>, <%= testimonial[:company] %></div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing Preview -->
+<section class="py-16 bg-blue-600">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <h2 class="text-3xl font-bold text-white mb-4">
+      Start Optimizing Today
+    </h2>
+    <p class="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+      Choose from flexible plans designed for teams of all sizes. 
+      Start with our 14-day free trial - no credit card required.
+    </p>
+    
+    <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+      <%= link_to new_user_registration_path, 
+          class: "bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors",
+          'data-gtag': 'cta_start_trial_pricing' do %>
+        Start Free Trial
+      <% end %>
+      
+      <%= link_to pricing_path, 
+          class: "border-2 border-white text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors" do %>
+        View All Plans
+      <% end %>
+    </div>
+    
+    <p class="text-blue-200 text-sm">
+      Plans start at $29/month • 14-day free trial • No setup fees
+    </p>
+  </div>
+</section>
+
+<!-- JSON-LD Structured Data for Homepage -->
+<%= content_for :structured_data do %>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "SpeedBoost - Website Performance Optimization",
+    "url": "<%= unauthenticated_root_url %>",
+    "description": "Professional website performance optimization and Core Web Vitals monitoring platform",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "<%= unauthenticated_root_url %>search?q={search_term_string}"
+      },
+      "query-input": "required name=search_term_string"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "SpeedBoost",
+      "url": "<%= unauthenticated_root_url %>"
+    }
+  }
+  </script>
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SpeedBoost",
+    "applicationCategory": "WebApplication",
+    "operatingSystem": "Any",
+    "description": "Professional website performance optimization and Core Web Vitals monitoring platform",
+    "url": "<%= unauthenticated_root_url %>",
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.8",
+      "reviewCount": "150"
+    },
+    "offers": [
+      <% @pricing_plans.each_with_index do |plan, index| %>
+        {
+          "@type": "Offer",
+          "name": "<%= plan[:name] %> Plan",
+          "price": "<%= plan[:price] %>",
+          "priceCurrency": "USD",
+          "priceValidUntil": "<%= 1.year.from_now.iso8601 %>",
+          "availability": "https://schema.org/InStock",
+          "validFrom": "<%= Date.current.iso8601 %>"
+        }<%= ',' unless index == @pricing_plans.length - 1 %>
+      <% end %>
+    ]
+  }
+  </script>
+<% end %>

@@ -1,0 +1,124 @@
+class ApplicationController < ActionController::Base
+  # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
+  allow_browser versions: :modern
+  
+  # SEO optimization for production
+  include SeoOptimized
+  
+  # Multi-tenant authentication and authorization
+  before_action :authenticate_user!
+  before_action :set_current_account
+  before_action :ensure_account_active
+  
+  # Security and performance headers
+  before_action :set_security_headers
+  
+  # Global exception handling
+  rescue_from ActiveRecord::RecordNotFound, with: :render_not_found
+  rescue_from ActionController::ParameterMissing, with: :render_bad_request
+  rescue_from Pundit::NotAuthorizedError, with: :render_forbidden if defined?(Pundit)
+  
+  private
+  
+  # Multi-tenant account management
+  def set_current_account
+    return unless user_signed_in?
+    
+    Current.user = current_user
+    Current.account = current_user.account
+  end
+  
+  def current_account
+    Current.account
+  end
+  
+  def ensure_account_active
+    return unless user_signed_in? && current_account
+    
+    unless current_account.active?
+      redirect_to account_suspended_path and return if current_account.suspended?
+      redirect_to account_cancelled_path and return if current_account.cancelled?
+      redirect_to billing_path, alert: 'Please update your billing information to continue.' and return if current_account.trial_expired?
+    end
+  end
+  
+  # Security headers for production
+  def set_security_headers
+    response.headers['X-Frame-Options'] = 'DENY'
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-XSS-Protection'] = '1; mode=block'
+    response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+    response.headers['Permissions-Policy'] = 'geolocation=(), microphone=(), camera=()'
+    
+    if Rails.env.production?
+      response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains; preload'
+      response.headers['Content-Security-Policy'] = default_csp_header
+    end
+  end
+  
+  def default_csp_header
+    [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com",
+      "style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com",
+      "img-src 'self' data: https:",
+      "font-src 'self' data:",
+      "connect-src 'self' wss:",
+      "frame-ancestors 'none'"
+    ].join('; ')
+  end
+  
+  # Exception handling
+  def render_not_found(exception = nil)
+    render json: { error: 'Resource not found' }, status: :not_found if request.format.json?
+    render template: 'errors/404', status: :not_found, layout: 'error'
+  end
+  
+  def render_bad_request(exception = nil)
+    render json: { error: 'Bad request', message: exception&.message }, status: :bad_request if request.format.json?
+    render template: 'errors/400', status: :bad_request, layout: 'error'
+  end
+  
+  def render_forbidden(exception = nil)
+    render json: { error: 'Access denied' }, status: :forbidden if request.format.json?
+    render template: 'errors/403', status: :forbidden, layout: 'error'
+  end
+  
+  # Helper methods for controllers
+  def scoped_to_account(relation)
+    return relation.none unless current_account
+    relation.where(account: current_account)
+  end
+  
+  def build_for_account(relation, attributes = {})
+    return nil unless current_account
+    relation.new(attributes.merge(account: current_account))
+  end
+  
+  def authorize_account_owner!
+    unless current_user&.owner?
+      redirect_to root_path, alert: 'Access denied. Owner privileges required.'
+    end
+  end
+  
+  def authorize_account_admin!
+    unless current_user&.can_manage?
+      redirect_to root_path, alert: 'Access denied. Admin privileges required.'
+    end
+  end
+  
+  # Usage limit enforcement
+  def check_usage_limit(feature, increment: 1)
+    return true unless current_account
+    
+    unless current_account.within_usage_limits?(feature, increment)
+      respond_to do |format|
+        format.html { redirect_to billing_path, alert: "You've reached your #{feature.humanize.downcase} limit. Please upgrade your plan." }
+        format.json { render json: { error: "Usage limit exceeded for #{feature}" }, status: :payment_required }
+        format.turbo_stream { render turbo_stream: turbo_stream.replace('flash', partial: 'shared/usage_limit_error', locals: { feature: feature }) }
+      end
+      return false
+    end
+    true
+  end
+end
