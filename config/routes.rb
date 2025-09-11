@@ -19,6 +19,13 @@ Rails.application.routes.draw do
   get 'dashboard/performance_overview', to: 'dashboard#performance_overview'
   get 'dashboard/usage_stats', to: 'dashboard#usage_stats'
   get 'dashboard/alerts', to: 'dashboard#alerts'
+  
+  # Analytics routes
+  get 'analytics', to: 'analytics#index'
+  get 'analytics/performance', to: 'analytics#performance'
+  get 'analytics/trends', to: 'analytics#trends'
+  get 'analytics/comparisons', to: 'analytics#comparisons'
+  get 'analytics/export', to: 'analytics#export'
 
   # Website management
   resources :websites do
