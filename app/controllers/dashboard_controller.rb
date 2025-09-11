@@ -251,7 +251,7 @@ class DashboardController < ApplicationController
     # Recent critical recommendations
     scoped_to_account(OptimizationRecommendation)
       .where(priority: :critical)
-      .order(created_at: :desc)
+      .order('optimization_recommendations.created_at DESC')
       .limit(3)
       .each do |recommendation|
       activities << {

@@ -6,10 +6,16 @@ class WebsitesController < ApplicationController
   before_action :check_website_limit, only: [:new, :create]
   
   def index
-    # Use Kaminari directly
-    websites_scope = current_account.websites.includes(:audit_reports)
-                                   .order(created_at: :desc)
-    @websites = Kaminari.paginate_array(websites_scope.to_a).page(params[:page]).per(25)
+    # Temporary pagination workaround
+    @websites = current_account.websites.includes(:audit_reports)
+                              .order('websites.created_at DESC')
+    
+    # Manual pagination if Kaminari isn't working
+    page = (params[:page] || 1).to_i
+    per_page = 25
+    offset = (page - 1) * per_page
+    
+    @websites = @websites.limit(per_page).offset(offset)
     
     @statistics = {
       total_websites: current_account.websites.count,
@@ -20,10 +26,10 @@ class WebsitesController < ApplicationController
   end
   
   def show
-    @latest_audit = @website.audit_reports.completed.order(created_at: :desc).first
+    @latest_audit = @website.audit_reports.completed.order('audit_reports.created_at DESC').first
     @performance_metrics = @latest_audit&.performance_metrics&.recent || []
     @audit_history = @website.audit_reports.completed
-                            .order(created_at: :desc)
+                            .order('audit_reports.created_at DESC')
                             .limit(10)
     @monitoring_alerts = @website.monitoring_alerts.active.recent
   end
@@ -84,8 +90,14 @@ class WebsitesController < ApplicationController
   def audit_history
     @audits = @website.audit_reports
                       .includes(:performance_metrics)
-                      .order(created_at: :desc)
-                      .page(params[:page])
+                      .order('audit_reports.created_at DESC')
+                      
+    # Manual pagination  
+    page = (params[:page] || 1).to_i
+    per_page = 25
+    offset = (page - 1) * per_page
+    
+    @audits = @audits.limit(per_page).offset(offset)
     
     respond_to do |format|
       format.html

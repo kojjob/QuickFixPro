@@ -128,9 +128,20 @@
   </div>
 
   <% if @websites.any? %>
-    <!-- Pagination -->
-    <div class="mt-4">
-      <%= paginate @websites %>
+    <!-- Simple Pagination -->
+    <div class="mt-4 flex items-center justify-between">
+      <div class="text-sm text-gray-700">
+        Showing page <span class="font-medium"><%= params[:page] || 1 %></span>
+      </div>
+      <div class="flex space-x-2">
+        <% if params[:page].to_i > 1 %>
+          <%= link_to "Previous", websites_path(page: params[:page].to_i - 1), 
+              class: "relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" %>
+        <% end %>
+        
+        <%= link_to "Next", websites_path(page: (params[:page] || 1).to_i + 1), 
+            class: "relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" %>
+      </div>
     </div>
   <% end %>
 </div>

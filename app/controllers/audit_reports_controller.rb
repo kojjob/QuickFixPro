@@ -5,8 +5,14 @@ class AuditReportsController < ApplicationController
   def index
     @audit_reports = @website.audit_reports
                             .includes(:performance_metrics)
-                            .order(created_at: :desc)
-                            .page(params[:page])
+                            .order('audit_reports.created_at DESC')
+    
+    # Manual pagination
+    page = (params[:page] || 1).to_i
+    per_page = 25
+    offset = (page - 1) * per_page
+    
+    @audit_reports = @audit_reports.limit(per_page).offset(offset)
     
     # Performance trends
     @performance_trends = calculate_performance_trends
@@ -91,7 +97,7 @@ class AuditReportsController < ApplicationController
   # Comparison action to compare multiple audits
   def compare
     @audit_ids = params[:audit_ids] || []
-    @audits = @website.audit_reports.where(id: @audit_ids).order(created_at: :desc)
+    @audits = @website.audit_reports.where(id: @audit_ids).order('audit_reports.created_at DESC')
     
     if @audits.count < 2
       redirect_to website_audit_reports_path(@website), 
@@ -118,20 +124,20 @@ class AuditReportsController < ApplicationController
   
   def calculate_performance_trends
     reports = @website.audit_reports.completed
-                      .where('created_at > ?', 30.days.ago)
-                      .order(created_at: :asc)
+                      .where('audit_reports.created_at > ?', 30.days.ago)
+                      .order('audit_reports.created_at ASC')
     
     {
-      overall_scores: reports.pluck(:created_at, :overall_score),
+      overall_scores: reports.pluck('audit_reports.created_at', 'audit_reports.overall_score'),
       lcp_trends: reports.joins(:performance_metrics)
                         .where(performance_metrics: { metric_name: 'largest_contentful_paint' })
-                        .pluck(:created_at, 'performance_metrics.metric_value'),
+                        .pluck('audit_reports.created_at', 'performance_metrics.metric_value'),
       fcp_trends: reports.joins(:performance_metrics)
                         .where(performance_metrics: { metric_name: 'first_contentful_paint' })
-                        .pluck(:created_at, 'performance_metrics.metric_value'),
+                        .pluck('audit_reports.created_at', 'performance_metrics.metric_value'),
       cls_trends: reports.joins(:performance_metrics)
                         .where(performance_metrics: { metric_name: 'cumulative_layout_shift' })
-                        .pluck(:created_at, 'performance_metrics.metric_value')
+                        .pluck('audit_reports.created_at', 'performance_metrics.metric_value')
     }
   end
   

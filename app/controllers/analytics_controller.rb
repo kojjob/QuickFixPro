@@ -184,7 +184,7 @@ class AnalyticsController < ApplicationController
     Current.account.audit_reports
           .completed
           .includes(:website)
-          .order(created_at: :desc)
+          .order('audit_reports.created_at DESC')
           .limit(10)
   end
   
@@ -222,7 +222,7 @@ class AnalyticsController < ApplicationController
   end
   
   def website_core_web_vitals(website)
-    latest_audit = website.audit_reports.completed.order(created_at: :desc).first
+    latest_audit = website.audit_reports.completed.order('audit_reports.created_at DESC').first
     return {} unless latest_audit
     
     {
@@ -238,8 +238,8 @@ class AnalyticsController < ApplicationController
     website.audit_reports
           .completed
           .where(created_at: @start_date..@end_date)
-          .order(created_at: :asc)
-          .pluck(:created_at, :overall_score)
+          .order('audit_reports.created_at ASC')
+          .pluck('audit_reports.created_at', 'audit_reports.overall_score')
           .map { |date, score| { date: date, score: score } }
   end
   
@@ -273,7 +273,7 @@ class AnalyticsController < ApplicationController
   
   def websites_performance_comparison
     @websites.map do |website|
-      latest_audit = website.audit_reports.completed.order(created_at: :desc).first
+      latest_audit = website.audit_reports.completed.order('audit_reports.created_at DESC').first
       next unless latest_audit
       
       {
@@ -374,7 +374,7 @@ class AnalyticsController < ApplicationController
     data = {}
     
     websites.each do |website|
-      latest_audit = website.audit_reports.completed.order(created_at: :desc).first
+      latest_audit = website.audit_reports.completed.order('audit_reports.created_at DESC').first
       next unless latest_audit
       
       data[website.id] = {
