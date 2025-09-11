@@ -36,6 +36,14 @@ class PerformanceMetric < ApplicationRecord
   before_save :set_thresholds
 
   # Methods
+  def metric_value
+    value
+  end
+
+  def metric_value=(val)
+    self.value = val
+  end
+
   def display_name
     THRESHOLDS.dig(metric_type, :name) || metric_type.humanize
   end

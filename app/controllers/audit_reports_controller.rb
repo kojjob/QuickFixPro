@@ -133,14 +133,14 @@ class AuditReportsController < ApplicationController
     {
       overall_scores: reports.pluck('audit_reports.created_at', 'audit_reports.overall_score'),
       lcp_trends: reports.joins(:performance_metrics)
-                        .where(performance_metrics: { metric_name: 'largest_contentful_paint' })
-                        .pluck('audit_reports.created_at', 'performance_metrics.metric_value'),
+                        .where(performance_metrics: { metric_type: 'lcp' })
+                        .pluck('audit_reports.created_at', 'performance_metrics.value'),
       fcp_trends: reports.joins(:performance_metrics)
-                        .where(performance_metrics: { metric_name: 'first_contentful_paint' })
-                        .pluck('audit_reports.created_at', 'performance_metrics.metric_value'),
+                        .where(performance_metrics: { metric_type: 'fcp' })
+                        .pluck('audit_reports.created_at', 'performance_metrics.value'),
       cls_trends: reports.joins(:performance_metrics)
-                        .where(performance_metrics: { metric_name: 'cumulative_layout_shift' })
-                        .pluck('audit_reports.created_at', 'performance_metrics.metric_value')
+                        .where(performance_metrics: { metric_type: 'cls' })
+                        .pluck('audit_reports.created_at', 'performance_metrics.value')
     }
   end
   
@@ -151,11 +151,11 @@ class AuditReportsController < ApplicationController
     data[:overall_scores] = audits.map { |a| [a.created_at, a.overall_score] }
     
     # Compare Core Web Vitals
-    metric_names = ['largest_contentful_paint', 'first_contentful_paint', 'cumulative_layout_shift']
+    metric_types = ['lcp', 'fcp', 'cls']
     
-    metric_names.each do |metric|
+    metric_types.each do |metric|
       data[metric.to_sym] = audits.map do |audit|
-        value = audit.performance_metrics.find_by(metric_name: metric)&.metric_value
+        value = audit.performance_metrics.find_by(metric_type: metric)&.value
         [audit.created_at, value]
       end
     end
@@ -177,10 +177,11 @@ class AuditReportsController < ApplicationController
       csv << ['Completed At', audit_report.completed_at]
       csv << []
       csv << ['Performance Metrics']
-      csv << ['Metric Name', 'Value', 'Unit', 'Category']
+      csv << ['Metric Type', 'Value', 'Unit', 'Category']
       
       audit_report.performance_metrics.each do |metric|
-        csv << [metric.metric_name, metric.metric_value, metric.unit, metric.category]
+        category = metric.metadata['category'] if metric.metadata.is_a?(Hash)
+        csv << [metric.metric_type, metric.value, metric.unit, category]
       end
     end
   end

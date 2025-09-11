@@ -2,9 +2,6 @@ class WebsiteAuditJob < ApplicationJob
   queue_as :audits
   queue_with_priority 5  # Higher priority for audit jobs
   
-  # Limit concurrency to prevent overloading external services
-  limits_concurrency to: 3, key: -> { "website_audit" }
-  
   def perform(website_id, audit_type: 'full', triggered_by: 'scheduled')
     website = Website.find(website_id)
     
@@ -344,59 +341,55 @@ class WebsiteAuditJob < ApplicationJob
   def store_performance_metrics(audit_report, metrics)
     # Store Core Web Vitals
     audit_report.performance_metrics.create!(
-      metric_name: 'largest_contentful_paint',
-      metric_value: metrics[:lcp],
+      metric_type: 'lcp',
+      value: metrics[:lcp],
       unit: 'ms',
-      category: 'core_web_vitals',
-      measurement_time: Time.current
+      website: audit_report.website
     ) if metrics[:lcp]
     
     audit_report.performance_metrics.create!(
-      metric_name: 'first_input_delay',
-      metric_value: metrics[:fid],
-      unit: 'ms',
-      category: 'core_web_vitals',
-      measurement_time: Time.current
+      metric_type: 'fid',
+      value: metrics[:fid],
+      unit: 'ms', 
+      website: audit_report.website
     ) if metrics[:fid]
     
     audit_report.performance_metrics.create!(
-      metric_name: 'cumulative_layout_shift',
-      metric_value: metrics[:cls],
+      metric_type: 'cls',
+      value: metrics[:cls],
       unit: 'score',
-      category: 'core_web_vitals',
-      measurement_time: Time.current
+      website: audit_report.website
     ) if metrics[:cls]
     
     # Store other performance metrics
     audit_report.performance_metrics.create!(
-      metric_name: 'page_load_time',
-      metric_value: metrics[:load_time],
+      metric_type: 'ttfb',
+      value: metrics[:load_time],
       unit: 'ms',
-      category: 'performance',
-      measurement_time: Time.current
+      website: audit_report.website
     ) if metrics[:load_time]
   end
   
   def store_lighthouse_metrics(audit_report, lighthouse_data)
     lighthouse_data[:categories]&.each do |category, score|
       audit_report.performance_metrics.create!(
-        metric_name: "lighthouse_#{category.gsub('-', '_')}",
-        metric_value: score,
+        metric_type: "lighthouse_#{category.gsub('-', '_')}",
+        value: score,
         unit: 'score',
-        category: 'lighthouse',
-        measurement_time: Time.current
+        website: audit_report.website,
+        metadata: { category: 'lighthouse' }
       )
     end
   end
   
   def store_accessibility_metrics(audit_report, accessibility_data)
     audit_report.performance_metrics.create!(
-      metric_name: 'accessibility_score',
-      metric_value: accessibility_data[:accessibility_score],
+      metric_type: 'accessibility_score',
+      value: accessibility_data[:accessibility_score],
       unit: 'score',
-      category: 'accessibility',
-      measurement_time: Time.current,
-      additional_data: {
+      website: audit_report.website,
+      metadata: {
+        category: 'accessibility',
         wcag_level: accessibility_data[:wcag_level],
         violations_count: accessibility_data[:violations]&.size || 0
       }

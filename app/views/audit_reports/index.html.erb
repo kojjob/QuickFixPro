@@ -15,7 +15,7 @@
   <!-- Filters -->
   <div class="mt-6 bg-white shadow sm:rounded-lg">
     <div class="px-4 py-5 sm:p-6">
-      <%= form_with url: audit_reports_path, method: :get, local: true, class: "sm:flex sm:items-center sm:space-x-4" do |form| %>
+      <%= form_with url: website_audit_reports_path(@website), method: :get, local: true, class: "sm:flex sm:items-center sm:space-x-4" do |form| %>
         <div class="w-full sm:max-w-xs">
           <%= form.select :website_id, 
               options_from_collection_for_select(current_account.websites, :id, :name, params[:website_id]),

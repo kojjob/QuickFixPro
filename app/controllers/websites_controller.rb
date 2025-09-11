@@ -21,7 +21,7 @@ class WebsitesController < ApplicationController
       total_websites: current_account.websites.count,
       active_websites: current_account.websites.active.count,
       total_audits: current_account.audit_reports.count,
-      audits_this_month: current_account.audit_reports.where('created_at > ?', 1.month.ago).count
+      audits_this_month: current_account.audit_reports.where('audit_reports.created_at > ?', 1.month.ago).count
     }
   end
   
@@ -40,10 +40,11 @@ class WebsitesController < ApplicationController
   
   def create
     @website = current_account.websites.build(website_params)
+    @website.created_by = current_user
     
     if @website.save
       # Queue initial audit
-      WebsiteMonitorJob.perform_later(@website.id, triggered_by: 'initial_setup')
+      WebsiteAuditJob.perform_later(@website.id, audit_type: 'full', triggered_by: 'initial_setup')
       
       redirect_to @website, notice: 'Website was successfully added. Initial audit started.'
     else
@@ -71,7 +72,7 @@ class WebsitesController < ApplicationController
   
   def monitor
     # Trigger manual monitoring
-    result = WebsiteMonitorJob.perform_later(@website.id, triggered_by: 'manual')
+    result = WebsiteAuditJob.perform_later(@website.id, audit_type: 'full', triggered_by: 'manual')
     
     respond_to do |format|
       format.html do
@@ -133,7 +134,7 @@ class WebsitesController < ApplicationController
   
   def website_params
     params.require(:website).permit(
-      :name, :url, :active, :monitor_frequency,
+      :name, :url, :status, :monitoring_frequency,
       monitoring_settings: [
         :enable_performance_monitoring,
         :enable_seo_monitoring,
