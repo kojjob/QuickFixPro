@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_11_082450) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_11_083114) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -23,9 +23,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_11_082450) do
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "stripe_customer_id"
     t.index ["created_by_id"], name: "index_accounts_on_created_by_id"
     t.index ["settings"], name: "index_accounts_on_settings", using: :gin
     t.index ["status"], name: "index_accounts_on_status"
+    t.index ["stripe_customer_id"], name: "index_accounts_on_stripe_customer_id", unique: true
     t.index ["subdomain"], name: "index_accounts_on_subdomain", unique: true
   end
 
