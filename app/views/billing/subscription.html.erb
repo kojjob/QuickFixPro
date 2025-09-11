@@ -1,0 +1,188 @@
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+  <!-- Header Section -->
+  <div class="bg-white shadow-sm border-b">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">Choose Your Plan</h1>
+          <p class="mt-1 text-sm text-gray-500">Select the perfect plan for your website optimization needs</p>
+        </div>
+        <%= link_to billing_path, class: "inline-flex items-center text-sm text-gray-600 hover:text-gray-900" do %>
+          <svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+          </svg>
+          Back to Billing
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Pricing Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+      <% @plans.each do |plan| %>
+        <div class="relative">
+          <% if plan[:popular] %>
+            <div class="absolute -top-5 left-0 right-0 mx-auto w-32 text-center">
+              <span class="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">
+                Most Popular
+              </span>
+            </div>
+          <% end %>
+          
+          <div class="bg-white rounded-2xl shadow-xl overflow-hidden <%= 'ring-2 ring-purple-600 transform scale-105' if plan[:popular] %> hover:shadow-2xl transition-all duration-300">
+            <!-- Plan Header -->
+            <div class="px-8 pt-8 pb-6 bg-gradient-to-br from-gray-50 to-white">
+              <h3 class="text-2xl font-bold text-gray-900"><%= plan[:display_name] %></h3>
+              <div class="mt-4">
+                <span class="text-5xl font-extrabold text-gray-900">$<%= plan[:price].to_i %></span>
+                <span class="text-gray-500 font-medium">/month</span>
+              </div>
+              
+              <% if @current_plan_details && @current_plan_details[:name] == plan[:name] %>
+                <div class="mt-4 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                  <svg class="mr-1 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                  </svg>
+                  Current Plan
+                </div>
+              <% end %>
+            </div>
+            
+            <!-- Features List -->
+            <div class="px-8 py-6">
+              <ul class="space-y-4">
+                <li class="flex items-start">
+                  <svg class="flex-shrink-0 h-5 w-5 text-green-500 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                  </svg>
+                  <span class="ml-3 text-gray-700">
+                    <strong><%= plan[:features]['websites'] == -1 ? 'Unlimited' : plan[:features]['websites'] %></strong> Websites
+                  </span>
+                </li>
+                
+                <li class="flex items-start">
+                  <svg class="flex-shrink-0 h-5 w-5 text-green-500 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                  </svg>
+                  <span class="ml-3 text-gray-700">
+                    <strong><%= plan[:features]['monthly_audits'] == -1 ? 'Unlimited' : plan[:features]['monthly_audits'] %></strong> Monthly Audits
+                  </span>
+                </li>
+                
+                <li class="flex items-start">
+                  <svg class="flex-shrink-0 h-5 w-5 text-green-500 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                  </svg>
+                  <span class="ml-3 text-gray-700">
+                    <strong><%= plan[:features]['users'] == -1 ? 'Unlimited' : plan[:features]['users'] %></strong> Team Members
+                  </span>
+                </li>
+                
+                <li class="flex items-start">
+                  <svg class="flex-shrink-0 h-5 w-5 text-green-500 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                  </svg>
+                  <span class="ml-3 text-gray-700">
+                    <strong><%= plan[:features]['api_requests'] == -1 ? 'Unlimited' : number_with_delimiter(plan[:features]['api_requests']) %></strong> API Requests
+                  </span>
+                </li>
+                
+                <li class="flex items-start">
+                  <svg class="flex-shrink-0 h-5 w-5 text-green-500 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                  </svg>
+                  <span class="ml-3 text-gray-700">
+                    <strong><%= plan[:features]['historical_data_months'] == -1 ? 'Unlimited' : "#{plan[:features]['historical_data_months']} Months" %></strong> Data History
+                  </span>
+                </li>
+                
+                <li class="flex items-start">
+                  <svg class="flex-shrink-0 h-5 w-5 text-green-500 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                  </svg>
+                  <span class="ml-3 text-gray-700">
+                    <strong><%= plan[:features]['support_level'].capitalize %></strong> Support
+                  </span>
+                </li>
+              </ul>
+            </div>
+            
+            <!-- Action Button -->
+            <div class="px-8 pb-8">
+              <% if @current_plan_details && @current_plan_details[:name] == plan[:name] %>
+                <button class="w-full py-3 px-4 border border-gray-300 rounded-lg text-gray-700 font-medium bg-gray-50 cursor-not-allowed" disabled>
+                  Current Plan
+                </button>
+              <% elsif !@subscription || @subscription.can_upgrade_to?(plan[:name]) %>
+                <%= link_to billing_upgrade_path(plan: plan[:name]), 
+                    class: "block w-full py-3 px-4 border border-transparent rounded-lg text-white font-medium text-center transition-all duration-200 #{plan[:popular] ? 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700' : 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800'}" do %>
+                  <%= @subscription ? 'Upgrade Plan' : 'Get Started' %>
+                <% end %>
+              <% else %>
+                <button class="w-full py-3 px-4 border border-gray-300 rounded-lg text-gray-400 font-medium bg-gray-50 cursor-not-allowed" disabled>
+                  Not Available
+                </button>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Additional Features Section -->
+    <div class="bg-white rounded-2xl shadow-lg p-8">
+      <h2 class="text-2xl font-bold text-gray-900 text-center mb-8">All Plans Include</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="text-center">
+          <div class="mx-auto h-12 w-12 text-blue-600">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+          </div>
+          <h3 class="mt-4 text-lg font-semibold text-gray-900">Real-time Monitoring</h3>
+          <p class="mt-2 text-gray-600">24/7 monitoring of your website performance with instant alerts</p>
+        </div>
+        
+        <div class="text-center">
+          <div class="mx-auto h-12 w-12 text-blue-600">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+            </svg>
+          </div>
+          <h3 class="mt-4 text-lg font-semibold text-gray-900">Detailed Analytics</h3>
+          <p class="mt-2 text-gray-600">Comprehensive performance reports with actionable insights</p>
+        </div>
+        
+        <div class="text-center">
+          <div class="mx-auto h-12 w-12 text-blue-600">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+            </svg>
+          </div>
+          <h3 class="mt-4 text-lg font-semibold text-gray-900">Secure & Reliable</h3>
+          <p class="mt-2 text-gray-600">Enterprise-grade security with 99.9% uptime guarantee</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="mt-12">
+      <h2 class="text-2xl font-bold text-gray-900 text-center mb-8">Frequently Asked Questions</h2>
+      <div class="bg-white rounded-xl shadow-lg divide-y divide-gray-200">
+        <div class="p-6">
+          <h3 class="text-lg font-semibold text-gray-900">Can I change my plan later?</h3>
+          <p class="mt-2 text-gray-600">Yes! You can upgrade or downgrade your plan at any time. Changes take effect immediately.</p>
+        </div>
+        <div class="p-6">
+          <h3 class="text-lg font-semibold text-gray-900">What payment methods do you accept?</h3>
+          <p class="mt-2 text-gray-600">We accept all major credit cards, debit cards, and PayPal through our secure Stripe integration.</p>
+        </div>
+        <div class="p-6">
+          <h3 class="text-lg font-semibold text-gray-900">Is there a free trial?</h3>
+          <p class="mt-2 text-gray-600">Yes! All plans come with a 14-day free trial. No credit card required to start.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

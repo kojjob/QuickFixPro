@@ -113,7 +113,14 @@ Rails.application.routes.draw do
   # Account status pages
   get 'account/suspended', to: 'account_status#suspended'
   get 'account/cancelled', to: 'account_status#cancelled'
+  
+  # Billing and payment management
   get 'billing', to: 'billing#index'
+  get 'billing/subscription', to: 'billing#subscription'
+  get 'billing/payment_history', to: 'billing#payment_history'
+  get 'billing/upgrade', to: 'billing#upgrade'
+  post 'billing/process_upgrade', to: 'billing#process_upgrade'
+  post 'billing/cancel_subscription', to: 'billing#cancel_subscription'
 
   # Static pages
   get 'about', to: 'pages#about'

@@ -1,0 +1,239 @@
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+  <!-- Header Section -->
+  <div class="bg-white shadow-sm border-b">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">Upgrade Your Plan</h1>
+          <p class="mt-1 text-sm text-gray-500">You're upgrading to the <%= @plan_details[:display_name] %> plan</p>
+        </div>
+        <%= link_to billing_subscription_path, class: "inline-flex items-center text-sm text-gray-600 hover:text-gray-900" do %>
+          <svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+          </svg>
+          Back to Plans
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Order Summary -->
+      <div class="lg:col-span-2">
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+          <div class="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-6">
+            <h2 class="text-2xl font-bold text-white">Order Summary</h2>
+          </div>
+          
+          <div class="p-8">
+            <!-- Current Plan -->
+            <div class="mb-8">
+              <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wide mb-3">Current Plan</h3>
+              <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <div class="flex justify-between items-center">
+                  <div>
+                    <p class="font-semibold text-gray-900"><%= @current_plan&.capitalize || 'None' %></p>
+                    <p class="text-sm text-gray-500">Your current subscription</p>
+                  </div>
+                  <p class="text-lg font-medium text-gray-900">
+                    <% if @subscription %>
+                      $<%= number_with_precision(@subscription.monthly_price, precision: 2) %>/mo
+                    <% else %>
+                      $0.00/mo
+                    <% end %>
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <!-- New Plan -->
+            <div class="mb-8">
+              <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wide mb-3">Upgrading To</h3>
+              <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 border-2 border-blue-200">
+                <div class="flex justify-between items-center">
+                  <div>
+                    <p class="font-semibold text-gray-900"><%= @plan_details[:display_name] %></p>
+                    <p class="text-sm text-gray-500">Your new subscription</p>
+                  </div>
+                  <p class="text-lg font-bold text-blue-600">
+                    $<%= number_with_precision(@plan_details[:price], precision: 2) %>/mo
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Features Comparison -->
+            <div class="mb-8">
+              <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wide mb-3">What You'll Get</h3>
+              <ul class="space-y-3">
+                <li class="flex items-start">
+                  <svg class="flex-shrink-0 h-5 w-5 text-green-500 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                  </svg>
+                  <span class="ml-3 text-gray-700">
+                    <strong><%= @plan_details[:features]['websites'] == -1 ? 'Unlimited' : @plan_details[:features]['websites'] %></strong> Websites
+                  </span>
+                </li>
+                
+                <li class="flex items-start">
+                  <svg class="flex-shrink-0 h-5 w-5 text-green-500 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                  </svg>
+                  <span class="ml-3 text-gray-700">
+                    <strong><%= @plan_details[:features]['monthly_audits'] == -1 ? 'Unlimited' : @plan_details[:features]['monthly_audits'] %></strong> Monthly Audits
+                  </span>
+                </li>
+                
+                <li class="flex items-start">
+                  <svg class="flex-shrink-0 h-5 w-5 text-green-500 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                  </svg>
+                  <span class="ml-3 text-gray-700">
+                    <strong><%= @plan_details[:features]['users'] == -1 ? 'Unlimited' : @plan_details[:features]['users'] %></strong> Team Members
+                  </span>
+                </li>
+                
+                <li class="flex items-start">
+                  <svg class="flex-shrink-0 h-5 w-5 text-green-500 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                  </svg>
+                  <span class="ml-3 text-gray-700">
+                    <strong><%= @plan_details[:features]['support_level'].capitalize %></strong> Support
+                  </span>
+                </li>
+              </ul>
+            </div>
+            
+            <!-- Billing Information -->
+            <div class="border-t pt-6">
+              <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wide mb-3">Billing Information</h3>
+              <div class="space-y-2 text-sm">
+                <div class="flex justify-between">
+                  <span class="text-gray-600">Billing cycle</span>
+                  <span class="text-gray-900 font-medium">Monthly</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-600">Next billing date</span>
+                  <span class="text-gray-900 font-medium"><%= (Date.today + 30).strftime('%B %d, %Y') %></span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-600">Prorated amount</span>
+                  <span class="text-gray-900 font-medium">
+                    <% prorated = @subscription ? ((@plan_details[:price] - @subscription.monthly_price) * 0.5).round(2) : @plan_details[:price] %>
+                    $<%= number_with_precision([prorated, 0].max, precision: 2) %>
+                  </span>
+                </div>
+              </div>
+              
+              <div class="mt-4 pt-4 border-t">
+                <div class="flex justify-between text-lg font-semibold">
+                  <span class="text-gray-900">Due Today</span>
+                  <span class="text-blue-600">
+                    <% prorated = @subscription ? ((@plan_details[:price] - @subscription.monthly_price) * 0.5).round(2) : @plan_details[:price] %>
+                    $<%= number_with_precision([prorated, 0].max, precision: 2) %>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Payment Form -->
+      <div class="lg:col-span-1">
+        <div class="bg-white rounded-2xl shadow-lg p-6 sticky top-4">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Payment Method</h3>
+          
+          <%= form_with url: billing_process_upgrade_path, local: true do |form| %>
+            <%= form.hidden_field :plan, value: @target_plan %>
+            
+            <!-- Saved Cards -->
+            <div class="mb-6">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Use saved card</label>
+              <div class="space-y-2">
+                <label class="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                  <input type="radio" name="payment_method" value="saved_card_1" class="mr-3" checked>
+                  <div class="flex-1">
+                    <div class="flex items-center">
+                      <svg class="h-8 w-8 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                      </svg>
+                      <span class="text-sm text-gray-900">•••• 4242</span>
+                    </div>
+                    <p class="text-xs text-gray-500 ml-10">Expires 12/24</p>
+                  </div>
+                </label>
+              </div>
+            </div>
+            
+            <!-- Add New Card -->
+            <div class="mb-6">
+              <label class="flex items-center">
+                <input type="radio" name="payment_method" value="new_card" class="mr-2">
+                <span class="text-sm font-medium text-gray-700">Add new payment method</span>
+              </label>
+            </div>
+            
+            <!-- Security Notice -->
+            <div class="mb-6 p-3 bg-gray-50 rounded-lg">
+              <div class="flex">
+                <svg class="h-5 w-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </svg>
+                <div class="text-xs text-gray-600">
+                  <p class="font-medium">Secure Payment</p>
+                  <p>Your payment information is encrypted and secure. We use Stripe for payment processing.</p>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Terms -->
+            <div class="mb-6">
+              <label class="flex items-start">
+                <input type="checkbox" class="mt-1 mr-2" required>
+                <span class="text-xs text-gray-600">
+                  I agree to the <a href="#" class="text-blue-600 hover:text-blue-700">Terms of Service</a> and authorize this payment. I understand my subscription will auto-renew monthly.
+                </span>
+              </label>
+            </div>
+            
+            <!-- Submit Button -->
+            <button type="submit" class="w-full py-3 px-4 border border-transparent rounded-lg text-white font-medium bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200">
+              Confirm Upgrade
+            </button>
+            
+            <!-- Cancel Link -->
+            <div class="mt-4 text-center">
+              <%= link_to "Cancel", billing_subscription_path, class: "text-sm text-gray-500 hover:text-gray-700" %>
+            </div>
+          <% end %>
+        </div>
+        
+        <!-- Trust Badges -->
+        <div class="mt-6 bg-white rounded-xl shadow-md p-4">
+          <div class="grid grid-cols-3 gap-4 text-center">
+            <div>
+              <svg class="h-8 w-8 mx-auto text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+              </svg>
+              <p class="text-xs text-gray-600 mt-1">SSL Secure</p>
+            </div>
+            <div>
+              <svg class="h-8 w-8 mx-auto text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+              </svg>
+              <p class="text-xs text-gray-600 mt-1">PCI Compliant</p>
+            </div>
+            <div>
+              <svg class="h-8 w-8 mx-auto text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <p class="text-xs text-gray-600 mt-1">24/7 Support</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

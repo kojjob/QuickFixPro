@@ -1,0 +1,192 @@
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+  <!-- Header Section -->
+  <div class="bg-white shadow-sm border-b">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">Billing & Subscription</h1>
+          <p class="mt-1 text-sm text-gray-500">Manage your subscription and payment settings</p>
+        </div>
+        <div class="flex space-x-3">
+          <%= link_to billing_subscription_path, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200" do %>
+            <svg class="mr-2 -ml-1 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+            Manage Plans
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Current Plan Card -->
+    <div class="bg-white rounded-2xl shadow-xl overflow-hidden mb-8">
+      <div class="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-blue-100 text-sm font-medium">CURRENT PLAN</p>
+            <h2 class="text-3xl font-bold text-white mt-1">
+              <%= @subscription ? @subscription.plan_name.capitalize : 'No Active Plan' %>
+            </h2>
+          </div>
+          <% if @subscription && @subscription.subscription_active? %>
+            <div class="text-right">
+              <p class="text-blue-100 text-sm">Monthly Cost</p>
+              <p class="text-3xl font-bold text-white">$<%= number_with_precision(@subscription.monthly_price, precision: 0) %></p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+      
+      <div class="px-8 py-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Status -->
+          <div>
+            <p class="text-sm font-medium text-gray-500">Status</p>
+            <div class="mt-2 flex items-center">
+              <% if @subscription %>
+                <% status_color = @subscription.subscription_active? ? 'green' : 'red' %>
+                <span class="flex h-3 w-3 relative mr-2">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-<%= status_color %>-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-3 w-3 bg-<%= status_color %>-500"></span>
+                </span>
+                <p class="text-lg font-semibold text-gray-900"><%= @subscription.status.humanize %></p>
+              <% else %>
+                <p class="text-lg font-semibold text-gray-900">Inactive</p>
+              <% end %>
+            </div>
+          </div>
+          
+          <!-- Next Billing Date -->
+          <div>
+            <p class="text-sm font-medium text-gray-500">Next Billing Date</p>
+            <p class="mt-2 text-lg font-semibold text-gray-900">
+              <%= @next_billing_date ? @next_billing_date.strftime('%B %d, %Y') : 'N/A' %>
+            </p>
+          </div>
+          
+          <!-- Payment Method -->
+          <div>
+            <p class="text-sm font-medium text-gray-500">Payment Method</p>
+            <div class="mt-2 flex items-center">
+              <svg class="h-8 w-8 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+              </svg>
+              <p class="text-lg font-semibold text-gray-900">•••• 4242</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Usage Statistics -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+      <% @usage_stats.each do |key, stats| %>
+        <div class="bg-white rounded-xl shadow-lg p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-900"><%= key.to_s.humanize %></h3>
+            <% icon_class = case key
+                           when :websites then 'M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9'
+                           when :monthly_audits then 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4'
+                           when :users then 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z'
+                           end %>
+            <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="<%= icon_class %>"/>
+            </svg>
+          </div>
+          
+          <div class="mb-4">
+            <div class="flex items-end justify-between mb-2">
+              <div>
+                <span class="text-3xl font-bold text-gray-900"><%= stats[:used] %></span>
+                <span class="text-gray-500 ml-1">/ <%= stats[:limit] == Float::INFINITY ? '∞' : stats[:limit] %></span>
+              </div>
+              <span class="text-sm font-medium text-gray-500"><%= stats[:percentage] %>%</span>
+            </div>
+            
+            <div class="w-full bg-gray-200 rounded-full h-2">
+              <% bar_color = stats[:percentage] > 90 ? 'red' : stats[:percentage] > 75 ? 'yellow' : 'green' %>
+              <div class="bg-gradient-to-r from-<%= bar_color %>-400 to-<%= bar_color %>-500 h-2 rounded-full transition-all duration-300" 
+                   style="width: <%= [stats[:percentage], 100].min %>%"></div>
+            </div>
+          </div>
+          
+          <p class="text-xs text-gray-500">
+            <%= stats[:limit] == Float::INFINITY ? 'Unlimited' : "#{stats[:limit] - stats[:used]} remaining" %>
+          </p>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Recent Payments -->
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+      <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-gray-900">Recent Payments</h3>
+          <%= link_to "View All", billing_payment_history_path, class: "text-sm text-blue-600 hover:text-blue-700 font-medium" %>
+        </div>
+      </div>
+      
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <% if @payments.any? %>
+              <% @payments.each do |payment| %>
+                <tr class="hover:bg-gray-50 transition-colors duration-150">
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <%= payment.created_at.strftime('%b %d, %Y') %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <%= payment.subscription.plan_name.capitalize %> Plan
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <% status_color = case payment.status
+                                     when 'succeeded' then 'green'
+                                     when 'pending' then 'yellow'
+                                     when 'failed' then 'red'
+                                     else 'gray'
+                                     end %>
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-<%= status_color %>-100 text-<%= status_color %>-800">
+                      <%= payment.status.capitalize %>
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                    $<%= number_with_precision(payment.amount, precision: 2) %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <% if payment.invoice_number %>
+                      <a href="#" class="text-blue-600 hover:text-blue-700">
+                        <%= payment.invoice_number %>
+                      </a>
+                    <% else %>
+                      -
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            <% else %>
+              <tr>
+                <td colspan="5" class="px-6 py-12 text-center text-gray-500">
+                  <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                  </svg>
+                  <p class="mt-2 text-sm">No payment history available</p>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
