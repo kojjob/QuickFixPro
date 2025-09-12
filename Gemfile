@@ -85,4 +85,7 @@ group :test do
   # Test data cleanup and stubbing
   gem "database_cleaner-active_record"
   gem "webmock"
+  
+  # Shoulda Matchers for testing helpers
+  gem "shoulda-matchers", "~> 6.0"
 end
