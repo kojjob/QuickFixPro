@@ -6,8 +6,8 @@ FactoryBot.define do
     audit_type { :manual }
     status { :completed }
     duration { 9.99 }
-    result_summary { {} }
-    error_details { nil }
+    summary_data { {} }
+    error_message { nil }
     
     trait :automated do
       audit_type { :automated }
@@ -38,7 +38,7 @@ FactoryBot.define do
     trait :failed do
       status { :failed }
       overall_score { nil }
-      error_details { "Failed to complete audit" }
+      error_message { "Failed to complete audit" }
     end
     
     trait :high_score do

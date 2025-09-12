@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_11_083114) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_12_220551) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -54,6 +54,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_11_083114) do
     t.index ["website_id", "created_at"], name: "index_audit_reports_on_website_id_and_created_at"
     t.index ["website_id", "status"], name: "index_audit_reports_on_website_id_and_status"
     t.index ["website_id"], name: "index_audit_reports_on_website_id"
+  end
+
+  create_table "monitoring_alerts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "website_id", null: false
+    t.integer "alert_type"
+    t.integer "severity"
+    t.text "message"
+    t.decimal "threshold_value"
+    t.decimal "current_value"
+    t.boolean "resolved"
+    t.datetime "resolved_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["website_id"], name: "index_monitoring_alerts_on_website_id"
   end
 
   create_table "optimization_recommendations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -209,6 +223,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_11_083114) do
 
   add_foreign_key "audit_reports", "users", column: "triggered_by_id"
   add_foreign_key "audit_reports", "websites"
+  add_foreign_key "monitoring_alerts", "websites"
   add_foreign_key "optimization_recommendations", "audit_reports"
   add_foreign_key "optimization_recommendations", "websites"
   add_foreign_key "payments", "subscriptions"
