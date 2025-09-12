@@ -4,7 +4,7 @@ class DashboardController < ApplicationController
   
   def index
     @account = current_account
-    @websites = scoped_to_account(Website).includes(:latest_audit_report)
+    @websites = scoped_to_account(Website).includes(:audit_reports)
     
     # Dashboard metrics
     @total_websites = @websites.count

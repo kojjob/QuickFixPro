@@ -93,9 +93,21 @@ Rails.application.routes.draw do
   # API endpoints
   namespace :api do
     namespace :v1 do
-      resources :websites, only: [:index, :show] do
-        resources :audit_reports, only: [:index, :show, :create]
-        resources :performance_metrics, only: [:index]
+      resources :websites do
+        member do
+          post :monitor
+        end
+        resources :audit_reports, only: [:index, :show, :create] do
+          member do
+            delete :cancel
+          end
+        end
+        resources :performance_metrics, only: [:index] do
+          collection do
+            get :trends
+            get :summary
+          end
+        end
       end
       
       resources :accounts, only: [:show] do
