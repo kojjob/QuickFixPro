@@ -1,3 +1,7 @@
+<div data-controller="dashboard" 
+     data-dashboard-refresh-interval-value="30000"
+     data-dashboard-auto-refresh-value="true">
+
 <% content_for :page_header do %>
   <div class="flex items-center justify-between">
     <div>
@@ -9,6 +13,35 @@
       </nav>
     </div>
     <div class="flex items-center space-x-3">
+      <!-- Refresh Indicator -->
+      <div data-dashboard-target="refreshIndicator" class="hidden">
+        <svg class="w-5 h-5 text-blue-600 animate-spin" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+      </div>
+      
+      <!-- Last Updated -->
+      <span data-dashboard-target="lastUpdated" class="text-sm text-gray-500"></span>
+      
+      <!-- Auto-refresh Toggle -->
+      <button data-action="click->dashboard#toggleAutoRefresh"
+              data-auto-refresh-toggle
+              class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors">
+        Auto-refresh: ON
+      </button>
+      
+      <!-- Manual Refresh -->
+      <button data-action="click->dashboard#refresh"
+              class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center">
+        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+        </svg>
+        Refresh
+      </button>
+      
+      <div class="h-6 w-px bg-gray-300"></div>
+      
       <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center">
         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
@@ -40,71 +73,9 @@
 </div>
 
 <!-- Stats Cards Row -->
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-  <!-- Total Websites Card -->
-  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-    <div class="flex items-center justify-between mb-4">
-      <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
-        </svg>
-      </div>
-      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-        +12%
-      </span>
-    </div>
-    <h3 class="text-2xl font-bold text-gray-900"><%= @total_websites %></h3>
-    <p class="text-sm text-gray-500 mt-1">Total Websites</p>
-  </div>
-  
-  <!-- Active Websites Card -->
-  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-    <div class="flex items-center justify-between mb-4">
-      <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-        </svg>
-      </div>
-      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-        Active
-      </span>
-    </div>
-    <h3 class="text-2xl font-bold text-gray-900"><%= @active_websites %></h3>
-    <p class="text-sm text-gray-500 mt-1">Active Websites</p>
-  </div>
-  
-  <!-- Average Score Card -->
-  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-    <div class="flex items-center justify-between mb-4">
-      <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-        <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-        </svg>
-      </div>
-      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-        +5.2%
-      </span>
-    </div>
-    <h3 class="text-2xl font-bold text-gray-900"><%= @average_score %>%</h3>
-    <p class="text-sm text-gray-500 mt-1">Average Score</p>
-  </div>
-  
-  <!-- Recent Audits Card -->
-  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-    <div class="flex items-center justify-between mb-4">
-      <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
-        </svg>
-      </div>
-      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-        Today
-      </span>
-    </div>
-    <h3 class="text-2xl font-bold text-gray-900"><%= @recent_audits.count %></h3>
-    <p class="text-sm text-gray-500 mt-1">Recent Audits</p>
-  </div>
-</div>
+<%= turbo_frame_tag "dashboard-stats", src: dashboard_stats_path, loading: "lazy" do %>
+  <%= render 'stats_cards' %>
+<% end %>
 
 <!-- Main Content Grid -->
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -114,41 +85,25 @@
       <div class="flex items-center justify-between mb-6">
         <h3 class="text-lg font-semibold text-gray-900">Performance Trends</h3>
         <div class="flex items-center space-x-2">
-          <button class="px-3 py-1 text-sm text-gray-600 hover:text-gray-900">Day</button>
-          <button class="px-3 py-1 text-sm text-white bg-blue-600 rounded">Week</button>
-          <button class="px-3 py-1 text-sm text-gray-600 hover:text-gray-900">Month</button>
+          <button data-dashboard-target="timeRangeButton"
+                  data-action="click->dashboard#changeTimeRange"
+                  data-range="day"
+                  class="px-3 py-1 text-sm text-gray-600 hover:text-gray-900 rounded transition-colors">Day</button>
+          <button data-dashboard-target="timeRangeButton"
+                  data-action="click->dashboard#changeTimeRange"
+                  data-range="week"
+                  class="px-3 py-1 text-sm text-white bg-blue-600 rounded transition-colors">Week</button>
+          <button data-dashboard-target="timeRangeButton"
+                  data-action="click->dashboard#changeTimeRange"
+                  data-range="month"
+                  class="px-3 py-1 text-sm text-gray-600 hover:text-gray-900 rounded transition-colors">Month</button>
         </div>
       </div>
       
-      <!-- Simple Chart Placeholder -->
-      <div class="h-64 flex items-end space-x-2">
-        <% if @performance_trends.any? %>
-          <% max_score = @performance_trends.map { |t| t[:score] }.max.to_f %>
-          <% @performance_trends.last(14).each do |trend| %>
-            <% height = max_score > 0 ? (trend[:score] / max_score * 100) : 0 %>
-            <div class="flex-1 bg-blue-500 hover:bg-blue-600 rounded-t transition-colors relative group" 
-                 style="height: <%= height %>%">
-              <div class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 hidden group-hover:block">
-                <div class="bg-gray-900 text-white text-xs rounded py-1 px-2 whitespace-nowrap">
-                  <%= trend[:score] %>%
-                  <div class="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
-                    <div class="border-4 border-transparent border-t-gray-900"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          <% end %>
-        <% else %>
-          <div class="w-full h-full flex items-center justify-center text-gray-400">
-            No performance data available yet
-          </div>
-        <% end %>
-      </div>
-      
-      <div class="mt-4 flex items-center justify-between text-xs text-gray-500">
-        <span>Last 14 days</span>
-        <span>Average: <%= @average_score %>%</span>
-      </div>
+      <!-- Performance Chart -->
+      <%= turbo_frame_tag "performance-chart", src: dashboard_performance_chart_path(range: 'week'), loading: "lazy" do %>
+        <%= render 'performance_chart' %>
+      <% end %>
     </div>
   </div>
   
@@ -157,43 +112,9 @@
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
       <h3 class="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
       
-      <div class="space-y-4">
-        <% if @recent_activity.any? %>
-          <% @recent_activity.first(5).each do |activity| %>
-            <div class="flex items-start space-x-3">
-              <div class="flex-shrink-0">
-                <% if activity[:type] == 'audit_completed' %>
-                  <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                    <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                    </svg>
-                  </div>
-                <% elsif activity[:type] == 'website_added' %>
-                  <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                    <svg class="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
-                    </svg>
-                  </div>
-                <% else %>
-                  <div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
-                    <svg class="w-4 h-4 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                    </svg>
-                  </div>
-                <% end %>
-              </div>
-              <div class="flex-1 min-w-0">
-                <p class="text-sm text-gray-900"><%= activity[:message] %></p>
-                <p class="text-xs text-gray-500 mt-1">
-                  <%= time_ago_in_words(activity[:timestamp]) %> ago
-                </p>
-              </div>
-            </div>
-          <% end %>
-        <% else %>
-          <p class="text-sm text-gray-500">No recent activity</p>
-        <% end %>
-      </div>
+      <%= turbo_frame_tag "activity-feed", src: dashboard_activity_feed_path, loading: "lazy" do %>
+        <%= render 'activity_feed' %>
+      <% end %>
       
       <div class="mt-4 pt-4 border-t border-gray-200">
         <a href="#" class="text-sm text-blue-600 hover:text-blue-700 font-medium">View all activity →</a>
@@ -212,8 +133,8 @@
     </div>
     
     <div class="space-y-3">
-      <% @websites.includes(:latest_audit_report).limit(5).each do |website| %>
-        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+      <% @websites.includes(:audit_reports).limit(5).each do |website| %>
+        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
           <div class="flex items-center space-x-3">
             <div class="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center">
               <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -246,10 +167,10 @@
       </span>
     </div>
     
-    <div class="space-y-3">
+    <div class="space-y-3" data-dashboard-target="criticalIssues">
       <% if @critical_recommendations.any? %>
         <% @critical_recommendations.first(5).each do |recommendation| %>
-          <div class="p-3 bg-red-50 border border-red-200 rounded-lg">
+          <div class="p-3 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 transition-colors">
             <div class="flex items-start justify-between">
               <div class="flex-1">
                 <p class="text-sm font-medium text-gray-900"><%= recommendation.title %></p>
@@ -277,3 +198,5 @@
     <% end %>
   </div>
 </div>
+
+</div> <!-- End of dashboard controller -->

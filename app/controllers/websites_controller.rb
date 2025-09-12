@@ -21,7 +21,7 @@ class WebsitesController < ApplicationController
       total_websites: current_account.websites.count,
       active_websites: current_account.websites.active.count,
       total_audits: current_account.audit_reports.count,
-      audits_this_month: current_account.audit_reports.where('created_at > ?', 1.month.ago).count
+      audits_this_month: current_account.audit_reports.where('audit_reports.created_at > ?', 1.month.ago).count
     }
   end
   
@@ -133,7 +133,7 @@ class WebsitesController < ApplicationController
   
   def website_params
     params.require(:website).permit(
-      :name, :url, :active, :monitor_frequency,
+      :name, :url, :active, :monitoring_frequency,
       monitoring_settings: [
         :enable_performance_monitoring,
         :enable_seo_monitoring,

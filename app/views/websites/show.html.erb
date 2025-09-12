@@ -14,7 +14,7 @@
           <svg class="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z" clip-rule="evenodd" />
           </svg>
-          Monitored <%= @website.monitor_frequency.humanize.downcase %>
+          Monitored <%= @website.monitoring_frequency.humanize.downcase %>
         </div>
         <div class="mt-2 flex items-center text-sm text-gray-500">
           <% if @website.active? %>
@@ -98,7 +98,7 @@
           <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
             <div class="sm:col-span-1">
               <dt class="text-sm font-medium text-gray-500">Frequency</dt>
-              <dd class="mt-1 text-sm text-gray-900"><%= @website.monitor_frequency.humanize %></dd>
+              <dd class="mt-1 text-sm text-gray-900"><%= @website.monitoring_frequency.humanize %></dd>
             </div>
             <div class="sm:col-span-1">
               <dt class="text-sm font-medium text-gray-500">Status</dt>

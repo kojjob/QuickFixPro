@@ -116,7 +116,7 @@ class SitemapsController < ApplicationController
     # Only include publicly visible websites (for showcase/case studies)
     @urls = []
     
-    Website.publicly_visible.includes(:latest_audit_report).find_each do |website|
+    Website.publicly_visible.includes(:audit_reports).find_each do |website|
       # Only include if we have completed audit data to show
       next unless website.latest_audit_report&.completed?
       

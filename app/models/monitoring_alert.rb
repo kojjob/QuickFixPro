@@ -24,6 +24,7 @@ class MonitoringAlert < ApplicationRecord
   }
   
   # Scopes
+  scope :active, -> { where(resolved: false) }
   scope :unresolved, -> { where(resolved: false) }
   scope :resolved, -> { where(resolved: true) }
   scope :recent, -> { order(created_at: :desc) }
