@@ -4,8 +4,23 @@ FactoryBot.define do
     plan_name { "starter" }
     status { :active }
     monthly_price { 29.00 }
-    usage_limits { { "websites" => 5, "monthly_audits" => 100, "users" => 2 } }
-    plan_features { { "real_time_monitoring" => true, "performance_alerts" => true } }
+    usage_limits { 
+      { 
+        "websites" => 5, 
+        "monthly_audits" => 100, 
+        "users" => 2,
+        "api_requests" => 1000,
+        "historical_data_months" => 3,
+        "support_level" => "email"
+      } 
+    }
+    plan_features { 
+      { 
+        "real_time_monitoring" => true, 
+        "performance_alerts" => true,
+        "basic_recommendations" => true
+      } 
+    }
     current_usage { {} }
     billing_cycle_started_at { Time.current }
     
