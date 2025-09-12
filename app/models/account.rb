@@ -4,7 +4,7 @@ class Account < ApplicationRecord
   has_many :websites, dependent: :destroy
   has_many :subscriptions, dependent: :destroy
   has_many :audit_reports, through: :websites
-  belongs_to :created_by, class_name: 'User', optional: true
+  belongs_to :created_by, class_name: "User", optional: true
 
   # Validations
   validates :name, presence: true, length: { maximum: 100 }
@@ -19,7 +19,7 @@ class Account < ApplicationRecord
   enum :status, { trial: 0, active: 1, suspended: 2, cancelled: 3 }
 
   # Scopes
-  scope :active_accounts, -> { where(status: [:trial, :active]) }
+  scope :active_accounts, -> { where(status: [ :trial, :active ]) }
 
   # Methods
   def display_name
@@ -33,7 +33,7 @@ class Account < ApplicationRecord
   def current_subscription
     subscriptions.active.first
   end
-  
+
   # Alias for convenience
   def subscription
     current_subscription
@@ -45,7 +45,7 @@ class Account < ApplicationRecord
 
     limits = subscription.plan_limits
     limit = limits[feature.to_s]
-    
+
     return true if limit == -1 # Unlimited
     current_usage < limit
   end

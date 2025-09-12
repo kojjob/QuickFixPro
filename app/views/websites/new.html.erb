@@ -54,16 +54,15 @@
       </div>
 
       <div>
-        <%= form.label :monitor_frequency, class: "block text-sm font-medium leading-6 text-gray-900" %>
+        <%= form.label :monitoring_frequency, class: "block text-sm font-medium leading-6 text-gray-900" %>
         <div class="mt-2">
-          <%= form.select :monitor_frequency, 
+          <%= form.select :monitoring_frequency, 
               options_for_select([
-                ['Every hour', 'hourly'],
-                ['Every 6 hours', 'six_hours'],
+                ['Manual Only', 'manual'],
                 ['Daily', 'daily'],
                 ['Weekly', 'weekly'],
                 ['Monthly', 'monthly']
-              ], @website.monitor_frequency || 'daily'),
+              ], @website.monitoring_frequency || 'daily'),
               {},
               class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
         </div>

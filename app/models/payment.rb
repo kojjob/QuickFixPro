@@ -15,9 +15,9 @@ class Payment < ApplicationRecord
   validates :stripe_payment_intent_id, uniqueness: true, allow_nil: true
 
   # Scopes
-  scope :successful, -> { where(status: 'succeeded') }
-  scope :failed, -> { where(status: 'failed') }
-  scope :pending, -> { where(status: 'pending') }
+  scope :successful, -> { where(status: "succeeded") }
+  scope :failed, -> { where(status: "failed") }
+  scope :pending, -> { where(status: "pending") }
   scope :current_month, -> { where(created_at: Time.current.beginning_of_month..Time.current.end_of_month) }
   scope :recent, -> { order(created_at: :desc) }
   scope :for_subscription, ->(subscription) { where(subscription: subscription) }
@@ -38,11 +38,11 @@ class Payment < ApplicationRecord
   end
 
   def refund!
-    return false unless status == 'succeeded'
-    
+    return false unless status == "succeeded"
+
     transaction do
       update!(
-        status: 'refunded',
+        status: "refunded",
         refunded_at: Time.current
       )
     end
@@ -53,7 +53,7 @@ class Payment < ApplicationRecord
 
   def mark_as_failed!(reason = nil)
     update!(
-      status: 'failed',
+      status: "failed",
       failed_at: Time.current,
       failure_reason: reason
     )
@@ -68,41 +68,41 @@ class Payment < ApplicationRecord
   end
 
   def can_retry?
-    status == 'failed' && !max_retries_reached?
+    status == "failed" && !max_retries_reached?
   end
 
   def succeeded?
-    status == 'succeeded'
+    status == "succeeded"
   end
 
   def failed?
-    status == 'failed'
+    status == "failed"
   end
 
   def pending?
-    status == 'pending'
+    status == "pending"
   end
 
   def processing?
-    status == 'processing'
+    status == "processing"
   end
 
   def refunded?
-    status == 'refunded'
+    status == "refunded"
   end
 
   def update_status!(new_status, additional_attributes = {})
     attributes_to_update = { status: new_status }
-    
+
     case new_status
-    when 'succeeded'
+    when "succeeded"
       attributes_to_update[:invoice_number] ||= generate_invoice_number if invoice_number.blank?
-    when 'failed'
+    when "failed"
       attributes_to_update[:failed_at] = Time.current
-    when 'refunded'
+    when "refunded"
       attributes_to_update[:refunded_at] = Time.current
     end
-    
+
     attributes_to_update.merge!(additional_attributes)
     update!(attributes_to_update)
   end
@@ -117,21 +117,21 @@ class Payment < ApplicationRecord
 
   def generate_invoice_number
     return if invoice_number.present?
-    
+
     # Format: INV-YYYY-NNNNNN where YYYY is year and NNNNNN is a sequential number
     year = Time.current.year
-    
+
     # Get the last invoice number for the current year
-    last_invoice = Payment.where('invoice_number LIKE ?', "INV-#{year}-%")
-                          .order('invoice_number DESC')
+    last_invoice = Payment.where("invoice_number LIKE ?", "INV-#{year}-%")
+                          .order("invoice_number DESC")
                           .first
-    
+
     if last_invoice && last_invoice.invoice_number =~ /INV-\d{4}-(\d{6})/
       sequence = $1.to_i + 1
     else
       sequence = 1
     end
-    
+
     self.invoice_number = "INV-#{year}-#{sequence.to_s.rjust(6, '0')}"
   end
 end

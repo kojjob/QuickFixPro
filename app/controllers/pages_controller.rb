@@ -1,12 +1,12 @@
 class PagesController < ApplicationController
   # Skip authentication for public pages
   skip_before_action :authenticate_user!
-  skip_before_action :set_current_account  
+  skip_before_action :set_current_account
   skip_before_action :ensure_account_active
-  
+
   # SEO-optimized static pages
   before_action :set_page_cache_headers
-  
+
   def pricing
     set_seo(
       title: "Pricing Plans - Website Performance Monitoring Starting at $29/month",
@@ -15,19 +15,19 @@ class PagesController < ApplicationController
                   "14-day free trial included.",
       keywords: [
         "website performance monitoring pricing",
-        "core web vitals monitoring cost", 
+        "core web vitals monitoring cost",
         "lighthouse audit tool pricing",
         "site speed monitoring plans",
         "performance optimization pricing",
         "web vitals tracking cost"
       ]
     )
-    
+
     @pricing_plans = load_detailed_pricing_plans
     @frequently_asked_questions = load_pricing_faqs
     @plan_comparison_features = load_plan_comparison_features
   end
-  
+
   def about
     set_seo(
       title: "About SpeedBoost - Professional Website Performance Optimization Platform",
@@ -37,18 +37,18 @@ class PagesController < ApplicationController
       keywords: [
         "website optimization company",
         "performance monitoring platform",
-        "core web vitals experts", 
+        "core web vitals experts",
         "site speed optimization service",
         "web performance consultancy"
       ]
     )
-    
+
     @company_stats = load_company_statistics
     @team_members = load_team_information
     @company_values = load_company_values
     @technology_stack = load_technology_overview
   end
-  
+
   def contact
     set_seo(
       title: "Contact SpeedBoost - Get Help with Website Performance Optimization",
@@ -61,12 +61,12 @@ class PagesController < ApplicationController
         "performance monitoring support"
       ]
     )
-    
+
     @contact_methods = load_contact_information
     @support_resources = load_support_resources
     @office_locations = load_office_information
   end
-  
+
   def privacy
     set_seo(
       title: "Privacy Policy - SpeedBoost Website Performance Monitoring",
@@ -74,12 +74,12 @@ class PagesController < ApplicationController
                   "GDPR compliant data processing and transparent privacy practices.",
       noindex: false # Privacy pages should be indexed for transparency
     )
-    
+
     @last_updated = Date.new(2024, 1, 1)
     @gdpr_compliance = true
     @data_retention_period = "2 years"
   end
-  
+
   def terms
     set_seo(
       title: "Terms of Service - SpeedBoost Website Performance Platform",
@@ -87,12 +87,12 @@ class PagesController < ApplicationController
                   "Fair and transparent terms for our performance optimization services.",
       noindex: false # Terms should be indexed for transparency
     )
-    
+
     @last_updated = Date.new(2024, 1, 1)
     @service_availability_sla = "99.9%"
     @support_response_time = "24 hours"
   end
-  
+
   def security
     set_seo(
       title: "Security & Compliance - Enterprise-Grade Website Performance Monitoring",
@@ -105,12 +105,12 @@ class PagesController < ApplicationController
         "enterprise security standards"
       ]
     )
-    
+
     @security_certifications = load_security_certifications
     @compliance_standards = load_compliance_information
     @data_protection_measures = load_data_protection_info
   end
-  
+
   def features
     set_seo(
       title: "Features - Comprehensive Website Performance Monitoring & Optimization",
@@ -119,19 +119,19 @@ class PagesController < ApplicationController
       keywords: [
         "website performance monitoring features",
         "core web vitals tracking",
-        "lighthouse audit automation", 
+        "lighthouse audit automation",
         "performance optimization tools",
         "site speed monitoring capabilities"
       ]
     )
-    
+
     @feature_categories = load_feature_categories
     @integration_partners = load_integration_information
     @upcoming_features = load_roadmap_preview
   end
-  
+
   private
-  
+
   def set_page_cache_headers
     # Aggressive caching for static pages
     if request.get?
@@ -139,11 +139,11 @@ class PagesController < ApplicationController
       fresh_when(etag: "#{controller_name}/#{action_name}/v2", last_modified: 1.week.ago)
     end
   end
-  
+
   def load_detailed_pricing_plans
     Subscription::PLAN_LIMITS.map do |plan_name, limits|
       plan_features = get_detailed_plan_features(plan_name)
-      
+
       {
         id: plan_name,
         name: plan_name.humanize,
@@ -152,89 +152,89 @@ class PagesController < ApplicationController
         limits: limits,
         features: plan_features[:included],
         not_included: plan_features[:not_included],
-        popular: plan_name == 'professional',
-        enterprise: plan_name == 'enterprise',
-        cta_text: plan_name == 'enterprise' ? 'Contact Sales' : 'Start Free Trial',
+        popular: plan_name == "professional",
+        enterprise: plan_name == "enterprise",
+        cta_text: plan_name == "enterprise" ? "Contact Sales" : "Start Free Trial",
         badge: get_plan_badge(plan_name)
       }
     end
   end
-  
+
   def get_detailed_plan_features(plan_name)
     all_features = {
-      'core_monitoring' => 'Core Web Vitals monitoring',
-      'lighthouse_audits' => 'Automated Lighthouse audits',
-      'performance_recommendations' => 'AI-powered optimization recommendations',
-      'email_alerts' => 'Email alerts and notifications',
-      'historical_data' => 'Historical performance data',
-      'mobile_tracking' => 'Mobile performance tracking',
-      'basic_dashboard' => 'Performance dashboard',
-      'email_support' => 'Email support',
-      'priority_support' => 'Priority email support',
-      'api_access' => 'REST API access',
-      'custom_alerts' => 'Custom alert thresholds',
-      'team_collaboration' => 'Team collaboration tools',
-      'scheduled_reports' => 'Scheduled audit reports',
-      'advanced_analytics' => 'Advanced analytics dashboard',
-      'dedicated_manager' => 'Dedicated success manager',
-      'white_label' => 'White-label customization',
-      'advanced_api' => 'Advanced API access',
-      'custom_integrations' => 'Custom integrations',
-      'sla_guarantee' => 'SLA guarantees (99.9% uptime)',
-      'priority_features' => 'Priority feature requests',
-      'security_controls' => 'Advanced security controls'
+      "core_monitoring" => "Core Web Vitals monitoring",
+      "lighthouse_audits" => "Automated Lighthouse audits",
+      "performance_recommendations" => "AI-powered optimization recommendations",
+      "email_alerts" => "Email alerts and notifications",
+      "historical_data" => "Historical performance data",
+      "mobile_tracking" => "Mobile performance tracking",
+      "basic_dashboard" => "Performance dashboard",
+      "email_support" => "Email support",
+      "priority_support" => "Priority email support",
+      "api_access" => "REST API access",
+      "custom_alerts" => "Custom alert thresholds",
+      "team_collaboration" => "Team collaboration tools",
+      "scheduled_reports" => "Scheduled audit reports",
+      "advanced_analytics" => "Advanced analytics dashboard",
+      "dedicated_manager" => "Dedicated success manager",
+      "white_label" => "White-label customization",
+      "advanced_api" => "Advanced API access",
+      "custom_integrations" => "Custom integrations",
+      "sla_guarantee" => "SLA guarantees (99.9% uptime)",
+      "priority_features" => "Priority feature requests",
+      "security_controls" => "Advanced security controls"
     }
-    
+
     case plan_name
-    when 'starter'
+    when "starter"
       {
         included: [
-          all_features['core_monitoring'],
-          all_features['lighthouse_audits'], 
-          all_features['performance_recommendations'],
-          all_features['email_alerts'],
-          all_features['historical_data'],
-          all_features['mobile_tracking'],
-          all_features['basic_dashboard'],
-          all_features['email_support']
+          all_features["core_monitoring"],
+          all_features["lighthouse_audits"],
+          all_features["performance_recommendations"],
+          all_features["email_alerts"],
+          all_features["historical_data"],
+          all_features["mobile_tracking"],
+          all_features["basic_dashboard"],
+          all_features["email_support"]
         ],
         not_included: [
-          all_features['priority_support'],
-          all_features['api_access'],
-          all_features['team_collaboration'],
-          all_features['white_label']
+          all_features["priority_support"],
+          all_features["api_access"],
+          all_features["team_collaboration"],
+          all_features["white_label"]
         ]
       }
-    when 'professional'  
+    when "professional"
       {
         included: [
-          all_features['core_monitoring'],
-          all_features['lighthouse_audits'],
-          all_features['performance_recommendations'], 
-          all_features['email_alerts'],
-          all_features['historical_data'],
-          all_features['mobile_tracking'],
-          all_features['priority_support'],
-          all_features['api_access'],
-          all_features['custom_alerts'],
-          all_features['team_collaboration'],
-          all_features['scheduled_reports'],
-          all_features['advanced_analytics']
+          all_features["core_monitoring"],
+          all_features["lighthouse_audits"],
+          all_features["performance_recommendations"],
+          all_features["email_alerts"],
+          all_features["historical_data"],
+          all_features["mobile_tracking"],
+          all_features["priority_support"],
+          all_features["api_access"],
+          all_features["custom_alerts"],
+          all_features["team_collaboration"],
+          all_features["scheduled_reports"],
+          all_features["advanced_analytics"]
         ],
         not_included: [
-          all_features['dedicated_manager'],
-          all_features['white_label'],
-          all_features['custom_integrations']
+          all_features["dedicated_manager"],
+          all_features["white_label"],
+          all_features["custom_integrations"]
         ]
       }
-    when 'enterprise'
+    when "enterprise"
       {
         included: all_features.values,
         not_included: []
       }
     end
   end
-  
+
   def calculate_annual_discount(plan_name)
     # Standard 20% annual discount
     monthly_price = Subscription::PLAN_PRICES[plan_name]
@@ -245,18 +245,18 @@ class PagesController < ApplicationController
       discount_percentage: 20
     }
   end
-  
+
   def get_plan_badge(plan_name)
     case plan_name
-    when 'starter'
+    when "starter"
       nil
-    when 'professional' 
-      'Most Popular'
-    when 'enterprise'
-      'Best Value'
+    when "professional"
+      "Most Popular"
+    when "enterprise"
+      "Best Value"
     end
   end
-  
+
   def load_pricing_faqs
     [
       {
@@ -285,7 +285,7 @@ class PagesController < ApplicationController
       }
     ]
   end
-  
+
   def load_plan_comparison_features
     [
       {
@@ -299,7 +299,7 @@ class PagesController < ApplicationController
         ]
       },
       {
-        category: "Alerts & Notifications", 
+        category: "Alerts & Notifications",
         features: [
           { name: "Email notifications", starter: true, professional: true, enterprise: true },
           { name: "Custom alert thresholds", starter: false, professional: true, enterprise: true },
@@ -319,7 +319,7 @@ class PagesController < ApplicationController
       }
     ]
   end
-  
+
   def load_company_statistics
     {
       founded_year: 2023,
@@ -331,12 +331,12 @@ class PagesController < ApplicationController
       countries_served: 85
     }
   end
-  
+
   def load_team_information
     [
       {
         name: "Alex Chen",
-        role: "CEO & Co-Founder", 
+        role: "CEO & Co-Founder",
         bio: "Former Google Web Performance team lead with 10+ years optimizing sites at scale.",
         image: "team-alex.jpg"
       },
@@ -347,14 +347,14 @@ class PagesController < ApplicationController
         image: "team-sarah.jpg"
       },
       {
-        name: "Marcus Johnson", 
+        name: "Marcus Johnson",
         role: "VP of Engineering",
         bio: "Former Shopify performance architect who scaled monitoring for millions of stores.",
         image: "team-marcus.jpg"
       }
     ]
   end
-  
+
   def load_company_values
     [
       {
@@ -362,7 +362,7 @@ class PagesController < ApplicationController
         description: "We believe fast websites create better user experiences and drive business success."
       },
       {
-        title: "Data-Driven Insights", 
+        title: "Data-Driven Insights",
         description: "Every recommendation is backed by real performance data and industry best practices."
       },
       {
@@ -375,15 +375,15 @@ class PagesController < ApplicationController
       }
     ]
   end
-  
+
   def load_technology_overview
     {
-      infrastructure: ["AWS", "PostgreSQL", "Redis", "Docker"],
-      monitoring: ["Chrome DevTools", "Lighthouse", "WebPageTest", "Real User Monitoring"],
-      security: ["SOC2 Type II", "GDPR Compliant", "256-bit Encryption", "Regular Pen Testing"]
+      infrastructure: [ "AWS", "PostgreSQL", "Redis", "Docker" ],
+      monitoring: [ "Chrome DevTools", "Lighthouse", "WebPageTest", "Real User Monitoring" ],
+      security: [ "SOC2 Type II", "GDPR Compliant", "256-bit Encryption", "Regular Pen Testing" ]
     }
   end
-  
+
   def load_contact_information
     [
       {
@@ -394,7 +394,7 @@ class PagesController < ApplicationController
       },
       {
         type: "Technical Support",
-        email: "support@speedboost.dev", 
+        email: "support@speedboost.dev",
         response_time: "< 4 hours",
         description: "Help with setup, troubleshooting, or technical questions"
       },
@@ -405,7 +405,7 @@ class PagesController < ApplicationController
       }
     ]
   end
-  
+
   def load_support_resources
     [
       { title: "Documentation", url: "/docs", description: "Complete guides and API documentation" },
@@ -414,7 +414,7 @@ class PagesController < ApplicationController
       { title: "Status Page", url: "/status", description: "Real-time system status and uptime" }
     ]
   end
-  
+
   def load_office_information
     [
       {
@@ -423,13 +423,13 @@ class PagesController < ApplicationController
         timezone: "PST/PDT"
       },
       {
-        city: "New York", 
+        city: "New York",
         address: "456 Speed Street, New York, NY 10001",
         timezone: "EST/EDT"
       }
     ]
   end
-  
+
   def load_security_certifications
     [
       {
@@ -438,7 +438,7 @@ class PagesController < ApplicationController
         valid_until: "2024-12-31"
       },
       {
-        name: "GDPR Compliant", 
+        name: "GDPR Compliant",
         description: "Full compliance with EU data protection regulations",
         status: "Certified"
       },
@@ -449,7 +449,7 @@ class PagesController < ApplicationController
       }
     ]
   end
-  
+
   def load_compliance_information
     {
       data_encryption: "AES-256 encryption at rest and in transit",
@@ -459,17 +459,17 @@ class PagesController < ApplicationController
       retention_policy: "Automated data retention and deletion policies"
     }
   end
-  
+
   def load_data_protection_info
     {
       backup_frequency: "Continuous with point-in-time recovery",
       disaster_recovery: "Multi-region redundancy with <1 hour RTO",
-      penetration_testing: "Quarterly third-party security audits", 
+      penetration_testing: "Quarterly third-party security audits",
       vulnerability_management: "Automated scanning and patch management",
       incident_response: "24/7 security monitoring and response team"
     }
   end
-  
+
   def load_feature_categories
     [
       {
@@ -488,7 +488,7 @@ class PagesController < ApplicationController
         description: "Regular performance audits with actionable insights",
         features: [
           "Lighthouse performance audits",
-          "SEO and accessibility scoring", 
+          "SEO and accessibility scoring",
           "Best practices compliance checking",
           "Progressive Web App (PWA) analysis",
           "Scheduled audit automation"
@@ -507,17 +507,17 @@ class PagesController < ApplicationController
       }
     ]
   end
-  
+
   def load_integration_information
     [
       { name: "GitHub", description: "Automated performance checks in CI/CD" },
       { name: "Slack", description: "Real-time performance alerts and updates" },
-      { name: "Jira", description: "Create tickets for performance issues" },  
+      { name: "Jira", description: "Create tickets for performance issues" },
       { name: "Datadog", description: "Forward metrics to your monitoring stack" },
       { name: "Webhook API", description: "Custom integrations with any platform" }
     ]
   end
-  
+
   def load_roadmap_preview
     [
       {
@@ -526,9 +526,9 @@ class PagesController < ApplicationController
         eta: "Q2 2024"
       },
       {
-        title: "Visual Performance Comparison", 
+        title: "Visual Performance Comparison",
         description: "Side-by-side visual comparisons of page load experiences",
-        eta: "Q3 2024"  
+        eta: "Q3 2024"
       },
       {
         title: "Advanced A/B Testing Integration",

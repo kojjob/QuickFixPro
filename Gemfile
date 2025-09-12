@@ -81,8 +81,9 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
-  
+
   # Test data cleanup and stubbing
   gem "database_cleaner-active_record"
   gem "webmock"
+  gem "shoulda-matchers", "~> 6.0"
 end

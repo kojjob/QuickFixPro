@@ -1,7 +1,7 @@
 class AuditReport < ApplicationRecord
   # Associations
   belongs_to :website
-  belongs_to :triggered_by, class_name: 'User', optional: true
+  belongs_to :triggered_by, class_name: "User", optional: true
   has_many :performance_metrics, dependent: :destroy
   has_many :optimization_recommendations, dependent: :destroy
 
@@ -19,30 +19,30 @@ class AuditReport < ApplicationRecord
   scope :for_website, ->(website) { where(website: website) }
 
   # Broadcasts
-  broadcasts_to ->(report) { [report.website.account, :audit_reports] }
+  broadcasts_to ->(report) { [ report.website.account, :audit_reports ] }
 
   # Callbacks
-  after_update_commit -> { broadcast_replace_to([website.account, :audit_reports]) }
+  after_update_commit -> { broadcast_replace_to([ website.account, :audit_reports ]) unless Rails.env.test? }
 
   # Methods
   def performance_grade
-    return 'N/A' unless overall_score
+    return "N/A" unless overall_score
 
     case overall_score
-    when 90..100 then 'A'
-    when 80..89 then 'B'
-    when 70..79 then 'C'
-    when 60..69 then 'D'
-    else 'F'
+    when 90..100 then "A"
+    when 80..89 then "B"
+    when 70..79 then "C"
+    when 60..69 then "D"
+    else "F"
     end
   end
 
   def performance_color
     case performance_grade
-    when 'A', 'B' then 'green'
-    when 'C' then 'yellow'
-    when 'D', 'F' then 'red'
-    else 'gray'
+    when "A", "B" then "green"
+    when "C" then "yellow"
+    when "D", "F" then "red"
+    else "gray"
     end
   end
 
@@ -60,7 +60,7 @@ class AuditReport < ApplicationRecord
   end
 
   def high_priority_recommendations
-    optimization_recommendations.where(priority: [:critical, :high])
+    optimization_recommendations.where(priority: [ :critical, :high ])
   end
 
   def core_web_vitals

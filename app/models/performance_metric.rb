@@ -4,7 +4,7 @@ class PerformanceMetric < ApplicationRecord
   belongs_to :website
 
   # Validations
-  validates :metric_type, presence: true, inclusion: { 
+  validates :metric_type, presence: true, inclusion: {
     in: %w[lcp fid cls ttfb fcp speed_index total_blocking_time],
     message: "must be a valid metric type"
   }
@@ -16,13 +16,13 @@ class PerformanceMetric < ApplicationRecord
 
   # Constants for Core Web Vitals thresholds (in milliseconds)
   THRESHOLDS = {
-    'lcp' => { good: 2500, poor: 4000, unit: 'ms', name: 'Largest Contentful Paint' },
-    'fid' => { good: 100, poor: 300, unit: 'ms', name: 'First Input Delay' },
-    'cls' => { good: 0.1, poor: 0.25, unit: 'score', name: 'Cumulative Layout Shift' },
-    'ttfb' => { good: 800, poor: 1800, unit: 'ms', name: 'Time to First Byte' },
-    'fcp' => { good: 1800, poor: 3000, unit: 'ms', name: 'First Contentful Paint' },
-    'speed_index' => { good: 3400, poor: 5800, unit: 'ms', name: 'Speed Index' },
-    'total_blocking_time' => { good: 200, poor: 600, unit: 'ms', name: 'Total Blocking Time' }
+    "lcp" => { good: 2500, poor: 4000, unit: "ms", name: "Largest Contentful Paint" },
+    "fid" => { good: 100, poor: 300, unit: "ms", name: "First Input Delay" },
+    "cls" => { good: 0.1, poor: 0.25, unit: "score", name: "Cumulative Layout Shift" },
+    "ttfb" => { good: 800, poor: 1800, unit: "ms", name: "Time to First Byte" },
+    "fcp" => { good: 1800, poor: 3000, unit: "ms", name: "First Contentful Paint" },
+    "speed_index" => { good: 3400, poor: 5800, unit: "ms", name: "Speed Index" },
+    "total_blocking_time" => { good: 200, poor: 600, unit: "ms", name: "Total Blocking Time" }
   }.freeze
 
   # Scopes
@@ -42,9 +42,9 @@ class PerformanceMetric < ApplicationRecord
 
   def display_value
     case unit
-    when 'ms'
+    when "ms"
       "#{value.to_i}ms"
-    when 'score'
+    when "score"
       value.round(3).to_s
     else
       "#{value} #{unit}"
@@ -57,18 +57,18 @@ class PerformanceMetric < ApplicationRecord
 
   def threshold_color
     case threshold_status
-    when 'good' then 'green'
-    when 'needs_improvement' then 'yellow'  
-    when 'poor' then 'red'
-    else 'gray'
+    when "good" then "green"
+    when "needs_improvement" then "yellow"
+    when "poor" then "red"
+    else "gray"
     end
   end
 
   def score_impact
     case threshold_status
-    when 'good' then score_contribution || 10
-    when 'needs_improvement' then (score_contribution || 10) * 0.7
-    when 'poor' then (score_contribution || 10) * 0.3
+    when "good" then score_contribution || 10
+    when "needs_improvement" then (score_contribution || 10) * 0.7
+    when "poor" then (score_contribution || 10) * 0.3
     else 0
     end
   end
@@ -81,11 +81,11 @@ class PerformanceMetric < ApplicationRecord
     thresholds = THRESHOLDS[metric_type]
     self.threshold_status = if value <= thresholds[:good]
                              :good
-                           elsif value <= thresholds[:poor]
+    elsif value <= thresholds[:poor]
                              :needs_improvement
-                           else
+    else
                              :poor
-                           end
+    end
   end
 
   def set_thresholds

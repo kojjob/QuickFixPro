@@ -6,7 +6,7 @@ class CreateSubscriptions < ActiveRecord::Migration[8.0]
       t.integer :status, default: 0, null: false
       t.decimal :monthly_price, precision: 8, scale: 2
       t.jsonb :usage_limits, default: {}
-      
+
       # Additional subscription fields
       t.datetime :trial_ends_at
       t.datetime :billing_cycle_started_at

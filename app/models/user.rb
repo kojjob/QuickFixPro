@@ -6,9 +6,9 @@ class User < ApplicationRecord
 
   # Associations
   belongs_to :account
-  has_many :created_accounts, class_name: 'Account', foreign_key: 'created_by_id', dependent: :nullify
-  has_many :websites, foreign_key: 'created_by_id', dependent: :nullify
-  has_many :triggered_audits, class_name: 'AuditReport', foreign_key: 'triggered_by_id', dependent: :nullify
+  has_many :created_accounts, class_name: "Account", foreign_key: "created_by_id", dependent: :nullify
+  has_many :websites, foreign_key: "created_by_id", dependent: :nullify
+  has_many :triggered_audits, class_name: "AuditReport", foreign_key: "triggered_by_id", dependent: :nullify
 
   # Callbacks
   before_validation :normalize_names

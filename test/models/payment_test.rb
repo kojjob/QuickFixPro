@@ -69,8 +69,8 @@ class PaymentTest < ActiveSupport::TestCase
   end
 
   test "should only accept valid statuses" do
-    valid_statuses = ["pending", "processing", "succeeded", "failed", "refunded", "cancelled"]
-    
+    valid_statuses = [ "pending", "processing", "succeeded", "failed", "refunded", "cancelled" ]
+
     valid_statuses.each do |status|
       payment = Payment.new(
         subscription: @subscription,
@@ -102,8 +102,8 @@ class PaymentTest < ActiveSupport::TestCase
   end
 
   test "should only accept valid payment methods" do
-    valid_methods = ["credit_card", "debit_card", "bank_transfer", "paypal"]
-    
+    valid_methods = [ "credit_card", "debit_card", "bank_transfer", "paypal" ]
+
     valid_methods.each do |method|
       payment = Payment.new(
         subscription: @subscription,
@@ -188,7 +188,7 @@ class PaymentTest < ActiveSupport::TestCase
       payment_method: "credit_card",
       created_at: Time.current
     )
-    
+
     # Create a payment from last month
     last_month_payment = Payment.create!(
       subscription: @subscription,
@@ -247,7 +247,7 @@ class PaymentTest < ActiveSupport::TestCase
       status: "pending",
       payment_method: "credit_card"
     )
-    
+
     assert_equal 9.90, payment.tax_amount
     assert_equal 108.90, payment.total_amount
   end
@@ -315,7 +315,7 @@ class PaymentTest < ActiveSupport::TestCase
 
     payment.increment_retry!
     assert_equal 1, payment.retry_count
-    
+
     payment.increment_retry!
     assert_equal 2, payment.retry_count
   end

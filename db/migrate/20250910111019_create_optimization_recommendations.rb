@@ -8,7 +8,7 @@ class CreateOptimizationRecommendations < ActiveRecord::Migration[8.0]
       t.integer :priority, default: 0, null: false
       t.string :estimated_savings
       t.integer :status, default: 0, null: false
-      
+
       # Additional recommendation fields
       t.string :category
       t.text :implementation_guide
@@ -20,8 +20,8 @@ class CreateOptimizationRecommendations < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :optimization_recommendations, [:website_id, :priority]
-    add_index :optimization_recommendations, [:website_id, :status]
+    add_index :optimization_recommendations, [ :website_id, :priority ]
+    add_index :optimization_recommendations, [ :website_id, :status ]
     add_index :optimization_recommendations, :priority
     add_index :optimization_recommendations, :status
     add_index :optimization_recommendations, :category

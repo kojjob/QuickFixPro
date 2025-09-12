@@ -1,6 +1,6 @@
 class Users::RegistrationsController < Devise::RegistrationsController
-  before_action :configure_sign_up_params, only: [:create]
-  before_action :configure_account_update_params, only: [:update]
+  before_action :configure_sign_up_params, only: [ :create ]
+  before_action :configure_account_update_params, only: [ :update ]
 
   # GET /resource/sign_up
   # def new
@@ -14,9 +14,9 @@ class Users::RegistrationsController < Devise::RegistrationsController
     # Create an account for the new user
     ActiveRecord::Base.transaction do
       # Generate a unique subdomain based on the user's name or email
-      subdomain_base = "#{resource.first_name}#{resource.last_name}".downcase.gsub(/[^a-z0-9]/, '')
-      subdomain_base = resource.email.split('@').first.downcase.gsub(/[^a-z0-9]/, '') if subdomain_base.length < 3
-      
+      subdomain_base = "#{resource.first_name}#{resource.last_name}".downcase.gsub(/[^a-z0-9]/, "")
+      subdomain_base = resource.email.split("@").first.downcase.gsub(/[^a-z0-9]/, "") if subdomain_base.length < 3
+
       # Ensure subdomain is unique
       subdomain = subdomain_base
       counter = 1
@@ -24,7 +24,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
         subdomain = "#{subdomain_base}#{counter}"
         counter += 1
       end
-      
+
       # Create the account first
       account = Account.new(
         name: "#{resource.first_name} #{resource.last_name}".strip,
@@ -32,16 +32,16 @@ class Users::RegistrationsController < Devise::RegistrationsController
         status: :trial, # Start with trial status
         created_by_id: nil # Will be updated after user is saved
       )
-      
+
       if account.save
         # Assign the account to the user
         resource.account = account
         resource.role = :owner # First user is the owner
-        
+
         if resource.save
           # Update the account with the created_by_id
           account.update(created_by_id: resource.id)
-          
+
           yield resource if block_given?
           if resource.persisted?
             if resource.active_for_authentication?
@@ -109,12 +109,12 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   # If you have extra params to permit, append them to the sanitizer.
   def configure_sign_up_params
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:first_name, :last_name])
+    devise_parameter_sanitizer.permit(:sign_up, keys: [ :first_name, :last_name ])
   end
 
   # If you have extra params to permit, append them to the sanitizer.
   def configure_account_update_params
-    devise_parameter_sanitizer.permit(:account_update, keys: [:first_name, :last_name])
+    devise_parameter_sanitizer.permit(:account_update, keys: [ :first_name, :last_name ])
   end
 
   # The path used after sign up.

@@ -16,28 +16,28 @@ class OptimizationRecommendation < ApplicationRecord
 
   # Scopes
   scope :by_priority, ->(priority) { where(priority: priority) }
-  scope :actionable, -> { where(status: [:pending, :in_progress]) }
-  scope :high_impact, -> { where(priority: [:high, :critical]) }
+  scope :actionable, -> { where(status: [ :pending, :in_progress ]) }
+  scope :high_impact, -> { where(priority: [ :high, :critical ]) }
   scope :by_category, ->(category) { where(category: category) }
 
   # Methods
   def priority_color
     case priority
-    when 'critical' then 'red'
-    when 'high' then 'orange'
-    when 'medium' then 'yellow'
-    when 'low' then 'blue'
-    else 'gray'
+    when "critical" then "red"
+    when "high" then "orange"
+    when "medium" then "yellow"
+    when "low" then "blue"
+    else "gray"
     end
   end
 
   def difficulty_badge_color
     case difficulty_level
-    when 'easy' then 'green'
-    when 'medium' then 'yellow'
-    when 'hard' then 'orange'
-    when 'expert' then 'red'
-    else 'gray'
+    when "easy" then "green"
+    when "medium" then "yellow"
+    when "hard" then "orange"
+    when "expert" then "red"
+    else "gray"
     end
   end
 
@@ -54,7 +54,7 @@ class OptimizationRecommendation < ApplicationRecord
   end
 
   def can_implement_automatically?
-    automated_fix_available? && difficulty_level == 'easy'
+    automated_fix_available? && difficulty_level == "easy"
   end
 
   def resources_list

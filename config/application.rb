@@ -18,10 +18,10 @@ module QuickFixPro
 
     # Rails 8 Solid Queue configuration
     config.active_job.queue_adapter = :solid_queue
-    
+
     # Time zone configuration
     config.time_zone = "UTC"
-    
+
     # Multi-tenant configuration
     # TODO: Add rack-cors gem to Gemfile if API CORS support is needed
     # config.middleware.use Rack::Cors do
