@@ -1,0 +1,117 @@
+<%# Notification Component for Toast Messages %>
+
+<%
+  # Extract notification details
+  type = local_assigns[:type] || 'info'
+  message = local_assigns[:message] || 'Notification'
+  dismissible = local_assigns.fetch(:dismissible, true)
+  auto_dismiss = local_assigns.fetch(:auto_dismiss, true)
+  duration = local_assigns[:duration] || 5000
+
+  # Set styling based on type
+  case type.to_s
+  when 'success'
+    bg_class = 'bg-green-50'
+    border_class = 'border-green-200'
+    text_class = 'text-green-800'
+    icon_class = 'text-green-400'
+    icon_path = 'M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
+  when 'error', 'danger'
+    bg_class = 'bg-red-50'
+    border_class = 'border-red-200'
+    text_class = 'text-red-800'
+    icon_class = 'text-red-400'
+    icon_path = 'M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z'
+  when 'warning'
+    bg_class = 'bg-yellow-50'
+    border_class = 'border-yellow-200'
+    text_class = 'text-yellow-800'
+    icon_class = 'text-yellow-400'
+    icon_path = 'M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z'
+  else # info
+    bg_class = 'bg-blue-50'
+    border_class = 'border-blue-200'
+    text_class = 'text-blue-800'
+    icon_class = 'text-blue-400'
+    icon_path = 'M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853L15.75 12M6 12a9 9 0 1118 0 9 9 0 01-18 0z'
+  end
+%>
+
+<div 
+  class="notification-toast fixed top-4 right-4 z-50 max-w-sm w-full transform transition-all duration-300 translate-x-full opacity-0"
+  data-controller="notification"
+  data-notification-type-value="<%= type %>"
+  data-notification-auto-dismiss-value="<%= auto_dismiss %>"
+  data-notification-duration-value="<%= duration %>"
+  id="notification-<%= SecureRandom.hex(4) %>"
+>
+  <div class="<%= bg_class %> <%= border_class %> border rounded-lg shadow-lg p-4">
+    <div class="flex items-start">
+      <div class="flex-shrink-0">
+        <svg class="h-5 w-5 <%= icon_class %>" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="<%= icon_path %>" />
+        </svg>
+      </div>
+      
+      <div class="ml-3 flex-1">
+        <p class="text-sm font-medium <%= text_class %>">
+          <%= message %>
+        </p>
+      </div>
+      
+      <% if dismissible %>
+        <div class="ml-4 flex-shrink-0 flex">
+          <button
+            type="button"
+            class="inline-flex <%= text_class %> hover:opacity-75 focus:outline-none focus:opacity-75"
+            data-action="notification#dismiss"
+          >
+            <span class="sr-only">Close</span>
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<script>
+// Simple notification controller inline (will be replaced by Stimulus controller)
+document.addEventListener('turbo:frame-load', function() {
+  const notification = document.querySelector('.notification-toast')
+  if (!notification) return
+  
+  // Slide in
+  requestAnimationFrame(() => {
+    notification.classList.remove('translate-x-full', 'opacity-0')
+    notification.classList.add('translate-x-0', 'opacity-100')
+  })
+  
+  // Auto dismiss
+  const autoDismiss = notification.dataset.notificationAutoDismissValue === 'true'
+  const duration = parseInt(notification.dataset.notificationDurationValue) || 5000
+  
+  if (autoDismiss) {
+    setTimeout(() => {
+      dismissNotification(notification)
+    }, duration)
+  }
+  
+  // Manual dismiss
+  const dismissBtn = notification.querySelector('[data-action="notification#dismiss"]')
+  if (dismissBtn) {
+    dismissBtn.addEventListener('click', () => dismissNotification(notification))
+  }
+})
+
+function dismissNotification(notification) {
+  notification.classList.remove('translate-x-0', 'opacity-100')
+  notification.classList.add('translate-x-full', 'opacity-0')
+  
+  setTimeout(() => {
+    notification.remove()
+  }, 300)
+}
+</script>

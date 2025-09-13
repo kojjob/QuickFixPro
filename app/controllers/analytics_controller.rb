@@ -99,14 +99,14 @@ class AnalyticsController < ApplicationController
       total_websites: Current.account.websites.count,
       active_websites: Current.account.websites.active.count,
       total_audits: Current.account.audit_reports
-                           .where(created_at: @start_date..@end_date)
+                           .where('audit_reports.created_at': @start_date..@end_date)
                            .count,
       audits_this_month: Current.account.audit_reports
-                                .where('created_at > ?', 1.month.ago)
+                                .where('audit_reports.created_at > ?', 1.month.ago)
                                 .count,
       average_score: Current.account.audit_reports
                            .completed
-                           .where(created_at: @start_date..@end_date)
+                           .where('audit_reports.created_at': @start_date..@end_date)
                            .average(:overall_score)&.round(1) || 0,
       improvement_rate: calculate_improvement_rate,
       total_alerts: Current.account.monitoring_alerts

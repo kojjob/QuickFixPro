@@ -64,44 +64,7 @@
             <tbody class="divide-y divide-gray-200 bg-white">
               <% if @websites.any? %>
                 <% @websites.each do |website| %>
-                  <tr>
-                    <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                      <%= link_to website.name, website_path(website), class: "text-indigo-600 hover:text-indigo-900" %>
-                    </td>
-                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                      <%= website.url %>
-                    </td>
-                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                      <% if website.active? %>
-                        <span class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-                          Active
-                        </span>
-                      <% else %>
-                        <span class="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
-                          Inactive
-                        </span>
-                      <% end %>
-                    </td>
-                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                      <% if website.current_score %>
-                        <span class="<%= website.current_score >= 90 ? 'text-green-600' : website.current_score >= 50 ? 'text-yellow-600' : 'text-red-600' %> font-medium">
-                          <%= website.current_score %>
-                        </span>
-                      <% else %>
-                        <span class="text-gray-400">—</span>
-                      <% end %>
-                    </td>
-                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                      <%= website.last_monitored_at ? time_ago_in_words(website.last_monitored_at) + " ago" : "Never" %>
-                    </td>
-                    <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                      <%= link_to "View", website_path(website), class: "text-indigo-600 hover:text-indigo-900 mr-4" %>
-                      <%= link_to "Edit", edit_website_path(website), class: "text-indigo-600 hover:text-indigo-900 mr-4" %>
-                      <%= button_to "Monitor", monitor_website_path(website), method: :post, 
-                          class: "inline text-indigo-600 hover:text-indigo-900",
-                          data: { turbo: true } %>
-                    </td>
-                  </tr>
+                  <%= render 'website_row', website: website %>
                 <% end %>
               <% else %>
                 <tr>
@@ -145,3 +108,74 @@
     </div>
   <% end %>
 </div>
+
+<!-- Notification Container -->
+<div id="notifications" class="fixed top-4 right-4 z-50 space-y-2"></div>
+
+<!-- Modals for each website -->
+<% @websites.each do |website| %>
+  <!-- Edit Modal for <%= website.name %> -->
+  <%= render "shared/modal", 
+      id: "edit-website-#{website.id}",
+      title: "Edit Website",
+      size: "lg" do %>
+    <turbo-frame id="edit-website-frame-<%= website.id %>" src="<%= quick_edit_website_path(website) %>">
+      <div class="flex items-center justify-center py-8">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+        <span class="ml-2 text-gray-600">Loading...</span>
+      </div>
+    </turbo-frame>
+  <% end %>
+
+  <!-- Delete Confirmation Modal for <%= website.name %> -->
+  <%= render "shared/modal", 
+      id: "delete-website-#{website.id}",
+      title: "Delete Website",
+      size: "md",
+      closable: true do %>
+    <turbo-frame id="delete-website-frame-<%= website.id %>" src="<%= delete_confirmation_website_path(website) %>">
+      <div class="flex items-center justify-center py-8">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"></div>
+        <span class="ml-2 text-gray-600">Loading...</span>
+      </div>
+    </turbo-frame>
+  <% end %>
+<% end %>
+
+<script>
+// Auto-wire modal triggers after Turbo loads
+document.addEventListener('turbo:load', function() {
+  // Set up modal triggers
+  document.querySelectorAll('[data-modal-trigger]').forEach(trigger => {
+    const modalId = trigger.dataset.modalTrigger
+    const modal = document.getElementById(modalId)
+    
+    if (modal && !trigger.hasAttribute('data-modal-wired')) {
+      trigger.setAttribute('data-modal-wired', 'true')
+      
+      trigger.addEventListener('click', function(e) {
+        e.preventDefault()
+        
+        // Get the modal controller
+        const controller = window.application?.getControllerForElementAndIdentifier(modal, 'modal')
+        if (controller) {
+          controller.open(e)
+        }
+      })
+    }
+  })
+})
+
+// Handle successful form submissions
+document.addEventListener('turbo:submit-end', function(event) {
+  if (event.detail.success && event.target.closest('.modal-content')) {
+    // Close any open modals on successful form submission
+    document.querySelectorAll('[data-controller="modal"]').forEach(modal => {
+      const controller = window.application?.getControllerForElementAndIdentifier(modal, 'modal')
+      if (controller && !modal.classList.contains('hidden')) {
+        controller.close()
+      }
+    })
+  }
+})
+</script>

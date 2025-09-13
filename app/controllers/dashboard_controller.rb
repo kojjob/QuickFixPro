@@ -4,7 +4,7 @@ class DashboardController < ApplicationController
   
   def index
     @account = current_account
-    @websites = scoped_to_account(Website).includes(:latest_audit_report)
+    @websites = scoped_to_account(Website).includes(:audit_reports)
     
     # Dashboard metrics
     @total_websites = @websites.count
@@ -36,7 +36,7 @@ class DashboardController < ApplicationController
   
   def metrics
     # Real-time metrics endpoint for Turbo Stream updates
-    @websites = scoped_to_account(Website).includes(:latest_audit_report, :performance_metrics)
+    @websites = scoped_to_account(Website).includes(:audit_reports, :performance_metrics)
     @metrics = {
       total_audits: scoped_to_account(AuditReport).count,
       completed_audits: scoped_to_account(AuditReport).completed.count,
@@ -57,7 +57,7 @@ class DashboardController < ApplicationController
   end
   
   def performance_overview
-    @websites = scoped_to_account(Website).includes(:performance_metrics, :latest_audit_report)
+    @websites = scoped_to_account(Website).includes(:performance_metrics, :audit_reports)
     @core_web_vitals = calculate_core_web_vitals_summary
     
     respond_to do |format|
@@ -110,7 +110,7 @@ class DashboardController < ApplicationController
                                   .includes(:website, :audit_report)
                                   .limit(10)
     
-    @failing_websites = @websites.joins(:latest_audit_report)
+    @failing_websites = @websites.joins(:audit_reports)
                                  .where(audit_reports: { overall_score: ...50 })
                                  .limit(5)
     
@@ -140,12 +140,48 @@ class DashboardController < ApplicationController
     end
   end
   
+  # Turbo Frame endpoints for dashboard refresh
+  def stats
+    @websites = scoped_to_account(Website).includes(:audit_reports)
+    @total_websites = @websites.count
+    @active_websites = @websites.active.count
+    @recent_audits = scoped_to_account(AuditReport).completed.recent.limit(5)
+    @average_score = calculate_average_score
+    
+    render partial: 'dashboard/stats_cards'
+  end
+  
+  def performance_chart
+    @performance_trends = calculate_performance_trends
+    @average_score = calculate_average_score
+    
+    # Filter by time range if provided
+    if params[:range].present?
+      case params[:range]
+      when 'day'
+        @performance_trends = @performance_trends.last(1)
+      when 'week'
+        @performance_trends = @performance_trends.last(7)
+      when 'month'
+        @performance_trends = @performance_trends.last(30)
+      end
+    end
+    
+    render partial: 'dashboard/performance_chart'
+  end
+  
+  def activity_feed
+    @recent_activity = gather_recent_activity
+    
+    render partial: 'dashboard/activity_feed'
+  end
+  
   private
   
   def dashboard_data
     {
       account: current_account.as_json(only: [:name, :status, :created_at]),
-      websites: @websites.as_json(include: :latest_audit_report),
+      websites: @websites.as_json(methods: :latest_audit_report),
       metrics: {
         total_websites: @total_websites,
         active_websites: @active_websites,

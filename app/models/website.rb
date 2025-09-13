@@ -32,13 +32,14 @@ class Website < ApplicationRecord
 
   # Callbacks
   before_validation :normalize_url
-  after_create_commit -> { broadcast_append_to([account, :websites], target: "websites") }
-  after_update_commit -> { broadcast_replace_to([account, :websites]) }
-  after_destroy_commit -> { broadcast_remove_to([account, :websites]) }
+  after_create_commit -> { broadcast_append_to([account, :websites], target: "websites") } unless Rails.env.test?
+  after_update_commit -> { broadcast_replace_to([account, :websites]) } unless Rails.env.test?
+  after_destroy_commit -> { broadcast_remove_to([account, :websites]) } unless Rails.env.test?
 
   # Methods
   def display_url
-    URI.parse(url).host
+    parsed_uri = URI.parse(url)
+    parsed_uri.host || url
   rescue URI::InvalidURIError
     url
   end

@@ -1,0 +1,146 @@
+<%# Quick Edit Form for Website Modal %>
+
+<%= form_with model: website, 
+    url: quick_update_website_path(website), 
+    method: :patch,
+    data: { turbo: true },
+    local: false,
+    class: "space-y-4" do |form| %>
+  
+  <% if website.errors.any? %>
+    <div class="rounded-md bg-red-50 p-4">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-red-800">
+            There were <%= pluralize(website.errors.count, "error") %> with your submission
+          </h3>
+          <div class="mt-2 text-sm text-red-700">
+            <ul role="list" class="list-disc space-y-1 pl-5">
+              <% website.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Website Name -->
+  <div>
+    <%= form.label :name, class: "block text-sm font-medium leading-6 text-gray-900" %>
+    <div class="mt-2">
+      <%= form.text_field :name, 
+          class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
+          placeholder: "My Website" %>
+    </div>
+  </div>
+
+  <!-- Website URL -->
+  <div>
+    <%= form.label :url, "Website URL", class: "block text-sm font-medium leading-6 text-gray-900" %>
+    <div class="mt-2">
+      <%= form.text_field :url, 
+          class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
+          placeholder: "https://example.com" %>
+    </div>
+  </div>
+
+  <!-- Monitoring Frequency -->
+  <div>
+    <%= form.label :monitoring_frequency, class: "block text-sm font-medium leading-6 text-gray-900" %>
+    <div class="mt-2">
+      <%= form.select :monitoring_frequency, 
+          options_for_select([
+            ['Manual', 'manual'],
+            ['Daily', 'daily'],
+            ['Weekly', 'weekly'],
+            ['Monthly', 'monthly']
+          ], website.monitoring_frequency),
+          {},
+          class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
+    </div>
+  </div>
+
+  <!-- Website Status -->
+  <div>
+    <%= form.label :status, class: "block text-sm font-medium leading-6 text-gray-900" %>
+    <div class="mt-2">
+      <%= form.select :status, 
+          options_for_select([
+            ['Active', 'active'],
+            ['Paused', 'paused'],
+            ['Archived', 'archived']
+          ], website.status),
+          {},
+          class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
+    </div>
+    <p class="mt-2 text-sm text-gray-500">
+      Active: Monitoring enabled | Paused: Temporarily stopped | Archived: No longer tracked
+    </p>
+  </div>
+
+  <!-- Monitoring Settings -->
+  <fieldset class="border-t border-gray-200 pt-4">
+    <legend class="text-sm font-semibold leading-6 text-gray-900">Monitoring Options</legend>
+    <div class="mt-4 space-y-4">
+      <div class="relative flex items-start">
+        <div class="flex h-6 items-center">
+          <%= check_box_tag "website[monitoring_settings][enable_performance_monitoring]", 
+              "1", 
+              website.monitoring_settings&.dig('enable_performance_monitoring') != false,
+              class: "h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600" %>
+        </div>
+        <div class="ml-3 text-sm leading-6">
+          <label class="font-medium text-gray-900">Performance Monitoring</label>
+          <p class="text-gray-500">Track Core Web Vitals and page load metrics</p>
+        </div>
+      </div>
+
+      <div class="relative flex items-start">
+        <div class="flex h-6 items-center">
+          <%= check_box_tag "website[monitoring_settings][enable_seo_monitoring]", 
+              "1", 
+              website.monitoring_settings&.dig('enable_seo_monitoring') != false,
+              class: "h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600" %>
+        </div>
+        <div class="ml-3 text-sm leading-6">
+          <label class="font-medium text-gray-900">SEO Monitoring</label>
+          <p class="text-gray-500">Monitor SEO metrics and meta tags</p>
+        </div>
+      </div>
+
+      <div class="relative flex items-start">
+        <div class="flex h-6 items-center">
+          <%= check_box_tag "website[monitoring_settings][enable_security_monitoring]", 
+              "1", 
+              website.monitoring_settings&.dig('enable_security_monitoring') != false,
+              class: "h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600" %>
+        </div>
+        <div class="ml-3 text-sm leading-6">
+          <label class="font-medium text-gray-900">Security Monitoring</label>
+          <p class="text-gray-500">Check for security headers and HTTPS configuration</p>
+        </div>
+      </div>
+    </div>
+  </fieldset>
+
+  <!-- Form Actions -->
+  <div class="mt-6 flex items-center justify-end gap-x-6">
+    <button
+      type="button"
+      class="text-sm font-semibold leading-6 text-gray-900 hover:text-gray-700"
+      data-action="modal#close"
+    >
+      Cancel
+    </button>
+    <%= form.submit "Update Website", 
+        class: "rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
+        data: { turbo_submits_with: "Updating..." } %>
+  </div>
+<% end %>

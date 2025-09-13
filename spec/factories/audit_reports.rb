@@ -1,10 +1,56 @@
 FactoryBot.define do
   factory :audit_report do
-    website { nil }
-    triggered_by { nil }
-    overall_score { 1 }
-    audit_type { 1 }
-    status { 1 }
-    duration { "9.99" }
+    association :website
+    association :triggered_by, factory: :user
+    overall_score { 85 }
+    audit_type { :manual }
+    status { :completed }
+    duration { 9.99 }
+    summary_data { {} }
+    error_message { nil }
+    
+    trait :automated do
+      audit_type { :automated }
+    end
+    
+    trait :scheduled do
+      audit_type { :scheduled }
+    end
+    
+    trait :manual do
+      audit_type { :manual }
+    end
+    
+    trait :pending do
+      status { :pending }
+      overall_score { nil }
+    end
+    
+    trait :in_progress do
+      status { :in_progress }
+      overall_score { nil }
+    end
+    
+    trait :completed do
+      status { :completed }
+    end
+    
+    trait :failed do
+      status { :failed }
+      overall_score { nil }
+      error_message { "Failed to complete audit" }
+    end
+    
+    trait :high_score do
+      overall_score { 95 }
+    end
+    
+    trait :medium_score do
+      overall_score { 75 }
+    end
+    
+    trait :low_score do
+      overall_score { 45 }
+    end
   end
 end

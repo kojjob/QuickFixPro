@@ -46,6 +46,7 @@ class Account < ApplicationRecord
     limits = subscription.plan_limits
     limit = limits[feature.to_s]
     
+    return false if limit.nil? # Feature not defined
     return true if limit == -1 # Unlimited
     current_usage < limit
   end

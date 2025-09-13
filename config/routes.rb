@@ -22,6 +22,11 @@ Rails.application.routes.draw do
   get 'dashboard/usage_stats', to: 'dashboard#usage_stats'
   get 'dashboard/alerts', to: 'dashboard#alerts'
   
+  # Turbo Frame endpoints for dashboard refresh
+  get 'dashboard/stats', to: 'dashboard#stats', as: :dashboard_stats
+  get 'dashboard/performance_chart', to: 'dashboard#performance_chart', as: :dashboard_performance_chart
+  get 'dashboard/activity_feed', to: 'dashboard#activity_feed', as: :dashboard_activity_feed
+  
   # Analytics routes
   get 'analytics', to: 'analytics#index'
   get 'analytics/performance', to: 'analytics#performance'
@@ -34,6 +39,11 @@ Rails.application.routes.draw do
     member do
       post :monitor
       get :audit_history
+      # Modal actions
+      get :quick_edit
+      get :delete_confirmation
+      patch :quick_update
+      delete :quick_destroy
     end
     
     resources :audit_reports, only: [:index, :show] do

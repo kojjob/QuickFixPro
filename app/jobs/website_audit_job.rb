@@ -3,7 +3,7 @@ class WebsiteAuditJob < ApplicationJob
   queue_with_priority 5  # Higher priority for audit jobs
   
   # Limit concurrency to prevent overloading external services
-  limits_concurrency to: 3, key: -> { "website_audit" }
+  # limits_concurrency to: 3, key: -> { "website_audit" }
   
   def perform(website_id, audit_type: 'full', triggered_by: 'scheduled')
     website = Website.find(website_id)

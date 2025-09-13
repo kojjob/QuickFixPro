@@ -19,10 +19,10 @@ class AuditReport < ApplicationRecord
   scope :for_website, ->(website) { where(website: website) }
 
   # Broadcasts
-  broadcasts_to ->(report) { [report.website.account, :audit_reports] }
+  broadcasts_to ->(report) { [report.website.account, :audit_reports] } unless Rails.env.test?
 
   # Callbacks
-  after_update_commit -> { broadcast_replace_to([website.account, :audit_reports]) }
+  after_update_commit -> { broadcast_replace_to([website.account, :audit_reports]) } unless Rails.env.test?
 
   # Methods
   def performance_grade

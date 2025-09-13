@@ -56,7 +56,7 @@ class Subscription < ApplicationRecord
 
   # Methods
   def plan_limits
-    PLAN_LIMITS[plan_name] || {}
+    (PLAN_LIMITS[plan_name] || {}).with_indifferent_access
   end
 
   def usage_limit_for(feature)

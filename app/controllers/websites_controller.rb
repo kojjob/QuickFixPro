@@ -2,7 +2,7 @@ class WebsitesController < ApplicationController
   layout 'dashboard'
   before_action :authenticate_user!
   before_action :ensure_account_context
-  before_action :set_website, only: [:show, :edit, :update, :destroy, :monitor, :audit_history]
+  before_action :set_website, only: [:show, :edit, :update, :destroy, :monitor, :audit_history, :quick_edit, :delete_confirmation, :quick_update, :quick_destroy]
   before_action :check_website_limit, only: [:new, :create]
   
   def index
@@ -21,7 +21,7 @@ class WebsitesController < ApplicationController
       total_websites: current_account.websites.count,
       active_websites: current_account.websites.active.count,
       total_audits: current_account.audit_reports.count,
-      audits_this_month: current_account.audit_reports.where('created_at > ?', 1.month.ago).count
+      audits_this_month: current_account.audit_reports.where('audit_reports.created_at > ?', 1.month.ago).count
     }
   end
   
@@ -43,7 +43,7 @@ class WebsitesController < ApplicationController
     
     if @website.save
       # Queue initial audit
-      WebsiteMonitorJob.perform_later(@website.id, triggered_by: 'initial_setup')
+      WebsiteAuditJob.perform_later(@website.id, audit_type: 'full', triggered_by: 'initial_setup')
       
       redirect_to @website, notice: 'Website was successfully added. Initial audit started.'
     else
@@ -71,7 +71,7 @@ class WebsitesController < ApplicationController
   
   def monitor
     # Trigger manual monitoring
-    result = WebsiteMonitorJob.perform_later(@website.id, triggered_by: 'manual')
+    WebsiteAuditJob.perform_later(@website.id, audit_type: 'full', triggered_by: 'manual')
     
     respond_to do |format|
       format.html do
@@ -115,6 +115,63 @@ class WebsitesController < ApplicationController
       end
     end
   end
+
+  # Modal-specific actions
+  def quick_edit
+    respond_to do |format|
+      format.html { render layout: false }
+      format.turbo_stream
+    end
+  end
+
+  def delete_confirmation
+    respond_to do |format|
+      format.html { render layout: false }
+      format.turbo_stream
+    end
+  end
+
+  def quick_update
+    respond_to do |format|
+      if @website.update(website_params)
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.replace("website_#{@website.id}", partial: 'websites/website_row', locals: { website: @website }),
+            turbo_stream.append('notifications', partial: 'shared/notification', locals: { 
+              type: 'success', 
+              message: 'Website updated successfully!' 
+            })
+          ]
+        end
+        format.html { redirect_to websites_path, notice: 'Website updated successfully!' }
+      else
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace('modal-body', partial: 'websites/quick_edit_form', locals: { 
+            website: @website 
+          })
+        end
+        format.html { render :quick_edit, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def quick_destroy
+    website_name = @website.name
+    @website.destroy
+
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: [
+          turbo_stream.remove("website_#{@website.id}"),
+          turbo_stream.append('notifications', partial: 'shared/notification', locals: { 
+            type: 'success', 
+            message: "Website '#{website_name}' was successfully deleted." 
+          })
+        ]
+      end
+      format.html { redirect_to websites_path, notice: "Website '#{website_name}' was successfully deleted." }
+    end
+  end
   
   private
   
@@ -133,7 +190,7 @@ class WebsitesController < ApplicationController
   
   def website_params
     params.require(:website).permit(
-      :name, :url, :active, :monitor_frequency,
+      :name, :url, :active, :monitoring_frequency,
       monitoring_settings: [
         :enable_performance_monitoring,
         :enable_seo_monitoring,
