@@ -346,16 +346,31 @@ class AnalyticsController < ApplicationController
   
   def improvement_rate_trends
     # Calculate week-over-week improvement
-    weekly_scores = Current.account.audit_reports
-                         .completed
-                         .where(created_at: @start_date..@end_date)
-                         .group_by_week(:created_at)
-                         .average(:overall_score)
+    reports = Current.account.audit_reports
+                     .completed
+                     .where(created_at: @start_date..@end_date)
+                     .order(:created_at)
     
+    # Group by week manually
+    weekly_groups = reports.group_by do |report|
+      # Get the start of the week (Monday)
+      report.created_at.beginning_of_week
+    end
+    
+    # Calculate average score for each week
+    weekly_scores = {}
+    weekly_groups.each do |week_start, week_reports|
+      scores = week_reports.map(&:overall_score).compact
+      if scores.any?
+        weekly_scores[week_start] = (scores.sum.to_f / scores.size).round(1)
+      end
+    end
+    
+    # Sort by date and calculate improvement rates
     trends = []
     previous_score = nil
     
-    weekly_scores.each do |date, score|
+    weekly_scores.sort_by { |date, _| date }.each do |date, score|
       if previous_score
         improvement = ((score - previous_score) / previous_score * 100).round(1)
         trends << { date: date, improvement: improvement }
