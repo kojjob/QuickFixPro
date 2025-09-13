@@ -1,0 +1,277 @@
+<%# Schedule Audit View with Advanced Audit Planning %>
+
+<% content_for :title, "Schedule Audit - #{@website.name}" %>
+
+<div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+  <!-- Header Section -->
+  <div class="bg-white border-b border-gray-200 px-6 py-8">
+    <div class="max-w-4xl mx-auto">
+      <div class="md:flex md:items-center md:justify-between">
+        <div class="min-w-0 flex-1">
+          <h1 class="text-3xl font-bold leading-7 text-gray-900 sm:truncate sm:text-4xl sm:tracking-tight">
+            Schedule New Audit
+          </h1>
+          <div class="mt-2 flex flex-col sm:mt-4 sm:flex-row sm:flex-wrap sm:space-x-6">
+            <div class="mt-2 flex items-center text-sm text-gray-500">
+              <svg class="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              Configure and schedule comprehensive audits for <%= @website.name %>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mt-4 flex md:ml-4 md:mt-0">
+          <%= link_to all_audits_website_audit_reports_path(@website), 
+              class: "inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 transition-colors" do %>
+            <svg class="-ml-0.5 mr-1.5 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z"/>
+            </svg>
+            Back to Audits
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-4xl mx-auto px-6 py-8">
+    <%= form_with url: create_audit_website_audit_reports_path(@website), 
+        method: :post, 
+        data: { turbo: true }, 
+        local: true, 
+        class: "space-y-8" do |form| %>
+      
+      <!-- Audit Type Selection -->
+      <div class="bg-white shadow-lg rounded-xl border border-gray-100 overflow-hidden">
+        <div class="px-6 py-5 border-b border-gray-200">
+          <h3 class="text-lg font-semibold text-gray-900">Select Audit Type</h3>
+          <p class="mt-1 text-sm text-gray-500">Choose the type of audit you want to perform</p>
+        </div>
+        
+        <div class="p-6">
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <% @audit_types.each_with_index do |audit_type, index| %>
+              <div class="relative">
+                <input type="radio" 
+                       name="audit[audit_type]" 
+                       value="<%= audit_type[:name] %>" 
+                       id="audit_type_<%= index %>" 
+                       class="sr-only peer"
+                       <%= 'checked' if index == 0 %>>
+                <label for="audit_type_<%= index %>" 
+                       class="flex flex-col p-4 bg-white border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-indigo-500 peer-checked:bg-indigo-50 hover:bg-gray-50 transition-all duration-200 peer-checked:shadow-md">
+                  <div class="flex items-center justify-center w-12 h-12 mx-auto mb-3 bg-gray-100 peer-checked:bg-indigo-100 rounded-lg transition-colors duration-200">
+                    <% case audit_type[:icon]
+                       when 'lightning-bolt' %>
+                      <svg class="w-6 h-6 text-gray-600 peer-checked:text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                      </svg>
+                    <% when 'search' %>
+                      <svg class="w-6 h-6 text-gray-600 peer-checked:text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                      </svg>
+                    <% when 'eye' %>
+                      <svg class="w-6 h-6 text-gray-600 peer-checked:text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                      </svg>
+                    <% when 'shield-check' %>
+                      <svg class="w-6 h-6 text-gray-600 peer-checked:text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                      </svg>
+                    <% when 'badge-check' %>
+                      <svg class="w-6 h-6 text-gray-600 peer-checked:text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+                      </svg>
+                    <% else %>
+                      <svg class="w-6 h-6 text-gray-600 peer-checked:text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                      </svg>
+                    <% end %>
+                  </div>
+                  <h4 class="font-semibold text-center text-gray-900 peer-checked:text-indigo-900"><%= audit_type[:name] %></h4>
+                  <p class="mt-1 text-sm text-center text-gray-500 peer-checked:text-indigo-700"><%= audit_type[:description] %></p>
+                </label>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scheduling Options -->
+      <div class="bg-white shadow-lg rounded-xl border border-gray-100 overflow-hidden">
+        <div class="px-6 py-5 border-b border-gray-200">
+          <h3 class="text-lg font-semibold text-gray-900">Schedule Options</h3>
+          <p class="mt-1 text-sm text-gray-500">When would you like this audit to run?</p>
+        </div>
+        
+        <div class="p-6">
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <% @scheduling_options.each_with_index do |option, index| %>
+              <div class="relative">
+                <input type="radio" 
+                       name="audit[schedule_type]" 
+                       value="<%= option[:value] %>" 
+                       id="schedule_<%= index %>" 
+                       class="sr-only peer"
+                       <%= 'checked' if index == 0 %>>
+                <label for="schedule_<%= index %>" 
+                       class="flex flex-col p-4 bg-white border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-indigo-500 peer-checked:bg-indigo-50 hover:bg-gray-50 transition-all duration-200">
+                  <h4 class="font-semibold text-center text-gray-900 peer-checked:text-indigo-900"><%= option[:label] %></h4>
+                  <p class="mt-1 text-sm text-center text-gray-500 peer-checked:text-indigo-700"><%= option[:description] %></p>
+                </label>
+              </div>
+            <% end %>
+          </div>
+          
+          <!-- Schedule Time Input (shown for scheduled audits) -->
+          <div class="mt-6" style="display: none;" id="schedule_time_container">
+            <label for="audit_schedule_time" class="block text-sm font-medium text-gray-700 mb-2">
+              Schedule Time
+            </label>
+            <input type="time" 
+                   name="audit[schedule_time]" 
+                   id="audit_schedule_time"
+                   class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+            <p class="mt-1 text-sm text-gray-500">
+              Time when the scheduled audit should run
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Audit Configuration -->
+      <div class="bg-white shadow-lg rounded-xl border border-gray-100 overflow-hidden">
+        <div class="px-6 py-5 border-b border-gray-200">
+          <h3 class="text-lg font-semibold text-gray-900">Audit Configuration</h3>
+          <p class="mt-1 text-sm text-gray-500">Configure how your audit should be performed</p>
+        </div>
+        
+        <div class="p-6 space-y-6">
+          <!-- Device Types -->
+          <fieldset>
+            <legend class="text-base font-medium text-gray-900">Device Types</legend>
+            <div class="mt-4 space-y-4">
+              <div class="flex items-start">
+                <div class="flex items-center h-6">
+                  <input type="checkbox" 
+                         name="audit[include_desktop]" 
+                         value="1" 
+                         id="include_desktop" 
+                         checked
+                         class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
+                </div>
+                <div class="ml-3 text-sm leading-6">
+                  <label for="include_desktop" class="font-medium text-gray-900">Desktop Audit</label>
+                  <p class="text-gray-500">Test desktop/laptop user experience</p>
+                </div>
+              </div>
+              
+              <div class="flex items-start">
+                <div class="flex items-center h-6">
+                  <input type="checkbox" 
+                         name="audit[include_mobile]" 
+                         value="1" 
+                         id="include_mobile" 
+                         checked
+                         class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
+                </div>
+                <div class="ml-3 text-sm leading-6">
+                  <label for="include_mobile" class="font-medium text-gray-900">Mobile Audit</label>
+                  <p class="text-gray-500">Test mobile device user experience</p>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- Notification Options -->
+          <fieldset>
+            <legend class="text-base font-medium text-gray-900">Notifications</legend>
+            <div class="mt-4 space-y-4">
+              <div class="flex items-start">
+                <div class="flex items-center h-6">
+                  <input type="checkbox" 
+                         name="audit[notify_on_completion]" 
+                         value="1" 
+                         id="notify_completion" 
+                         checked
+                         class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
+                </div>
+                <div class="ml-3 text-sm leading-6">
+                  <label for="notify_completion" class="font-medium text-gray-900">Email Notification</label>
+                  <p class="text-gray-500">Send email when audit completes</p>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- Advanced Settings -->
+          <details class="border border-gray-200 rounded-lg">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-gray-900 hover:bg-gray-50">
+              Advanced Settings
+            </summary>
+            <div class="px-4 py-3 border-t border-gray-200 bg-gray-50 space-y-4">
+              <div>
+                <label for="audit_user_agent" class="block text-sm font-medium text-gray-700">
+                  Custom User Agent (Optional)
+                </label>
+                <input type="text" 
+                       name="audit[user_agent]" 
+                       id="audit_user_agent"
+                       placeholder="Leave blank for default"
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+              </div>
+              
+              <div>
+                <label for="audit_throttling" class="block text-sm font-medium text-gray-700">
+                  Network Throttling
+                </label>
+                <select name="audit[throttling]" 
+                        id="audit_throttling"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                  <option value="none">No throttling</option>
+                  <option value="slow_3g">Slow 3G</option>
+                  <option value="fast_3g" selected>Fast 3G</option>
+                  <option value="slow_4g">Slow 4G</option>
+                </select>
+              </div>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center justify-end space-x-4 pt-6">
+        <%= link_to "Cancel", all_audits_website_audit_reports_path(@website), 
+            class: "rounded-md bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 transition-colors" %>
+        <%= form.submit "Schedule Audit", 
+            class: "rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-colors",
+            data: { turbo_submits_with: "Scheduling..." } %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<script>
+// Show/hide schedule time input based on schedule type
+document.addEventListener('DOMContentLoaded', function() {
+  const scheduleRadios = document.querySelectorAll('input[name="audit[schedule_type]"]');
+  const timeContainer = document.getElementById('schedule_time_container');
+  
+  function toggleTimeInput() {
+    const selectedValue = document.querySelector('input[name="audit[schedule_type]"]:checked').value;
+    if (selectedValue !== 'now') {
+      timeContainer.style.display = 'block';
+    } else {
+      timeContainer.style.display = 'none';
+    }
+  }
+  
+  scheduleRadios.forEach(radio => {
+    radio.addEventListener('change', toggleTimeInput);
+  });
+  
+  // Initial state
+  toggleTimeInput();
+});
+</script>

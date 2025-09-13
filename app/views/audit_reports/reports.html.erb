@@ -1,0 +1,442 @@
+<!-- Reports View -->
+<div class="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50">
+  <div class="container mx-auto px-4 py-8">
+    
+    <!-- Header Section -->
+    <div class="mb-8">
+      <div class="flex items-center justify-between flex-wrap gap-4">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900 mb-2">Audit Reports</h1>
+          <p class="text-gray-600">Generate and download comprehensive audit reports and documentation</p>
+        </div>
+        <div class="flex items-center space-x-3">
+          <button onclick="generateReport()" 
+                  class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+            Generate New Report
+          </button>
+          <%= link_to "View Analytics", analytics_website_audit_reports_path(@website), 
+                     class: "bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-2 rounded-lg font-medium transition-colors" %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Report Generation Tools -->
+    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+      <h2 class="text-xl font-bold text-gray-900 mb-6">Report Generator</h2>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Report Type Selection -->
+        <div>
+          <h3 class="font-semibold text-gray-900 mb-4">Report Type</h3>
+          <div class="space-y-3">
+            <label class="flex items-center">
+              <input type="radio" name="report_type" value="executive" class="mr-3" checked>
+              <div>
+                <div class="font-medium text-gray-900">Executive Summary</div>
+                <div class="text-sm text-gray-600">High-level overview for stakeholders</div>
+              </div>
+            </label>
+            <label class="flex items-center">
+              <input type="radio" name="report_type" value="technical" class="mr-3">
+              <div>
+                <div class="font-medium text-gray-900">Technical Report</div>
+                <div class="text-sm text-gray-600">Detailed technical analysis</div>
+              </div>
+            </label>
+            <label class="flex items-center">
+              <input type="radio" name="report_type" value="comprehensive" class="mr-3">
+              <div>
+                <div class="font-medium text-gray-900">Comprehensive Audit</div>
+                <div class="text-sm text-gray-600">Complete analysis with all details</div>
+              </div>
+            </label>
+            <label class="flex items-center">
+              <input type="radio" name="report_type" value="comparison" class="mr-3">
+              <div>
+                <div class="font-medium text-gray-900">Comparison Report</div>
+                <div class="text-sm text-gray-600">Compare multiple audit periods</div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Date Range Selection -->
+        <div>
+          <h3 class="font-semibold text-gray-900 mb-4">Date Range</h3>
+          <div class="space-y-3">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">From Date</label>
+              <input type="date" value="<%= 30.days.ago.strftime('%Y-%m-%d') %>"
+                     class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">To Date</label>
+              <input type="date" value="<%= Date.current.strftime('%Y-%m-%d') %>"
+                     class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div class="grid grid-cols-2 gap-2 pt-2">
+              <button onclick="setQuickDate('7d')" class="text-sm bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded transition-colors">Last 7 days</button>
+              <button onclick="setQuickDate('30d')" class="text-sm bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded transition-colors">Last 30 days</button>
+              <button onclick="setQuickDate('90d')" class="text-sm bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded transition-colors">Last 3 months</button>
+              <button onclick="setQuickDate('1y')" class="text-sm bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded transition-colors">Last year</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Report Sections -->
+        <div>
+          <h3 class="font-semibold text-gray-900 mb-4">Include Sections</h3>
+          <div class="space-y-2">
+            <label class="flex items-center">
+              <input type="checkbox" class="mr-3" checked>
+              <span class="text-gray-900">Performance Analysis</span>
+            </label>
+            <label class="flex items-center">
+              <input type="checkbox" class="mr-3" checked>
+              <span class="text-gray-900">SEO Audit Results</span>
+            </label>
+            <label class="flex items-center">
+              <input type="checkbox" class="mr-3" checked>
+              <span class="text-gray-900">Accessibility Report</span>
+            </label>
+            <label class="flex items-center">
+              <input type="checkbox" class="mr-3" checked>
+              <span class="text-gray-900">Security Assessment</span>
+            </label>
+            <label class="flex items-center">
+              <input type="checkbox" class="mr-3" checked>
+              <span class="text-gray-900">Optimization Recommendations</span>
+            </label>
+            <label class="flex items-center">
+              <input type="checkbox" class="mr-3">
+              <span class="text-gray-900">Historical Comparisons</span>
+            </label>
+            <label class="flex items-center">
+              <input type="checkbox" class="mr-3">
+              <span class="text-gray-900">Competitive Analysis</span>
+            </label>
+            <label class="flex items-center">
+              <input type="checkbox" class="mr-3">
+              <span class="text-gray-900">Implementation Roadmap</span>
+            </label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="flex items-center justify-between mt-6 pt-6 border-t border-gray-200">
+        <div class="flex items-center space-x-4">
+          <label class="flex items-center">
+            <input type="checkbox" class="mr-2">
+            <span class="text-sm text-gray-700">Include raw data tables</span>
+          </label>
+          <label class="flex items-center">
+            <input type="checkbox" class="mr-2">
+            <span class="text-sm text-gray-700">Add company branding</span>
+          </label>
+        </div>
+        <div class="flex items-center space-x-2">
+          <select class="border border-gray-300 rounded px-3 py-2 text-sm">
+            <option>PDF Format</option>
+            <option>Excel Spreadsheet</option>
+            <option>PowerPoint Presentation</option>
+            <option>HTML Report</option>
+          </select>
+          <button onclick="generateCustomReport()" 
+                  class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+            Generate Report
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pre-built Report Templates -->
+    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+      <h2 class="text-xl font-bold text-gray-900 mb-6">Quick Report Templates</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <% @report_templates.each do |template| %>
+          <div class="border border-gray-200 rounded-lg p-4 hover:border-blue-300 hover:shadow-md transition-all">
+            <div class="flex items-start justify-between mb-3">
+              <div class="p-2 bg-<%= template[:color] %>-100 rounded-lg">
+                <svg class="w-6 h-6 text-<%= template[:color] %>-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <%= template[:icon] %>
+                </svg>
+              </div>
+              <span class="text-xs text-gray-500"><%= template[:duration] %></span>
+            </div>
+            
+            <h3 class="font-semibold text-gray-900 mb-2"><%= template[:name] %></h3>
+            <p class="text-gray-600 text-sm mb-4"><%= template[:description] %></p>
+            
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-500">
+                Last generated: <%= template[:last_generated] %>
+              </span>
+              <button onclick="generateTemplate('<%= template[:id] %>')" 
+                      class="bg-<%= template[:color] %>-600 hover:bg-<%= template[:color] %>-700 text-white px-4 py-2 rounded text-sm font-medium transition-colors">
+                Generate
+              </button>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Recent Reports -->
+    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-bold text-gray-900">Recent Reports</h2>
+        <div class="flex items-center space-x-2">
+          <input type="text" placeholder="Search reports..." 
+                 class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-48">
+          <button class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+            Filter
+          </button>
+        </div>
+      </div>
+      
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead>
+            <tr class="border-b border-gray-200">
+              <th class="text-left py-3 px-4 font-semibold text-gray-900">Report Name</th>
+              <th class="text-left py-3 px-4 font-semibold text-gray-900">Type</th>
+              <th class="text-left py-3 px-4 font-semibold text-gray-900">Date Range</th>
+              <th class="text-left py-3 px-4 font-semibold text-gray-900">Generated</th>
+              <th class="text-left py-3 px-4 font-semibold text-gray-900">Size</th>
+              <th class="text-center py-3 px-4 font-semibold text-gray-900">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            <% @recent_reports.each do |report| %>
+              <tr class="hover:bg-gray-50">
+                <td class="py-3 px-4">
+                  <div class="flex items-center">
+                    <div class="p-2 bg-<%= report[:type_color] %>-100 rounded-lg mr-3">
+                      <svg class="w-4 h-4 text-<%= report[:type_color] %>-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                      </svg>
+                    </div>
+                    <div>
+                      <div class="font-medium text-gray-900"><%= report[:name] %></div>
+                      <div class="text-sm text-gray-500"><%= report[:description] %></div>
+                    </div>
+                  </div>
+                </td>
+                <td class="py-3 px-4">
+                  <span class="bg-<%= report[:type_color] %>-100 text-<%= report[:type_color] %>-800 text-xs font-medium px-2 py-1 rounded-full">
+                    <%= report[:type] %>
+                  </span>
+                </td>
+                <td class="py-3 px-4 text-sm text-gray-600"><%= report[:date_range] %></td>
+                <td class="py-3 px-4 text-sm text-gray-600"><%= report[:generated_at] %></td>
+                <td class="py-3 px-4 text-sm text-gray-600"><%= report[:file_size] %></td>
+                <td class="py-3 px-4 text-center">
+                  <div class="flex items-center justify-center space-x-2">
+                    <button onclick="downloadReport('<%= report[:id] %>')" 
+                            class="text-blue-600 hover:text-blue-700" title="Download">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                      </svg>
+                    </button>
+                    <button onclick="viewReport('<%= report[:id] %>')" 
+                            class="text-green-600 hover:text-green-700" title="View">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                      </svg>
+                    </button>
+                    <button onclick="shareReport('<%= report[:id] %>')" 
+                            class="text-purple-600 hover:text-purple-700" title="Share">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"/>
+                      </svg>
+                    </button>
+                    <button onclick="deleteReport('<%= report[:id] %>')" 
+                            class="text-red-600 hover:text-red-700" title="Delete">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Pagination -->
+      <div class="flex items-center justify-between mt-6 pt-6 border-t border-gray-200">
+        <div class="text-sm text-gray-600">
+          Showing <%= (@current_page - 1) * @per_page + 1 %> to 
+          <%= [@current_page * @per_page, @total_reports].min %> of 
+          <%= @total_reports %> reports
+        </div>
+        <div class="flex items-center space-x-2">
+          <% if @current_page > 1 %>
+            <a href="?page=<%= @current_page - 1 %>" class="bg-white hover:bg-gray-50 text-gray-700 px-3 py-2 rounded border text-sm">Previous</a>
+          <% end %>
+          
+          <% ([@current_page - 2, 1].max..[@current_page + 2, @total_pages].min).each do |page| %>
+            <% if page == @current_page %>
+              <span class="bg-blue-600 text-white px-3 py-2 rounded text-sm"><%= page %></span>
+            <% else %>
+              <a href="?page=<%= page %>" class="bg-white hover:bg-gray-50 text-gray-700 px-3 py-2 rounded border text-sm"><%= page %></a>
+            <% end %>
+          <% end %>
+          
+          <% if @current_page < @total_pages %>
+            <a href="?page=<%= @current_page + 1 %>" class="bg-white hover:bg-gray-50 text-gray-700 px-3 py-2 rounded border text-sm">Next</a>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Report Statistics -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div class="bg-white rounded-xl shadow-lg p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-gray-600 text-sm font-medium">Total Reports</p>
+            <p class="text-2xl font-bold text-gray-900"><%= @report_stats[:total_reports] %></p>
+          </div>
+          <div class="p-3 bg-blue-100 rounded-full">
+            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-lg p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-gray-600 text-sm font-medium">This Month</p>
+            <p class="text-2xl font-bold text-gray-900"><%= @report_stats[:this_month] %></p>
+          </div>
+          <div class="p-3 bg-green-100 rounded-full">
+            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-lg p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-gray-600 text-sm font-medium">Most Popular</p>
+            <p class="text-lg font-bold text-gray-900"><%= @report_stats[:most_popular] %></p>
+          </div>
+          <div class="p-3 bg-purple-100 rounded-full">
+            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-lg p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-gray-600 text-sm font-medium">Storage Used</p>
+            <p class="text-2xl font-bold text-gray-900"><%= @report_stats[:storage_used] %></p>
+          </div>
+          <div class="p-3 bg-orange-100 rounded-full">
+            <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript for Report Functionality -->
+<script>
+function generateReport() {
+  // In a real app, this would trigger a background job to generate a report
+  console.log('Generating new report...');
+  alert('Report generation started! You will receive an email when it\'s ready.');
+}
+
+function generateCustomReport() {
+  const reportType = document.querySelector('input[name="report_type"]:checked').value;
+  const dateFrom = document.querySelector('input[type="date"]').value;
+  const dateTo = document.querySelectorAll('input[type="date"]')[1].value;
+  const sections = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
+                      .map(cb => cb.nextElementSibling.textContent);
+  
+  console.log('Generating custom report:', {
+    type: reportType,
+    dateRange: `${dateFrom} to ${dateTo}`,
+    sections: sections
+  });
+  
+  alert('Custom report generation started! This may take a few minutes.');
+}
+
+function generateTemplate(templateId) {
+  console.log(`Generating template report: ${templateId}`);
+  alert(`Generating ${templateId} report template...`);
+}
+
+function setQuickDate(period) {
+  const toDate = new Date();
+  let fromDate = new Date();
+  
+  switch(period) {
+    case '7d':
+      fromDate.setDate(toDate.getDate() - 7);
+      break;
+    case '30d':
+      fromDate.setDate(toDate.getDate() - 30);
+      break;
+    case '90d':
+      fromDate.setDate(toDate.getDate() - 90);
+      break;
+    case '1y':
+      fromDate.setFullYear(toDate.getFullYear() - 1);
+      break;
+  }
+  
+  document.querySelector('input[type="date"]').value = fromDate.toISOString().split('T')[0];
+  document.querySelectorAll('input[type="date"]')[1].value = toDate.toISOString().split('T')[0];
+}
+
+function downloadReport(reportId) {
+  console.log(`Downloading report: ${reportId}`);
+  // In a real app, this would initiate a file download
+  alert('Download started! Check your downloads folder.');
+}
+
+function viewReport(reportId) {
+  console.log(`Viewing report: ${reportId}`);
+  // In a real app, this would open the report in a new tab or modal
+  alert('Opening report viewer...');
+}
+
+function shareReport(reportId) {
+  console.log(`Sharing report: ${reportId}`);
+  // In a real app, this would open a sharing dialog
+  alert('Share functionality would open here with options to email or generate public links.');
+}
+
+function deleteReport(reportId) {
+  if (confirm('Are you sure you want to delete this report? This action cannot be undone.')) {
+    console.log(`Deleting report: ${reportId}`);
+    alert('Report deleted successfully!');
+    window.location.reload();
+  }
+}
+
+// Auto-save form state
+document.addEventListener('change', function(e) {
+  if (e.target.type === 'checkbox' || e.target.type === 'radio' || e.target.type === 'date') {
+    // In a real app, you might save form state to localStorage
+    console.log('Form state changed, auto-saving...');
+  }
+});
+</script>

@@ -109,10 +109,12 @@ class AnalyticsController < ApplicationController
                            .where('audit_reports.created_at': @start_date..@end_date)
                            .average(:overall_score)&.round(1) || 0,
       improvement_rate: calculate_improvement_rate,
-      total_alerts: Current.account.monitoring_alerts
+      total_alerts: MonitoringAlert.joins(website: :account)
+                          .where(websites: { account_id: Current.account.id })
                           .where(triggered_at: @start_date..@end_date)
                           .count,
-      critical_alerts: Current.account.monitoring_alerts
+      critical_alerts: MonitoringAlert.joins(website: :account)
+                             .where(websites: { account_id: Current.account.id })
                              .critical
                              .where(triggered_at: @start_date..@end_date)
                              .count
@@ -139,11 +141,11 @@ class AnalyticsController < ApplicationController
   def calculate_average_metric(audits, metric_name)
     metrics = PerformanceMetric.joins(:audit_report)
                               .where(audit_report: audits)
-                              .where(metric_name: metric_name)
+                              .where(metric_type: metric_name)
     
     return 0 if metrics.empty?
     
-    avg = metrics.average(:metric_value)&.to_f || 0
+    avg = metrics.average(:value)&.to_f || 0
     metric_name.include?('shift') ? avg.round(3) : avg.round(0)
   end
   
@@ -152,9 +154,9 @@ class AnalyticsController < ApplicationController
     return 0 if total == 0
     
     passing = audits.select do |audit|
-      lcp = audit.performance_metrics.find_by(metric_name: 'largest_contentful_paint')&.metric_value&.to_f
-      fcp = audit.performance_metrics.find_by(metric_name: 'first_contentful_paint')&.metric_value&.to_f
-      cls = audit.performance_metrics.find_by(metric_name: 'cumulative_layout_shift')&.metric_value&.to_f
+      lcp = audit.performance_metrics.find_by(metric_type: 'largest_contentful_paint')&.value&.to_f
+      fcp = audit.performance_metrics.find_by(metric_type: 'first_contentful_paint')&.value&.to_f
+      cls = audit.performance_metrics.find_by(metric_type: 'cumulative_layout_shift')&.value&.to_f
       
       lcp && fcp && cls && lcp < 2500 && fcp < 1800 && cls < 0.1
     end.count
@@ -226,11 +228,11 @@ class AnalyticsController < ApplicationController
     return {} unless latest_audit
     
     {
-      lcp: latest_audit.performance_metrics.find_by(metric_name: 'largest_contentful_paint')&.metric_value,
-      fcp: latest_audit.performance_metrics.find_by(metric_name: 'first_contentful_paint')&.metric_value,
-      cls: latest_audit.performance_metrics.find_by(metric_name: 'cumulative_layout_shift')&.metric_value,
-      ttfb: latest_audit.performance_metrics.find_by(metric_name: 'time_to_first_byte')&.metric_value,
-      fid: latest_audit.performance_metrics.find_by(metric_name: 'first_input_delay')&.metric_value
+      lcp: latest_audit.performance_metrics.find_by(metric_type: 'largest_contentful_paint')&.value,
+      fcp: latest_audit.performance_metrics.find_by(metric_type: 'first_contentful_paint')&.value,
+      cls: latest_audit.performance_metrics.find_by(metric_type: 'cumulative_layout_shift')&.value,
+      ttfb: latest_audit.performance_metrics.find_by(metric_type: 'time_to_first_byte')&.value,
+      fid: latest_audit.performance_metrics.find_by(metric_type: 'first_input_delay')&.value
     }
   end
   
@@ -280,9 +282,9 @@ class AnalyticsController < ApplicationController
         id: website.id,
         name: website.name,
         score: latest_audit.overall_score,
-        lcp: latest_audit.performance_metrics.find_by(metric_name: 'largest_contentful_paint')&.metric_value,
-        fcp: latest_audit.performance_metrics.find_by(metric_name: 'first_contentful_paint')&.metric_value,
-        cls: latest_audit.performance_metrics.find_by(metric_name: 'cumulative_layout_shift')&.metric_value
+        lcp: latest_audit.performance_metrics.find_by(metric_type: 'largest_contentful_paint')&.value,
+        fcp: latest_audit.performance_metrics.find_by(metric_type: 'first_contentful_paint')&.value,
+        cls: latest_audit.performance_metrics.find_by(metric_type: 'cumulative_layout_shift')&.value
       }
     end.compact
   end
@@ -303,12 +305,12 @@ class AnalyticsController < ApplicationController
     metrics.each do |metric|
       trends[metric] = PerformanceMetric
                       .joins(:audit_report)
-                      .where(metric_name: metric)
+                      .where(metric_type: metric)
                       .where(audit_reports: { account_id: Current.account.id })
-                      .where('measurement_time >= ?', @start_date)
-                      .where('measurement_time <= ?', @end_date)
-                      .group_by_day(:measurement_time)
-                      .average(:metric_value)
+                      .where('performance_metrics.created_at >= ?', @start_date)
+                      .where('performance_metrics.created_at <= ?', @end_date)
+                      .group_by_day('performance_metrics.created_at')
+                      .average(:value)
                       .map { |date, value| { date: date, value: value&.round(2) } }
     end
     
@@ -386,8 +388,8 @@ class AnalyticsController < ApplicationController
         if metric == 'overall_score'
           data[website.id][metric] = latest_audit.overall_score
         else
-          metric_record = latest_audit.performance_metrics.find_by(metric_name: metric_name_mapping(metric))
-          data[website.id][metric] = metric_record&.metric_value
+          metric_record = latest_audit.performance_metrics.find_by(metric_type: metric_name_mapping(metric))
+          data[website.id][metric] = metric_record&.value
         end
       end
     end

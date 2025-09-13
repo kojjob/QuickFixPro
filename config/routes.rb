@@ -55,6 +55,13 @@ Rails.application.routes.draw do
       
       collection do
         get :compare
+        get :all_audits
+        get :schedule_audit
+        post :create_audit
+        get :audit_history
+        get :optimizations
+        get :analytics
+        get :reports
       end
     end
     

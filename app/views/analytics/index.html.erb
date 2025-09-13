@@ -1,0 +1,299 @@
+<div class="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+  <!-- Enhanced Header with Animation -->
+  <div class="relative bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 shadow-xl">
+    <div class="absolute inset-0 bg-black opacity-10"></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-4xl font-bold text-white tracking-tight flex items-center">
+            <svg class="w-10 h-10 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+            </svg>
+            Analytics Dashboard
+          </h1>
+          <p class="mt-2 text-blue-100 text-lg">Comprehensive insights into your website performance</p>
+        </div>
+        
+        <!-- Date Range Selector with Enhanced Style -->
+        <div class="flex items-center space-x-4">
+          <div class="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2 flex items-center space-x-3">
+            <svg class="w-5 h-5 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+            <form method="get" action="<%= analytics_path %>" class="flex items-center space-x-2">
+              <input type="date" name="start_date" value="<%= @start_date %>" 
+                     class="bg-transparent text-white placeholder-white/60 border-0 focus:ring-0 text-sm">
+              <span class="text-white/60">to</span>
+              <input type="date" name="end_date" value="<%= @end_date %>" 
+                     class="bg-transparent text-white placeholder-white/60 border-0 focus:ring-0 text-sm">
+              <button type="submit" class="ml-2 px-3 py-1 bg-white/20 hover:bg-white/30 text-white rounded-md text-sm font-medium transition-all">
+                Apply
+              </button>
+            </form>
+          </div>
+          
+          <%= link_to analytics_export_path(format_type: 'csv'), class: "inline-flex items-center px-4 py-2 bg-white/20 backdrop-blur-sm text-white rounded-lg hover:bg-white/30 transition-all duration-200" do %>
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            Export Report
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Key Metrics Cards with Enhanced Design -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <% [
+        { 
+          label: "Total Websites", 
+          value: @overview_stats[:total_websites], 
+          icon: "M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9",
+          color: "blue",
+          change: "+#{@overview_stats[:active_websites]} active"
+        },
+        { 
+          label: "Average Score", 
+          value: "#{@overview_stats[:average_score]}%", 
+          icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
+          color: @overview_stats[:average_score] >= 80 ? "green" : @overview_stats[:average_score] >= 50 ? "yellow" : "red",
+          change: "#{@overview_stats[:improvement_rate] > 0 ? '+' : ''}#{@overview_stats[:improvement_rate]}% change"
+        },
+        { 
+          label: "Total Audits", 
+          value: number_with_delimiter(@overview_stats[:total_audits]), 
+          icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4",
+          color: "indigo",
+          change: "#{@overview_stats[:audits_this_month]} this month"
+        },
+        { 
+          label: "Active Alerts", 
+          value: @overview_stats[:total_alerts], 
+          icon: "M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9",
+          color: @overview_stats[:critical_alerts] > 0 ? "red" : "gray",
+          change: "#{@overview_stats[:critical_alerts]} critical"
+        }
+      ].each do |metric| %>
+        <div class="relative overflow-hidden bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+          <div class="absolute top-0 right-0 -mt-4 -mr-4 h-24 w-24 rounded-full bg-gradient-to-br from-<%= metric[:color] %>-400 to-<%= metric[:color] %>-600 opacity-10"></div>
+          <div class="p-6">
+            <div class="flex items-center justify-between">
+              <div class="flex-1">
+                <p class="text-sm font-medium text-gray-600"><%= metric[:label] %></p>
+                <p class="mt-2 text-3xl font-bold text-gray-900"><%= metric[:value] %></p>
+                <p class="mt-2 text-xs text-<%= metric[:color] %>-600 font-medium"><%= metric[:change] %></p>
+              </div>
+              <div class="flex-shrink-0 p-3 bg-gradient-to-br from-<%= metric[:color] %>-400 to-<%= metric[:color] %>-600 rounded-xl">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="<%= metric[:icon] %>"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Performance Summary Section -->
+    <% if @performance_summary.any? %>
+      <div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+          <svg class="w-7 h-7 mr-3 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+          Core Web Vitals Summary
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
+          <% [
+            { name: "LCP", label: "Largest Contentful Paint", value: @performance_summary[:average_lcp], unit: "ms", good: 2500, poor: 4000 },
+            { name: "FCP", label: "First Contentful Paint", value: @performance_summary[:average_fcp], unit: "ms", good: 1800, poor: 3000 },
+            { name: "CLS", label: "Cumulative Layout Shift", value: @performance_summary[:average_cls], unit: "", good: 0.1, poor: 0.25 },
+            { name: "TTFB", label: "Time to First Byte", value: @performance_summary[:average_ttfb], unit: "ms", good: 800, poor: 1800 },
+            { name: "Pass", label: "Passing CWV", value: @performance_summary[:passing_cwv], unit: "%", good: 75, poor: 50 }
+          ].each do |vital| %>
+            <div class="relative">
+              <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-4 border border-gray-200">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs font-bold text-gray-500 uppercase tracking-wider"><%= vital[:name] %></span>
+                  <% 
+                    status_color = if vital[:unit] == "%"
+                      vital[:value] >= vital[:good] ? "green" : vital[:value] >= vital[:poor] ? "yellow" : "red"
+                    else
+                      vital[:value] <= vital[:good] ? "green" : vital[:value] <= vital[:poor] ? "yellow" : "red"
+                    end
+                  %>
+                  <span class="flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-<%= status_color %>-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-<%= status_color %>-500"></span>
+                  </span>
+                </div>
+                <p class="text-2xl font-bold text-gray-900">
+                  <%= vital[:value] %><span class="text-sm text-gray-500"><%= vital[:unit] %></span>
+                </p>
+                <p class="text-xs text-gray-600 mt-1"><%= vital[:label] %></p>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Two Column Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Recent Audits -->
+      <div class="lg:col-span-2 bg-white rounded-2xl shadow-lg p-6">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-xl font-bold text-gray-900 flex items-center">
+            <svg class="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            Recent Audits
+          </h3>
+          <%= link_to "View All", audit_reports_path, class: "text-sm text-blue-600 hover:text-blue-700 font-medium" %>
+        </div>
+        
+        <div class="space-y-3">
+          <% @recent_audits.each do |audit| %>
+            <div class="group relative bg-gradient-to-r from-gray-50 to-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-all duration-200">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                  <div class="flex-shrink-0">
+                    <% score_color = audit.overall_score >= 90 ? "green" : audit.overall_score >= 50 ? "yellow" : "red" %>
+                    <div class="w-14 h-14 bg-gradient-to-br from-<%= score_color %>-400 to-<%= score_color %>-600 rounded-xl flex items-center justify-center">
+                      <span class="text-white font-bold text-lg"><%= audit.overall_score %></span>
+                    </div>
+                  </div>
+                  <div>
+                    <p class="text-sm font-semibold text-gray-900"><%= audit.website.name %></p>
+                    <p class="text-xs text-gray-500"><%= audit.website.url %></p>
+                    <p class="text-xs text-gray-400 mt-1">
+                      <time datetime="<%= audit.created_at.iso8601 %>">
+                        <%= time_ago_in_words(audit.created_at) %> ago
+                      </time>
+                    </p>
+                  </div>
+                </div>
+                <%= link_to audit_report_path(audit), class: "opacity-0 group-hover:opacity-100 transition-opacity duration-200" do %>
+                  <svg class="w-5 h-5 text-gray-400 hover:text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                  </svg>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Performance Leaders & Laggards -->
+      <div class="space-y-6">
+        <!-- Top Performers -->
+        <div class="bg-white rounded-2xl shadow-lg p-6">
+          <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+            <svg class="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+            </svg>
+            Top Performers
+          </h3>
+          
+          <div class="space-y-3">
+            <% @top_performing_websites.each_with_index do |website, index| %>
+              <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                <div class="flex items-center space-x-3">
+                  <span class="flex-shrink-0 w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-xs font-bold">
+                    <%= index + 1 %>
+                  </span>
+                  <div>
+                    <p class="text-sm font-medium text-gray-900"><%= website.name %></p>
+                    <p class="text-xs text-gray-500"><%= website.display_url %></p>
+                  </div>
+                </div>
+                <span class="text-lg font-bold text-green-600"><%= website.current_score %>%</span>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Needs Attention -->
+        <div class="bg-white rounded-2xl shadow-lg p-6">
+          <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+            <svg class="w-5 h-5 mr-2 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+            Needs Attention
+          </h3>
+          
+          <div class="space-y-3">
+            <% if @websites_needing_attention.any? %>
+              <% @websites_needing_attention.each do |website| %>
+                <div class="flex items-center justify-between p-3 bg-red-50 rounded-lg">
+                  <div class="flex items-center space-x-3">
+                    <span class="flex-shrink-0 w-6 h-6 bg-red-600 text-white rounded-full flex items-center justify-center">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01"/>
+                      </svg>
+                    </span>
+                    <div>
+                      <p class="text-sm font-medium text-gray-900"><%= website.name %></p>
+                      <p class="text-xs text-gray-500"><%= website.display_url %></p>
+                    </div>
+                  </div>
+                  <span class="text-lg font-bold text-red-600"><%= website.current_score %>%</span>
+                </div>
+              <% end %>
+            <% else %>
+              <div class="text-center py-6">
+                <svg class="w-12 h-12 text-gray-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <p class="text-sm text-gray-500">All websites performing well!</p>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+      <%= link_to analytics_performance_path, class: "group relative bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl p-6 text-white hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-lg hover:shadow-xl" do %>
+        <div class="flex items-center justify-between">
+          <div>
+            <h4 class="text-lg font-semibold">Performance Analysis</h4>
+            <p class="text-blue-100 text-sm mt-1">Deep dive into performance metrics</p>
+          </div>
+          <svg class="w-8 h-8 text-blue-200 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+          </svg>
+        </div>
+      <% end %>
+
+      <%= link_to analytics_trends_path, class: "group relative bg-gradient-to-br from-purple-600 to-purple-700 rounded-2xl p-6 text-white hover:from-purple-700 hover:to-purple-800 transition-all duration-200 shadow-lg hover:shadow-xl" do %>
+        <div class="flex items-center justify-between">
+          <div>
+            <h4 class="text-lg font-semibold">Trend Analysis</h4>
+            <p class="text-purple-100 text-sm mt-1">Track performance over time</p>
+          </div>
+          <svg class="w-8 h-8 text-purple-200 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/>
+          </svg>
+        </div>
+      <% end %>
+
+      <%= link_to analytics_comparisons_path, class: "group relative bg-gradient-to-br from-green-600 to-green-700 rounded-2xl p-6 text-white hover:from-green-700 hover:to-green-800 transition-all duration-200 shadow-lg hover:shadow-xl" do %>
+        <div class="flex items-center justify-between">
+          <div>
+            <h4 class="text-lg font-semibold">Website Comparison</h4>
+            <p class="text-green-100 text-sm mt-1">Compare website performance</p>
+          </div>
+          <svg class="w-8 h-8 text-green-200 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+          </svg>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
