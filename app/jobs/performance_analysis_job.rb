@@ -362,9 +362,9 @@ class PerformanceAnalysisJob < ApplicationJob
       alert_data: {
         audit_report_id: audit_report.id,
         issues: critical_issues,
-        triggered_at: Time.current
+        created_at: Time.current
       },
-      triggered_at: Time.current,
+      created_at: Time.current,
       status: 'active'
     )
     

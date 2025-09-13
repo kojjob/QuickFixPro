@@ -140,7 +140,7 @@
                         <p class="font-medium text-gray-900">Alert Triggered</p>
                       </div>
                       <p class="mt-1 text-sm text-gray-500">
-                        <%= @alert.triggered_at.strftime("%B %d, %Y at %I:%M %p") %>
+                        <%= @alert.created_at.strftime("%B %d, %Y at %I:%M %p") %>
                       </p>
                     </div>
                   </div>
@@ -296,7 +296,7 @@
               <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                 <div class="flex-1">
                   <p class="text-sm font-medium text-gray-900"><%= related_alert.alert_type.humanize %></p>
-                  <p class="text-xs text-gray-500"><%= related_alert.triggered_at.strftime("%b %d, %Y") %></p>
+                  <p class="text-xs text-gray-500"><%= related_alert.created_at.strftime("%b %d, %Y") %></p>
                 </div>
                 <div class="flex items-center space-x-2">
                   <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium <%= 

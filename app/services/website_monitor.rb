@@ -374,9 +374,9 @@ class WebsiteMonitor < ApplicationService
         audit_report_id: audit_report.id,
         overall_score: audit_report.overall_score,
         critical_insights: critical_insights,
-        triggered_at: Time.current
+        created_at: Time.current
       },
-      triggered_at: Time.current,
+      created_at: Time.current,
       status: 'active'
     )
     

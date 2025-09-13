@@ -111,12 +111,12 @@ class AnalyticsController < ApplicationController
       improvement_rate: calculate_improvement_rate,
       total_alerts: MonitoringAlert.joins(website: :account)
                           .where(websites: { account_id: Current.account.id })
-                          .where(triggered_at: @start_date..@end_date)
+                          .where(created_at: @start_date..@end_date)
                           .count,
       critical_alerts: MonitoringAlert.joins(website: :account)
                              .where(websites: { account_id: Current.account.id })
                              .critical
-                             .where(triggered_at: @start_date..@end_date)
+                             .where(created_at: @start_date..@end_date)
                              .count
     }
   end

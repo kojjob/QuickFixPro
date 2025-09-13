@@ -13,10 +13,10 @@ class MonitoringAlertsController < ApplicationController
     
     # Filter by date range
     if params[:date_from].present? && params[:date_to].present?
-      @alerts = @alerts.where(triggered_at: params[:date_from]..params[:date_to])
+      @alerts = @alerts.where(created_at: params[:date_from]..params[:date_to])
     end
     
-    @alerts = @alerts.order(triggered_at: :desc).page(params[:page])
+    @alerts = @alerts.order(created_at: :desc).page(params[:page])
     
     # Statistics
     @alert_stats = {
@@ -40,7 +40,7 @@ class MonitoringAlertsController < ApplicationController
     @related_alerts = @website.monitoring_alerts
                               .where.not(id: @alert.id)
                               .where(alert_type: @alert.alert_type)
-                              .order(triggered_at: :desc)
+                              .order(created_at: :desc)
                               .limit(5)
   end
   
@@ -87,7 +87,7 @@ class MonitoringAlertsController < ApplicationController
         @website.monitoring_alerts
                 .active
                 .where(alert_type: @alert.alert_type)
-                .where('triggered_at < ?', @alert.triggered_at)
+                .where('created_at < ?', @alert.created_at)
                 .update_all(
                   status: 'dismissed',
                   alert_data: { 'dismissed_with_resolution' => @alert.id }
