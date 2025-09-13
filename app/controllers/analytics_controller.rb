@@ -64,6 +64,10 @@ class AnalyticsController < ApplicationController
   end
   
   def export
+    # Initialize the required data for export
+    @overview_stats = calculate_overview_stats
+    @performance_summary = calculate_performance_summary
+    
     format = params[:format_type] || 'csv'
     
     case format
@@ -510,22 +514,28 @@ class AnalyticsController < ApplicationController
       csv << ['Date Range', "#{@start_date} to #{@end_date}"]
       csv << []
       
-      csv << ['Overview Statistics']
-      @overview_stats.each do |key, value|
-        csv << [key.to_s.humanize, value]
+      if @overview_stats.present?
+        csv << ['Overview Statistics']
+        @overview_stats.each do |key, value|
+          csv << [key.to_s.humanize, value]
+        end
+        csv << []
       end
-      csv << []
       
-      csv << ['Performance Summary']
-      @performance_summary.each do |key, value|
-        csv << [key.to_s.humanize, value]
+      if @performance_summary.present?
+        csv << ['Performance Summary']
+        @performance_summary.each do |key, value|
+          csv << [key.to_s.humanize, value]
+        end
+        csv << []
       end
-      csv << []
       
-      csv << ['Website Performance']
-      csv << ['Website', 'Current Score', 'Last Audit']
-      @websites.each do |website|
-        csv << [website.name, website.current_score, website.last_monitored_at]
+      if @websites.present?
+        csv << ['Website Performance']
+        csv << ['Website', 'Current Score', 'Last Audit']
+        @websites.each do |website|
+          csv << [website.name, website.current_score || 'N/A', website.last_monitored_at || 'Never']
+        end
       end
     end
   end
@@ -539,14 +549,14 @@ class AnalyticsController < ApplicationController
           end: @end_date
         }
       },
-      overview: @overview_stats,
-      performance: @performance_summary,
-      websites: @websites.map { |w|
+      overview: @overview_stats || {},
+      performance: @performance_summary || {},
+      websites: (@websites || []).map { |w|
         {
           id: w.id,
           name: w.name,
           url: w.url,
-          current_score: w.current_score,
+          current_score: w.current_score || 0,
           last_monitored_at: w.last_monitored_at
         }
       }
