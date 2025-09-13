@@ -96,6 +96,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_12_220551) do
     t.index ["website_id"], name: "index_optimization_recommendations_on_website_id"
   end
 
+  create_table "optimization_tasks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "website_id", null: false
+    t.string "fix_type"
+    t.string "status"
+    t.jsonb "details", default: {}
+    t.text "error_message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["fix_type"], name: "index_optimization_tasks_on_fix_type"
+    t.index ["status"], name: "index_optimization_tasks_on_status"
+    t.index ["website_id"], name: "index_optimization_tasks_on_website_id"
+  end
+
   create_table "payments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "subscription_id", null: false
     t.decimal "amount", precision: 10, scale: 2, null: false
@@ -226,6 +239,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_12_220551) do
   add_foreign_key "monitoring_alerts", "websites"
   add_foreign_key "optimization_recommendations", "audit_reports"
   add_foreign_key "optimization_recommendations", "websites"
+  add_foreign_key "optimization_tasks", "websites"
   add_foreign_key "payments", "subscriptions"
   add_foreign_key "performance_metrics", "audit_reports"
   add_foreign_key "performance_metrics", "websites"
