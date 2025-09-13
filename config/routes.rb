@@ -109,6 +109,9 @@ Rails.application.routes.draw do
 
   # API endpoints
   namespace :api do
+    # API Documentation route
+    get 'docs', to: 'docs#index'
+    
     namespace :v1 do
       resources :websites, only: [:index, :show] do
         resources :audit_reports, only: [:index, :show, :create]
