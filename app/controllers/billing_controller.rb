@@ -170,7 +170,9 @@ class BillingController < ApplicationController
     
     # Process payment for the upgrade
     payment_service = PaymentService.new(@subscription)
-    payment_service.process_subscription_renewal(current_user.email, payment_method)
+    result = payment_service.process_subscription_renewal(current_user.email, payment_method)
+    
+    result
   rescue => e
     { success: false, message: e.message }
   end
@@ -184,7 +186,9 @@ class BillingController < ApplicationController
     
     # Process initial payment
     payment_service = PaymentService.new(@subscription)
-    payment_service.process_subscription_renewal(current_user.email, payment_method)
+    result = payment_service.process_subscription_renewal(current_user.email, payment_method)
+    
+    result
   rescue => e
     { success: false, message: e.message }
   end

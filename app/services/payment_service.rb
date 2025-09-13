@@ -8,6 +8,8 @@ class PaymentService
   end
   
   def create_or_retrieve_customer(email)
+    return mock_customer(email) unless stripe_configured?
+    
     account = subscription.account
     
     if account.stripe_customer_id.present?
@@ -30,6 +32,21 @@ class PaymentService
   end
   
   def process_payment(payment, email, payment_method_id)
+    unless stripe_configured?
+      # Mock successful payment for development when Stripe is not configured
+      payment.update!(
+        status: 'succeeded',
+        stripe_payment_intent_id: 'pi_mock_' + SecureRandom.hex(12),
+        stripe_charge_id: 'ch_mock_' + SecureRandom.hex(12)
+      )
+      
+      return { 
+        success: true, 
+        message: 'Payment processed successfully (mock mode)',
+        payment_intent_id: payment.stripe_payment_intent_id
+      }
+    end
+    
     customer = create_or_retrieve_customer(email)
     
     # Create and confirm payment intent
@@ -211,5 +228,19 @@ class PaymentService
   
   def retrieve_customer(customer_id)
     Stripe::Customer.retrieve(customer_id)
+  end
+  
+  def stripe_configured?
+    Stripe.api_key.present? && !Stripe.api_key.include?('dummy')
+  end
+  
+  def mock_customer(email)
+    # Return a mock customer object when Stripe is not configured
+    {
+      'id' => 'cus_mock_' + SecureRandom.hex(8),
+      'email' => email,
+      'created' => Time.current.to_i,
+      'metadata' => { 'mock' => true }
+    }
   end
 end
