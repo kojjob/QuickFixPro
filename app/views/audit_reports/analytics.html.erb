@@ -150,7 +150,7 @@
             <div class="flex items-center justify-between">
               <div class="flex items-center space-x-3">
                 <div class="w-4 h-4 rounded-full" style="background-color: <%= data[:color] %>;"></div>
-                <span class="font-medium text-gray-900"><%= category.humanize %></span>
+                <span class="font-medium text-gray-900"><%= category.to_s.humanize %></span>
               </div>
               <div class="flex items-center space-x-4">
                 <span class="text-sm text-gray-500"><%= data[:count] %> issues</span>
