@@ -215,7 +215,7 @@ class AnalyticsController < ApplicationController
     {
       website_name: website.name,
       url: website.url,
-      current_score: website.current_score,
+      current_score: website.current_score || 0,
       audit_count: audits.count,
       average_score: audits.average(:overall_score)&.round(1) || 0,
       score_trend: calculate_score_trend(audits),

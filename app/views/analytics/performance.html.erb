@@ -52,8 +52,9 @@
             </div>
             <div class="text-right">
               <p class="text-sm text-gray-500">Current Score</p>
-              <% score_color = @performance_data[:current_score] >= 90 ? "green" : @performance_data[:current_score] >= 50 ? "yellow" : "red" %>
-              <p class="text-4xl font-bold text-<%= score_color %>-600"><%= @performance_data[:current_score] %>%</p>
+              <% current_score = @performance_data[:current_score] || 0 %>
+              <% score_color = current_score >= 90 ? "green" : current_score >= 50 ? "yellow" : "red" %>
+              <p class="text-4xl font-bold text-<%= score_color %>-600"><%= current_score %>%</p>
             </div>
           </div>
           
