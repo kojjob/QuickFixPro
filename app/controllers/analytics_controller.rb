@@ -311,9 +311,9 @@ class AnalyticsController < ApplicationController
     trends = {}
     metrics.each do |metric|
       performance_metrics = PerformanceMetric
-                          .joins(:audit_report)
+                          .joins(audit_report: :website)
                           .where(metric_type: metric)
-                          .where(audit_reports: { account_id: Current.account.id })
+                          .where(websites: { account_id: Current.account.id })
                           .where('performance_metrics.created_at >= ?', @start_date)
                           .where('performance_metrics.created_at <= ?', @end_date)
                           .order('performance_metrics.created_at')
