@@ -1,11 +1,17 @@
-<div class="h-64 flex items-end space-x-2" data-dashboard-target="performanceChart">
+<div class="h-64 flex items-end space-x-2" 
+     data-dashboard-target="performanceChart"
+     role="img"
+     aria-label="Performance trends chart showing <%= @performance_trends.length %> data points with average score of <%= @average_score %>%">
   <% if @performance_trends.any? %>
     <% max_score = @performance_trends.map { |t| t[:score] }.max.to_f %>
     <% @performance_trends.each do |trend| %>
       <% height = max_score > 0 ? (trend[:score] / max_score * 100) : 0 %>
-      <div class="flex-1 bg-blue-500 hover:bg-blue-600 rounded-t transition-all duration-500 relative group" 
+      <div class="flex-1 bg-blue-500 hover:bg-blue-600 rounded-t transition-all duration-500 relative group focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" 
            data-chart-bar
-           style="height: <%= height %>%">
+           style="height: <%= height %>%"
+           role="img"
+           aria-label="Performance score <%= trend[:score] %>% on <%= Date.parse(trend[:date]).strftime('%B %d') %>"
+           tabindex="0">
         <div class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 hidden group-hover:block">
           <div class="bg-gray-900 text-white text-xs rounded py-1 px-2 whitespace-nowrap">
             <%= trend[:score] %>%

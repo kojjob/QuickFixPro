@@ -5,8 +5,8 @@
 <% content_for :page_header do %>
   <div class="flex items-center justify-between">
     <div>
-      <h1 class="text-2xl font-semibold text-gray-900">Dashboard</h1>
-      <nav class="mt-1 flex text-sm text-gray-600">
+      <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Dashboard</h1>
+      <nav class="mt-2 flex text-sm text-gray-600 leading-normal">
         <span>QuickFixPro</span>
         <span class="mx-2">/</span>
         <span class="text-gray-900">Dashboard</span>
@@ -27,13 +27,13 @@
       <!-- Auto-refresh Toggle -->
       <button data-action="click->dashboard#toggleAutoRefresh"
               data-auto-refresh-toggle
-              class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors">
+              class="px-3 py-1 text-sm bg-emerald-50 text-emerald-700 rounded-md hover:bg-emerald-100 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 ring-1 ring-emerald-600/20">
         Auto-refresh: ON
       </button>
       
       <!-- Manual Refresh -->
       <button data-action="click->dashboard#refresh"
-              class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center">
+              class="inline-flex items-center px-3 py-1 text-sm bg-gray-50 text-gray-700 rounded-md hover:bg-gray-100 hover:text-gray-900 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
         </svg>
@@ -42,13 +42,13 @@
       
       <div class="h-6 w-px bg-gray-300"></div>
       
-      <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center">
+      <button class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-sm">
         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
         </svg>
         Add Website
       </button>
-      <button class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+      <button class="inline-flex items-center px-4 py-2 bg-white text-gray-700 text-sm font-medium rounded-lg border border-gray-300 hover:bg-gray-50 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-sm">
         Generate Report
       </button>
     </div>
@@ -56,12 +56,12 @@
 <% end %>
 
 <!-- Welcome Section -->
-<div class="mb-6">
-  <div class="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg p-6 text-white">
-    <div class="flex items-center justify-between">
+<div class="mb-8">
+  <div class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl p-6 sm:p-8 text-white">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div>
-        <h2 class="text-2xl font-semibold mb-2">Welcome back, <%= current_user.first_name %>! 👋</h2>
-        <p class="text-blue-100">Here's what's happening with your websites today.</p>
+        <h2 class="text-xl sm:text-2xl font-semibold mb-2 tracking-tight">Welcome back, <%= current_user.first_name %>! 👋</h2>
+        <p class="text-blue-100 text-sm sm:text-base leading-relaxed">Here's what's happening with your websites today.</p>
       </div>
       <div class="hidden lg:block">
         <svg class="w-32 h-32 text-blue-400 opacity-50" fill="currentColor" viewBox="0 0 20 20">
@@ -81,22 +81,22 @@
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
   <!-- Performance Trends Chart (2 columns wide) -->
   <div class="lg:col-span-2">
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200/60 p-6">
       <div class="flex items-center justify-between mb-6">
-        <h3 class="text-lg font-semibold text-gray-900">Performance Trends</h3>
-        <div class="flex items-center space-x-2">
+        <h3 class="text-xl font-semibold text-gray-900 tracking-tight">Performance Trends</h3>
+        <div class="flex items-center space-x-1">
           <button data-dashboard-target="timeRangeButton"
                   data-action="click->dashboard#changeTimeRange"
                   data-range="day"
-                  class="px-3 py-1 text-sm text-gray-600 hover:text-gray-900 rounded transition-colors">Day</button>
+                  class="px-3 py-1 text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Day</button>
           <button data-dashboard-target="timeRangeButton"
                   data-action="click->dashboard#changeTimeRange"
                   data-range="week"
-                  class="px-3 py-1 text-sm text-white bg-blue-600 rounded transition-colors">Week</button>
+                  class="px-3 py-1 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-sm">Week</button>
           <button data-dashboard-target="timeRangeButton"
                   data-action="click->dashboard#changeTimeRange"
                   data-range="month"
-                  class="px-3 py-1 text-sm text-gray-600 hover:text-gray-900 rounded transition-colors">Month</button>
+                  class="px-3 py-1 text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Month</button>
         </div>
       </div>
       
@@ -109,8 +109,8 @@
   
   <!-- Recent Activity -->
   <div class="lg:col-span-1">
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-      <h3 class="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200/60 p-6">
+      <h4 class="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h4>
       
       <%= turbo_frame_tag "activity-feed", src: dashboard_activity_feed_path, loading: "lazy" do %>
         <%= render 'activity_feed' %>
@@ -124,12 +124,12 @@
 </div>
 
 <!-- Bottom Row -->
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
   <!-- Top Performing Websites -->
-  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200/60 p-6">
     <div class="flex items-center justify-between mb-4">
-      <h3 class="text-lg font-semibold text-gray-900">Top Performing Websites</h3>
-      <a href="<%= websites_path %>" class="text-sm text-blue-600 hover:text-blue-700">View all</a>
+      <h4 class="text-lg font-semibold text-gray-900">Top Performing Websites</h4>
+      <a href="<%= websites_path %>" class="text-sm text-blue-600 hover:text-blue-700 font-medium">View all</a>
     </div>
     
     <div class="space-y-3">
@@ -159,10 +159,10 @@
   </div>
   
   <!-- Critical Issues -->
-  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200/60 p-6">
     <div class="flex items-center justify-between mb-4">
-      <h3 class="text-lg font-semibold text-gray-900">Critical Issues</h3>
-      <span class="px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full">
+      <h4 class="text-lg font-semibold text-gray-900">Critical Issues</h4>
+      <span class="px-2 py-1 text-xs font-medium bg-red-50 text-red-700 rounded-full ring-1 ring-red-600/20">
         <%= @critical_recommendations.count %> issues
       </span>
     </div>

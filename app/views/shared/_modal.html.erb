@@ -1,0 +1,86 @@
+<%# Reusable Modal Component %>
+
+<%
+  id = local_assigns[:id] || "modal-#{SecureRandom.hex(4)}"
+  title = local_assigns[:title] || "Modal"
+  size = local_assigns[:size] || "lg"
+  closable = local_assigns.fetch(:closable, true)
+  backdrop = local_assigns.fetch(:backdrop, true)
+  footer_actions = local_assigns[:footer_actions]
+%>
+
+<div 
+  id="<%= id %>"
+  data-controller="modal"
+  data-modal-size-value="<%= size %>"
+  data-modal-closable-value="<%= closable %>"
+  data-modal-backdrop-value="<%= backdrop %>"
+  class="fixed inset-0 z-50 hidden overflow-y-auto"
+  data-modal-target="container"
+>
+  <!-- Backdrop -->
+  <div 
+    class="fixed inset-0 transition-opacity duration-150 ease-linear bg-black opacity-0 bg-opacity-50"
+    data-modal-target="backdrop"
+  ></div>
+
+  <!-- Modal Content Container -->
+  <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+    <!-- Vertical Centering Trick -->
+    <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+    <!-- Modal Panel -->
+    <div
+      class="inline-block w-full text-left align-bottom transition-all duration-150 ease-in-out transform bg-white rounded-lg shadow-xl opacity-0 scale-95 translate-y-4 sm:my-8 sm:align-middle sm:translate-y-0 sm:scale-95"
+      data-modal-target="content"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="<%= id %>-title"
+    >
+      <!-- Header -->
+      <div class="px-4 pt-5 pb-4 bg-white sm:p-6 sm:pb-4 rounded-t-lg">
+        <div class="flex items-start justify-between">
+          <div class="flex">
+            <div class="mt-3 text-center sm:mt-0 sm:text-left">
+              <h3 
+                class="text-lg font-medium leading-6 text-gray-900" 
+                id="<%= id %>-title"
+                data-modal-target="title"
+              >
+                <%= title %>
+              </h3>
+            </div>
+          </div>
+          
+          <% if closable %>
+            <div class="ml-3 flex h-7 items-center">
+              <button
+                type="button"
+                class="rounded-md bg-white text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                data-action="modal#close"
+                aria-label="Close modal"
+              >
+                <span class="sr-only">Close</span>
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="px-4 py-4 bg-white sm:px-6" data-modal-target="body">
+        <%= yield if block_given? %>
+      </div>
+
+      <!-- Footer -->
+      <% if footer_actions.present? %>
+        <div class="px-4 py-3 bg-gray-50 sm:px-6 sm:flex sm:flex-row-reverse rounded-b-lg" data-modal-target="footer">
+          <%= footer_actions %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

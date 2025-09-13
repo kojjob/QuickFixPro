@@ -39,6 +39,11 @@ Rails.application.routes.draw do
     member do
       post :monitor
       get :audit_history
+      # Modal actions
+      get :quick_edit
+      get :delete_confirmation
+      patch :quick_update
+      delete :quick_destroy
     end
     
     resources :audit_reports, only: [:index, :show] do
