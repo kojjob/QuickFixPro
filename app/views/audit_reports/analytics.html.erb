@@ -304,9 +304,12 @@
                 <td class="py-3 px-4 text-center text-gray-600"><%= metric[:industry_avg] %></td>
                 <td class="py-3 px-4 text-center text-gray-600"><%= metric[:top_10_percent] %></td>
                 <td class="py-3 px-4 text-center">
-                  <% if metric[:your_score] >= metric[:top_10_percent] %>
+                  <% your_score = metric[:your_score] || 0 %>
+                  <% top_10 = metric[:top_10_percent] || 90 %>
+                  <% avg = metric[:industry_avg] || 50 %>
+                  <% if your_score >= top_10 %>
                     <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded-full">Excellent</span>
-                  <% elsif metric[:your_score] >= metric[:industry_avg] %>
+                  <% elsif your_score >= avg %>
                     <span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2 py-1 rounded-full">Good</span>
                   <% else %>
                     <span class="bg-red-100 text-red-800 text-xs font-medium px-2 py-1 rounded-full">Needs Work</span>
