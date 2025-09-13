@@ -175,7 +175,7 @@
         <div class="space-y-3">
           <% @analytics_data[:score_distribution].each do |category, score| %>
             <div class="flex items-center justify-between">
-              <span class="text-sm font-medium text-gray-700"><%= category.humanize %></span>
+              <span class="text-sm font-medium text-gray-700"><%= category.to_s.humanize %></span>
               <div class="flex items-center space-x-2">
                 <div class="w-20 bg-gray-200 rounded-full h-2">
                   <div class="h-2 rounded-full 
