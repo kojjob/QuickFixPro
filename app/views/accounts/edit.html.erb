@@ -1,0 +1,92 @@
+<% content_for :page_header do %>
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-semibold text-gray-900">Edit Account Settings</h1>
+      <nav class="mt-1 flex text-sm text-gray-600">
+        <span>QuickFixPro</span>
+        <span class="mx-2">/</span>
+        <span>Settings</span>
+        <span class="mx-2">/</span>
+        <%= link_to "Account", account_path, class: "text-blue-600 hover:text-blue-700" %>
+        <span class="mx-2">/</span>
+        <span class="text-gray-900">Edit</span>
+      </nav>
+    </div>
+    <div>
+      <%= link_to account_path, class: "px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center" do %>
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        Back to Account
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+<div class="max-w-2xl mx-auto">
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+    <%= form_with model: @account, local: true, class: "space-y-6" do |form| %>
+      <% if @account.errors.any? %>
+        <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <svg class="h-5 w-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.996-.833-2.732 0L3.732 16c-.77.833.192 2.5 1.732 2.5z"/>
+              </svg>
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-red-800">
+                There were <%= pluralize(@account.errors.count, "error") %> with your submission:
+              </h3>
+              <div class="mt-2 text-sm text-red-700">
+                <ul class="list-disc pl-5 space-y-1">
+                  <% @account.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+      
+      <div>
+        <%= form.label :name, class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.text_field :name, 
+            class: "w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors",
+            placeholder: "Enter account name" %>
+        <p class="mt-1 text-sm text-gray-500">The name of your account or organization.</p>
+      </div>
+      
+      <div>
+        <%= form.label :subdomain, class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <div class="flex">
+          <%= form.text_field :subdomain, 
+              class: "flex-1 px-3 py-2 border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors",
+              placeholder: "subdomain" %>
+          <span class="px-3 py-2 bg-gray-50 border-t border-r border-b border-gray-300 rounded-r-lg text-sm text-gray-500">
+            .quickfixpro.com
+          </span>
+        </div>
+        <p class="mt-1 text-sm text-gray-500">
+          Your unique subdomain for accessing your QuickFixPro dashboard. Only lowercase letters, numbers, and hyphens are allowed.
+        </p>
+      </div>
+      
+      <div class="flex items-center justify-between pt-6 border-t border-gray-200">
+        <div class="flex space-x-3">
+          <%= form.submit "Save Changes", 
+              class: "px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors font-medium" %>
+          <%= link_to "Cancel", account_path, 
+              class: "px-6 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors font-medium" %>
+        </div>
+        
+        <div class="text-right">
+          <p class="text-xs text-gray-500">
+            Changes will take effect immediately
+          </p>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
