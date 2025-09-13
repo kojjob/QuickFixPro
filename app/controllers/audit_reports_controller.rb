@@ -274,6 +274,12 @@ class AuditReportsController < ApplicationController
         savings: "$#{rand(100..1000)}/month"
       }
     end
+    
+    # Pagination variables
+    @current_page = (params[:page] || 1).to_i
+    @per_page = 10
+    @total_optimizations = @optimization_recommendations.count
+    @total_pages = (@total_optimizations.to_f / @per_page).ceil
   end
   
   # Analytics dashboard for audits
