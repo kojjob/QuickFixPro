@@ -290,12 +290,19 @@ class AnalyticsController < ApplicationController
   end
   
   def overall_score_trends
-    Current.account.audit_reports
-          .completed
-          .where(created_at: @start_date..@end_date)
-          .group_by_day(:created_at)
-          .average(:overall_score)
-          .map { |date, score| { date: date, score: score&.round(1) } }
+    reports = Current.account.audit_reports
+                    .completed
+                    .where(created_at: @start_date..@end_date)
+                    .order(:created_at)
+    
+    # Group by day manually
+    grouped = reports.group_by { |r| r.created_at.to_date }
+    
+    grouped.map do |date, reports|
+      scores = reports.map(&:overall_score).compact
+      avg_score = scores.any? ? (scores.sum.to_f / scores.size).round(1) : nil
+      { date: date, score: avg_score }
+    end.sort_by { |h| h[:date] }
   end
   
   def core_web_vitals_trends
@@ -303,26 +310,38 @@ class AnalyticsController < ApplicationController
     
     trends = {}
     metrics.each do |metric|
-      trends[metric] = PerformanceMetric
-                      .joins(:audit_report)
-                      .where(metric_type: metric)
-                      .where(audit_reports: { account_id: Current.account.id })
-                      .where('performance_metrics.created_at >= ?', @start_date)
-                      .where('performance_metrics.created_at <= ?', @end_date)
-                      .group_by_day('performance_metrics.created_at')
-                      .average(:value)
-                      .map { |date, value| { date: date, value: value&.round(2) } }
+      performance_metrics = PerformanceMetric
+                          .joins(:audit_report)
+                          .where(metric_type: metric)
+                          .where(audit_reports: { account_id: Current.account.id })
+                          .where('performance_metrics.created_at >= ?', @start_date)
+                          .where('performance_metrics.created_at <= ?', @end_date)
+                          .order('performance_metrics.created_at')
+      
+      # Group by day manually
+      grouped = performance_metrics.group_by { |pm| pm.created_at.to_date }
+      
+      trends[metric] = grouped.map do |date, metrics|
+        values = metrics.map(&:value).compact
+        avg_value = values.any? ? (values.sum.to_f / values.size).round(2) : nil
+        { date: date, value: avg_value }
+      end.sort_by { |h| h[:date] }
     end
     
     trends
   end
   
   def audit_frequency_trends
-    Current.account.audit_reports
-          .where(created_at: @start_date..@end_date)
-          .group_by_day(:created_at)
-          .count
-          .map { |date, count| { date: date, count: count } }
+    reports = Current.account.audit_reports
+                    .where(created_at: @start_date..@end_date)
+                    .order(:created_at)
+    
+    # Group by day manually
+    grouped = reports.group_by { |r| r.created_at.to_date }
+    
+    grouped.map do |date, reports|
+      { date: date, count: reports.count }
+    end.sort_by { |h| h[:date] }
   end
   
   def improvement_rate_trends
