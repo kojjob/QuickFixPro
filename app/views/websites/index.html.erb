@@ -142,7 +142,7 @@
   <% end %>
 <% end %>
 
-<script>
+<script nonce="<%= csp_nonce %>">
 // Auto-wire modal triggers after Turbo loads
 document.addEventListener('turbo:load', function() {
   // Set up modal triggers

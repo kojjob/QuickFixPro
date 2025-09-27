@@ -1,0 +1,202 @@
+<div class="min-h-screen bg-gradient-to-br from-red-50 via-white to-orange-50" data-controller="monitoring-alerts" data-monitoring-alerts-auto-refresh-value="30000">
+  <!-- Enhanced Header -->
+  <div class="relative bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 shadow-xl">
+    <div class="absolute inset-0 bg-black opacity-10"></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="flex items-center justify-between">
+        <div>
+          <nav class="flex items-center text-white/80 text-sm mb-2">
+            <%= link_to "Websites", websites_path, class: "hover:text-white transition-colors" %>
+            <svg class="w-4 h-4 mx-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+            <%= link_to @website.name, website_path(@website), class: "hover:text-white transition-colors" %>
+            <svg class="w-4 h-4 mx-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+            <span class="text-white">Monitoring Alerts</span>
+          </nav>
+          <h1 class="text-4xl font-bold text-white tracking-tight flex items-center">
+            <svg class="w-10 h-10 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+            </svg>
+            Monitoring Alerts
+          </h1>
+          <p class="mt-2 text-red-100 text-lg">Real-time monitoring and alert management for <%= @website.name %></p>
+        </div>
+        
+        <!-- Auto-refresh Toggle & Actions -->
+        <div class="flex items-center space-x-4">
+          <!-- Real-time Status -->
+          <div class="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2 flex items-center space-x-2" data-monitoring-alerts-target="statusIndicator">
+            <span class="flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-green-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+            </span>
+            <span class="text-white text-sm">Live</span>
+          </div>
+          
+          <!-- Auto-refresh Control -->
+          <button data-action="click->monitoring-alerts#toggleAutoRefresh"
+                  data-monitoring-alerts-target="autoRefreshToggle"
+                  class="bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-lg hover:bg-white/30 transition-all duration-200 text-sm font-medium">
+            Auto-refresh: ON
+          </button>
+          
+          <!-- Bulk Actions Dropdown -->
+          <div class="relative" data-controller="dropdown">
+            <button data-action="click->dropdown#toggle" 
+                    class="bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-lg hover:bg-white/30 transition-all duration-200 flex items-center space-x-2">
+              <span>Bulk Actions</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            
+            <div data-dropdown-target="menu" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg z-20">
+              <div class="py-2">
+                <button data-action="click->monitoring-alerts#bulkAcknowledge" 
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">
+                  Acknowledge Selected
+                </button>
+                <button data-action="click->monitoring-alerts#bulkDismiss" 
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">
+                  Dismiss Selected
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Alert Statistics -->
+    <div id="alert_stats" class="mb-8">
+      <%= render 'stats', alert_stats: @alert_stats %>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+      <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+        <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+        </svg>
+        Filter Alerts
+      </h3>
+      
+      <form method="get" action="<%= website_monitoring_alerts_path(@website) %>" 
+            class="grid grid-cols-1 md:grid-cols-4 gap-4" data-turbo-frame="alerts_list">
+        <!-- Status Filter -->
+        <select name="status" class="rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+          <option value="">All Statuses</option>
+          <option value="active" <%= 'selected' if params[:status] == 'active' %>>Active</option>
+          <option value="acknowledged" <%= 'selected' if params[:status] == 'acknowledged' %>>Acknowledged</option>
+          <option value="resolved" <%= 'selected' if params[:status] == 'resolved' %>>Resolved</option>
+          <option value="dismissed" <%= 'selected' if params[:status] == 'dismissed' %>>Dismissed</option>
+        </select>
+        
+        <!-- Severity Filter -->
+        <select name="severity" class="rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+          <option value="">All Severities</option>
+          <option value="critical" <%= 'selected' if params[:severity] == 'critical' %>>Critical</option>
+          <option value="high" <%= 'selected' if params[:severity] == 'high' %>>High</option>
+          <option value="medium" <%= 'selected' if params[:severity] == 'medium' %>>Medium</option>
+          <option value="low" <%= 'selected' if params[:severity] == 'low' %>>Low</option>
+        </select>
+        
+        <!-- Date Range -->
+        <div class="grid grid-cols-2 gap-2">
+          <input type="date" name="date_from" value="<%= params[:date_from] %>" 
+                 class="rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+          <input type="date" name="date_to" value="<%= params[:date_to] %>" 
+                 class="rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+        </div>
+        
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium">
+          Apply Filters
+        </button>
+      </form>
+    </div>
+
+    <!-- Alerts List -->
+    <%= turbo_frame_tag "alerts_list", src: website_monitoring_alerts_path(@website, **request.query_parameters) do %>
+      <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+        <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-8 py-6 border-b border-gray-200">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xl font-bold text-gray-900 flex items-center">
+              <svg class="w-6 h-6 mr-2 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+              </svg>
+              Alert Management
+            </h3>
+            
+            <!-- Select All Checkbox -->
+            <div class="flex items-center space-x-4">
+              <label class="flex items-center">
+                <input type="checkbox" data-action="change->monitoring-alerts#toggleSelectAll" 
+                       class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-600">Select All</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        
+        <div class="divide-y divide-gray-200" data-monitoring-alerts-target="alertsList">
+          <% if @alerts.any? %>
+            <% @alerts.each do |alert| %>
+              <div id="alert_<%= alert.id %>" class="group relative">
+                <%= render 'alert', alert: alert %>
+              </div>
+            <% end %>
+          <% else %>
+            <div class="text-center py-16">
+              <svg class="w-20 h-20 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <h3 class="text-lg font-medium text-gray-900">No alerts found</h3>
+              <p class="text-gray-500 mt-2">
+                <% if params[:status] || params[:severity] || params[:date_from] %>
+                  Try adjusting your filters to see more alerts.
+                <% else %>
+                  Your website is performing well with no active alerts.
+                <% end %>
+              </p>
+            </div>
+          <% end %>
+        </div>
+        
+        <!-- Pagination -->
+        <% if @alerts.respond_to?(:current_page) %>
+          <div class="bg-gray-50 px-8 py-4 border-t border-gray-200">
+            <div class="flex items-center justify-between">
+              <div class="text-sm text-gray-500">
+                Page <%= @alerts.current_page %> of <%= @alerts.total_pages %>
+              </div>
+              <div class="flex space-x-2">
+                <% if @alerts.prev_page %>
+                  <%= link_to "Previous", website_monitoring_alerts_path(@website, page: @alerts.prev_page, **request.query_parameters.except(:page)), 
+                      class: "px-3 py-2 bg-white text-gray-700 rounded-lg hover:bg-gray-100 transition-colors text-sm font-medium border" %>
+                <% end %>
+                <% if @alerts.next_page %>
+                  <%= link_to "Next", website_monitoring_alerts_path(@website, page: @alerts.next_page, **request.query_parameters.except(:page)), 
+                      class: "px-3 py-2 bg-white text-gray-700 rounded-lg hover:bg-gray-100 transition-colors text-sm font-medium border" %>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<!-- Bulk Action Forms -->
+<%= form_with url: bulk_acknowledge_website_monitoring_alerts_path(@website), method: :post, id: "bulk_acknowledge_form", class: "hidden" do |f| %>
+  <div data-monitoring-alerts-target="selectedAlerts"></div>
+<% end %>
+
+<%= form_with url: bulk_dismiss_website_monitoring_alerts_path(@website), method: :post, id: "bulk_dismiss_form", class: "hidden" do |f| %>
+  <div data-monitoring-alerts-target="selectedAlertsForDismiss"></div>
+<% end %>

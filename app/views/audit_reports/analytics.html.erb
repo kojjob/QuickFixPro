@@ -1,0 +1,382 @@
+<!-- Analytics View -->
+<div class="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-cyan-50">
+  <div class="container mx-auto px-4 py-8">
+    
+    <!-- Header Section -->
+    <div class="mb-8">
+      <div class="flex items-center justify-between flex-wrap gap-4">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900 mb-2">Analytics Dashboard</h1>
+          <p class="text-gray-600">Comprehensive insights and performance analytics for your website audits</p>
+        </div>
+        <div class="flex items-center space-x-3">
+          <div class="flex items-center space-x-2">
+            <label class="text-sm font-medium text-gray-700">Time Period:</label>
+            <select class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              <option value="7d">Last 7 days</option>
+              <option value="30d" selected>Last 30 days</option>
+              <option value="90d">Last 3 months</option>
+              <option value="1y">Last year</option>
+            </select>
+          </div>
+          <%= link_to "Export Report", reports_website_audit_reports_path(@website), 
+                     class: "bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors" %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key Performance Indicators -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-blue-500">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-blue-600 text-sm font-medium">Overall Score</p>
+            <p class="text-3xl font-bold text-gray-900"><%= @analytics_data[:overall_score] %></p>
+            <p class="text-sm text-gray-500 mt-1">
+              <span class="<%= @analytics_data[:score_change] > 0 ? 'text-green-600' : 'text-red-600' %>">
+                <%= @analytics_data[:score_change] > 0 ? '+' : '' %><%= @analytics_data[:score_change] %>%
+              </span>
+              vs last period
+            </p>
+          </div>
+          <div class="p-3 bg-blue-100 rounded-full">
+            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-green-500">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-green-600 text-sm font-medium">Issues Resolved</p>
+            <p class="text-3xl font-bold text-gray-900"><%= @analytics_data[:issues_resolved] %></p>
+            <p class="text-sm text-gray-500 mt-1">
+              <span class="text-green-600">
+                +<%= @analytics_data[:resolution_rate] %>%
+              </span>
+              resolution rate
+            </p>
+          </div>
+          <div class="p-3 bg-green-100 rounded-full">
+            <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-purple-500">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-purple-600 text-sm font-medium">Total Audits</p>
+            <p class="text-3xl font-bold text-gray-900"><%= @analytics_data[:total_audits] %></p>
+            <p class="text-sm text-gray-500 mt-1">
+              <span class="text-blue-600">
+                <%= @analytics_data[:audits_this_month] %>
+              </span>
+              this month
+            </p>
+          </div>
+          <div class="p-3 bg-purple-100 rounded-full">
+            <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-orange-500">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-orange-600 text-sm font-medium">Performance Gain</p>
+            <p class="text-3xl font-bold text-gray-900">+<%= @analytics_data[:performance_gain] %>%</p>
+            <p class="text-sm text-gray-500 mt-1">
+              <span class="text-green-600">
+                <%= @analytics_data[:avg_load_time] %>s
+              </span>
+              avg load time
+            </p>
+          </div>
+          <div class="p-3 bg-orange-100 rounded-full">
+            <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      
+      <!-- Performance Trend Chart -->
+      <div class="bg-white rounded-xl shadow-lg p-6">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-bold text-gray-900">Performance Trend</h2>
+          <div class="flex items-center space-x-2">
+            <button class="text-blue-600 hover:text-blue-700 text-sm font-medium">Performance</button>
+            <button class="text-gray-400 hover:text-gray-600 text-sm font-medium">SEO</button>
+            <button class="text-gray-400 hover:text-gray-600 text-sm font-medium">Accessibility</button>
+          </div>
+        </div>
+        <div class="h-64 flex items-end justify-between space-x-2">
+          <% @analytics_data[:performance_trend].each_with_index do |score, index| %>
+            <div class="flex flex-col items-center flex-1">
+              <div class="bg-blue-500 rounded-t w-full relative" 
+                   style="height: <%= (score / 100.0 * 200).round %>px;"
+                   title="Score: <%= score %>">
+                <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-600">
+                  <%= score %>
+                </div>
+              </div>
+              <div class="mt-2 text-xs text-gray-500 text-center">
+                <%= Date.current - (6 - index).days %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Issue Categories Breakdown -->
+      <div class="bg-white rounded-xl shadow-lg p-6">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-bold text-gray-900">Issue Categories</h2>
+          <span class="text-sm text-gray-500">Last 30 days</span>
+        </div>
+        <div class="space-y-4">
+          <% @analytics_data[:issue_categories].each do |category, data| %>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-3">
+                <div class="w-4 h-4 rounded-full" style="background-color: <%= data[:color] %>;"></div>
+                <span class="font-medium text-gray-900"><%= category.to_s.humanize %></span>
+              </div>
+              <div class="flex items-center space-x-4">
+                <span class="text-sm text-gray-500"><%= data[:count] %> issues</span>
+                <div class="w-24 bg-gray-200 rounded-full h-2">
+                  <div class="h-2 rounded-full" 
+                       style="width: <%= data[:percentage] %>%; background-color: <%= data[:color] %>;"></div>
+                </div>
+                <span class="text-sm font-medium text-gray-900 w-12 text-right"><%= data[:percentage] %>%</span>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detailed Analytics Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+      
+      <!-- Score Distribution -->
+      <div class="bg-white rounded-xl shadow-lg p-6">
+        <h3 class="text-lg font-bold text-gray-900 mb-4">Score Distribution</h3>
+        <div class="space-y-3">
+          <% @analytics_data[:score_distribution].each do |category, score| %>
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-medium text-gray-700"><%= category.to_s.humanize %></span>
+              <div class="flex items-center space-x-2">
+                <div class="w-20 bg-gray-200 rounded-full h-2">
+                  <div class="h-2 rounded-full 
+                              <%= score >= 90 ? 'bg-green-500' : score >= 70 ? 'bg-yellow-500' : 'bg-red-500' %>" 
+                       style="width: <%= score %>%;"></div>
+                </div>
+                <span class="text-sm font-bold text-gray-900 w-8 text-right"><%= score %></span>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Top Issues -->
+      <div class="bg-white rounded-xl shadow-lg p-6">
+        <h3 class="text-lg font-bold text-gray-900 mb-4">Top Issues</h3>
+        <div class="space-y-3">
+          <% @analytics_data[:top_issues].each_with_index do |issue, index| %>
+            <div class="flex items-start space-x-3">
+              <span class="flex items-center justify-center w-6 h-6 bg-red-100 text-red-600 rounded-full text-xs font-bold">
+                <%= index + 1 %>
+              </span>
+              <div class="flex-1">
+                <p class="text-sm font-medium text-gray-900"><%= issue[:title] %></p>
+                <p class="text-xs text-gray-500"><%= issue[:occurrences] %> occurrences</p>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Recent Improvements -->
+      <div class="bg-white rounded-xl shadow-lg p-6">
+        <h3 class="text-lg font-bold text-gray-900 mb-4">Recent Improvements</h3>
+        <div class="space-y-3">
+          <% @analytics_data[:recent_improvements].each do |improvement| %>
+            <div class="flex items-start space-x-3">
+              <div class="p-1 bg-green-100 rounded-full">
+                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+              </div>
+              <div class="flex-1">
+                <p class="text-sm font-medium text-gray-900"><%= improvement[:title] %></p>
+                <p class="text-xs text-gray-500">
+                  +<%= improvement[:score_increase] %> points • <%= improvement[:date] %>
+                </p>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Audit Frequency and Scheduling -->
+    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-bold text-gray-900">Audit Frequency & Scheduling</h2>
+        <%= link_to "Schedule New Audit", schedule_audit_website_audit_reports_path(@website), 
+                   class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors" %>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="text-center">
+          <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+          </div>
+          <h3 class="font-semibold text-gray-900 mb-1">Weekly Audits</h3>
+          <p class="text-2xl font-bold text-blue-600 mb-1"><%= @analytics_data[:weekly_audits] %></p>
+          <p class="text-sm text-gray-500">Average per week</p>
+        </div>
+        
+        <div class="text-center">
+          <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+            <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
+          <h3 class="font-semibold text-gray-900 mb-1">Next Scheduled</h3>
+          <p class="text-lg font-bold text-green-600 mb-1"><%= @analytics_data[:next_audit_date] %></p>
+          <p class="text-sm text-gray-500">Automatic audit</p>
+        </div>
+        
+        <div class="text-center">
+          <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+            <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+            </svg>
+          </div>
+          <h3 class="font-semibold text-gray-900 mb-1">Audit Score Trend</h3>
+          <p class="text-lg font-bold text-purple-600 mb-1">
+            <%= @analytics_data[:score_trend] > 0 ? '+' : '' %><%= @analytics_data[:score_trend] %>%
+          </p>
+          <p class="text-sm text-gray-500">30-day change</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Competitive Analysis -->
+    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-bold text-gray-900">Competitive Benchmarking</h2>
+        <span class="text-sm text-gray-500">Industry averages</span>
+      </div>
+      
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead>
+            <tr class="border-b border-gray-200">
+              <th class="text-left py-3 px-4 font-semibold text-gray-900">Metric</th>
+              <th class="text-center py-3 px-4 font-semibold text-gray-900">Your Site</th>
+              <th class="text-center py-3 px-4 font-semibold text-gray-900">Industry Avg</th>
+              <th class="text-center py-3 px-4 font-semibold text-gray-900">Top 10%</th>
+              <th class="text-center py-3 px-4 font-semibold text-gray-900">Status</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            <% @analytics_data[:competitive_data].each do |metric| %>
+              <tr class="hover:bg-gray-50">
+                <td class="py-3 px-4 font-medium text-gray-900"><%= metric[:name] %></td>
+                <td class="py-3 px-4 text-center">
+                  <span class="font-bold text-blue-600"><%= metric[:your_score] %></span>
+                </td>
+                <td class="py-3 px-4 text-center text-gray-600"><%= metric[:industry_avg] %></td>
+                <td class="py-3 px-4 text-center text-gray-600"><%= metric[:top_10_percent] %></td>
+                <td class="py-3 px-4 text-center">
+                  <% your_score = metric[:your_score] || 0 %>
+                  <% top_10 = metric[:top_10_percent] || 90 %>
+                  <% avg = metric[:industry_avg] || 50 %>
+                  <% if your_score >= top_10 %>
+                    <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded-full">Excellent</span>
+                  <% elsif your_score >= avg %>
+                    <span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2 py-1 rounded-full">Good</span>
+                  <% else %>
+                    <span class="bg-red-100 text-red-800 text-xs font-medium px-2 py-1 rounded-full">Needs Work</span>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Action Items and Recommendations -->
+    <div class="bg-white rounded-xl shadow-lg p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-bold text-gray-900">Recommended Actions</h2>
+        <%= link_to "View All Optimizations", optimizations_website_audit_reports_path(@website), 
+                   class: "text-blue-600 hover:text-blue-700 font-medium text-sm" %>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <% @analytics_data[:recommended_actions].each do |action| %>
+          <div class="border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors">
+            <div class="flex items-start justify-between mb-2">
+              <h3 class="font-semibold text-gray-900 text-sm"><%= action[:title] %></h3>
+              <span class="bg-<%= action[:priority] == 'high' ? 'red' : action[:priority] == 'medium' ? 'yellow' : 'green' %>-100 
+                           text-<%= action[:priority] == 'high' ? 'red' : action[:priority] == 'medium' ? 'yellow' : 'green' %>-800 
+                           text-xs font-medium px-2 py-1 rounded-full">
+                <%= action[:priority].capitalize %>
+              </span>
+            </div>
+            <p class="text-gray-600 text-sm mb-3"><%= action[:description] %></p>
+            <div class="flex items-center justify-between text-sm">
+              <span class="text-gray-500">Impact: <strong>+<%= action[:impact] %> pts</strong></span>
+              <button class="text-blue-600 hover:text-blue-700 font-medium">Start →</button>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript for Interactive Elements -->
+<script nonce="<%= csp_nonce %>">
+// Chart data updates could be handled here
+document.addEventListener('DOMContentLoaded', function() {
+  // Initialize any interactive charts or dynamic content
+  console.log('Analytics dashboard loaded');
+  
+  // Add any chart initialization code here
+  // For production, you might use Chart.js, D3.js, or similar libraries
+});
+
+// Function to update time period
+function updateTimePeriod(period) {
+  // In a real app, this would make an AJAX call to fetch new data
+  console.log(`Updating analytics for period: ${period}`);
+  
+  // Reload page with new period parameter
+  const url = new URL(window.location);
+  url.searchParams.set('period', period);
+  window.location.href = url.toString();
+}
+
+// Add event listener for time period selector
+document.querySelector('select').addEventListener('change', function() {
+  updateTimePeriod(this.value);
+});
+</script>

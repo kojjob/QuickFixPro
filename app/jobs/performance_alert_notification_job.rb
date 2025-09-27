@@ -148,7 +148,7 @@ class PerformanceAlertNotificationJob < ApplicationJob
         },
         issues: alert.alert_data['issues'] || [],
         audit_report_id: alert.alert_data['audit_report_id'],
-        triggered_at: alert.triggered_at
+        created_at: alert.created_at
       }
     }
     

@@ -77,7 +77,7 @@
   </div>
 </div>
 
-<script>
+<script nonce="<%= csp_nonce %>">
 // Simple notification controller inline (will be replaced by Stimulus controller)
 document.addEventListener('turbo:frame-load', function() {
   const notification = document.querySelector('.notification-toast')

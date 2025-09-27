@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   devise_for :users, controllers: {
-    registrations: 'users/registrations'
+    registrations: 'users/registrations',
+    sessions: 'users/sessions',
+    passwords: 'users/passwords'
   }
   
   # Health check for monitoring
@@ -55,6 +57,13 @@ Rails.application.routes.draw do
       
       collection do
         get :compare
+        get :all_audits
+        get :schedule_audit
+        post :create_audit
+        get :audit_history
+        get :optimizations
+        get :analytics
+        get :reports
       end
     end
     
@@ -102,6 +111,9 @@ Rails.application.routes.draw do
 
   # API endpoints
   namespace :api do
+    # API Documentation route
+    get 'docs', to: 'docs#index'
+    
     namespace :v1 do
       resources :websites, only: [:index, :show] do
         resources :audit_reports, only: [:index, :show, :create]

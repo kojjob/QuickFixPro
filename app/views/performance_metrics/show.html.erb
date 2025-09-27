@@ -1,0 +1,315 @@
+<div class="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+  <!-- Enhanced Header -->
+  <div class="relative bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 shadow-xl">
+    <div class="absolute inset-0 bg-black opacity-10"></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="flex items-center justify-between">
+        <div>
+          <nav class="flex items-center text-white/80 text-sm mb-2">
+            <%= link_to "Websites", websites_path, class: "hover:text-white transition-colors" %>
+            <svg class="w-4 h-4 mx-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+            <%= link_to @website.name, website_path(@website), class: "hover:text-white transition-colors" %>
+            <svg class="w-4 h-4 mx-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+            <%= link_to "Performance Metrics", website_performance_metrics_path(@website), class: "hover:text-white transition-colors" %>
+            <svg class="w-4 h-4 mx-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+            <span class="text-white">Metric Details</span>
+          </nav>
+          <h1 class="text-4xl font-bold text-white tracking-tight flex items-center">
+            <svg class="w-10 h-10 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+            </svg>
+            <%= @metric.metric_name.humanize %>
+          </h1>
+          <p class="mt-2 text-indigo-100 text-lg">Detailed analysis and historical trends for this performance metric</p>
+        </div>
+        
+        <!-- Back to Metrics List -->
+        <div class="flex items-center space-x-4">
+          <%= link_to website_performance_metrics_path(@website), 
+              class: "bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-lg hover:bg-white/30 transition-all duration-200 flex items-center space-x-2" do %>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            <span>Back to Metrics</span>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Current Metric Value -->
+    <div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Current Value -->
+        <div class="lg:col-span-1">
+          <div class="text-center">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Current Value</h3>
+            <div class="text-6xl font-bold text-indigo-600 mb-2">
+              <%= @metric.metric_value %>
+              <span class="text-2xl text-gray-500"><%= @metric.unit %></span>
+            </div>
+            
+            <!-- Performance Status -->
+            <% 
+              current_value = @metric.metric_value.to_f
+              case @metric.metric_name
+              when 'largest_contentful_paint'
+                status = current_value <= 2500 ? { color: 'green', label: 'Good', desc: 'Fast loading' } :
+                         current_value <= 4000 ? { color: 'yellow', label: 'Needs Improvement', desc: 'Moderate loading' } :
+                         { color: 'red', label: 'Poor', desc: 'Slow loading' }
+              when 'first_contentful_paint'
+                status = current_value <= 1800 ? { color: 'green', label: 'Good', desc: 'Fast render' } :
+                         current_value <= 3000 ? { color: 'yellow', label: 'Needs Improvement', desc: 'Moderate render' } :
+                         { color: 'red', label: 'Poor', desc: 'Slow render' }
+              when 'cumulative_layout_shift'
+                status = current_value <= 0.1 ? { color: 'green', label: 'Good', desc: 'Stable layout' } :
+                         current_value <= 0.25 ? { color: 'yellow', label: 'Needs Improvement', desc: 'Some shifting' } :
+                         { color: 'red', label: 'Poor', desc: 'Unstable layout' }
+              when 'time_to_first_byte'
+                status = current_value <= 600 ? { color: 'green', label: 'Good', desc: 'Fast server' } :
+                         current_value <= 1000 ? { color: 'yellow', label: 'Needs Improvement', desc: 'Moderate server' } :
+                         { color: 'red', label: 'Poor', desc: 'Slow server' }
+              else
+                status = { color: 'gray', label: 'Unknown', desc: 'No benchmark' }
+              end
+            %>
+            
+            <div class="flex items-center justify-center mt-4">
+              <div class="w-3 h-3 bg-<%= status[:color] %>-500 rounded-full mr-2"></div>
+              <span class="text-<%= status[:color] %>-700 font-medium"><%= status[:label] %></span>
+            </div>
+            <p class="text-sm text-gray-500 mt-1"><%= status[:desc] %></p>
+            
+            <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+              <p class="text-sm text-gray-600">
+                Measured on <%= @metric.measurement_time.strftime("%B %d, %Y at %I:%M %p") %>
+              </p>
+              <% if @metric.audit_report %>
+                <p class="text-sm text-gray-600 mt-1">
+                  From <%= link_to "Audit Report ##{@metric.audit_report.id}", audit_report_path(@metric.audit_report), class: "text-indigo-600 hover:text-indigo-800" %>
+                </p>
+              <% end %>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Statistics -->
+        <div class="lg:col-span-2">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Statistical Analysis</h3>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <% @statistics.each do |key, value| %>
+              <% next if key == :trend %>
+              <div class="bg-gray-50 rounded-lg p-4">
+                <dt class="text-sm font-medium text-gray-500 capitalize">
+                  <%= key.to_s.humanize %>
+                </dt>
+                <dd class="mt-1 text-lg font-semibold text-gray-900">
+                  <% if value.is_a?(Numeric) %>
+                    <%= value.round(2) %><span class="text-sm text-gray-500"><%= @metric.unit %></span>
+                  <% else %>
+                    <%= value %>
+                  <% end %>
+                </dd>
+              </div>
+            <% end %>
+          </div>
+          
+          <!-- Trend Analysis -->
+          <% if @statistics[:trend] %>
+            <div class="mt-6 p-4 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg border border-indigo-200">
+              <div class="flex items-center">
+                <% case @statistics[:trend] %>
+                <% when 'improving', 'improving_fast' %>
+                  <svg class="w-6 h-6 text-green-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17l9.2-9.2M17 8v9H8"/>
+                  </svg>
+                  <div>
+                    <h4 class="font-semibold text-green-800">Performance Improving</h4>
+                    <p class="text-sm text-green-600">
+                      This metric is showing positive trends
+                      <%= @statistics[:trend] == 'improving_fast' ? 'with significant improvement' : '' %>
+                    </p>
+                  </div>
+                <% when 'degrading', 'degrading_fast' %>
+                  <svg class="w-6 h-6 text-red-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17l-9.2-9.2M8 8v9h9"/>
+                  </svg>
+                  <div>
+                    <h4 class="font-semibold text-red-800">Performance Declining</h4>
+                    <p class="text-sm text-red-600">
+                      This metric is showing negative trends
+                      <%= @statistics[:trend] == 'degrading_fast' ? 'with significant degradation' : '' %>
+                    </p>
+                  </div>
+                <% else %>
+                  <svg class="w-6 h-6 text-gray-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/>
+                  </svg>
+                  <div>
+                    <h4 class="font-semibold text-gray-800">Performance Stable</h4>
+                    <p class="text-sm text-gray-600">This metric is showing consistent values</p>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Historical Values -->
+    <div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+      <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+        <svg class="w-6 h-6 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/>
+        </svg>
+        Historical Trend (Last 30 Measurements)
+      </h3>
+      
+      <!-- Chart Placeholder -->
+      <div class="h-64 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl mb-6 flex items-center justify-center">
+        <div class="text-center">
+          <svg class="w-16 h-16 text-indigo-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/>
+          </svg>
+          <p class="text-sm text-gray-600">Time series visualization</p>
+          <p class="text-xs text-gray-500 mt-1"><%= @historical_values.size %> data points available</p>
+        </div>
+      </div>
+      
+      <!-- Data Summary -->
+      <% if @historical_values.any? %>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
+          <div class="bg-blue-50 rounded-lg p-4">
+            <p class="text-sm text-blue-600 font-medium">Oldest Value</p>
+            <p class="text-lg font-bold text-blue-800">
+              <%= @historical_values.last.metric_value %><span class="text-sm"><%= @metric.unit %></span>
+            </p>
+            <p class="text-xs text-blue-600"><%= @historical_values.last.measurement_time.strftime("%b %d") %></p>
+          </div>
+          
+          <div class="bg-green-50 rounded-lg p-4">
+            <p class="text-sm text-green-600 font-medium">Best Value</p>
+            <p class="text-lg font-bold text-green-800">
+              <%= @statistics[:min] %><span class="text-sm"><%= @metric.unit %></span>
+            </p>
+            <p class="text-xs text-green-600">All time best</p>
+          </div>
+          
+          <div class="bg-red-50 rounded-lg p-4">
+            <p class="text-sm text-red-600 font-medium">Worst Value</p>
+            <p class="text-lg font-bold text-red-800">
+              <%= @statistics[:max] %><span class="text-sm"><%= @metric.unit %></span>
+            </p>
+            <p class="text-xs text-red-600">Needs attention</p>
+          </div>
+          
+          <div class="bg-gray-50 rounded-lg p-4">
+            <p class="text-sm text-gray-600 font-medium">Average</p>
+            <p class="text-lg font-bold text-gray-800">
+              <%= @statistics[:average] %><span class="text-sm"><%= @metric.unit %></span>
+            </p>
+            <p class="text-xs text-gray-600">Overall performance</p>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Detailed Historical Data -->
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+      <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-8 py-6 border-b border-gray-200">
+        <h3 class="text-xl font-bold text-gray-900 flex items-center">
+          <svg class="w-6 h-6 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          Historical Measurements
+        </h3>
+      </div>
+      
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Value</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Performance</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Measured</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Source</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <% if @historical_values.any? %>
+              <% @historical_values.each do |historical_metric| %>
+                <% 
+                  value = historical_metric.metric_value.to_f
+                  case @metric.metric_name
+                  when 'largest_contentful_paint'
+                    status = value <= 2500 ? { color: 'green', label: 'Good' } :
+                             value <= 4000 ? { color: 'yellow', label: 'Needs Improvement' } :
+                             { color: 'red', label: 'Poor' }
+                  when 'first_contentful_paint'
+                    status = value <= 1800 ? { color: 'green', label: 'Good' } :
+                             value <= 3000 ? { color: 'yellow', label: 'Needs Improvement' } :
+                             { color: 'red', label: 'Poor' }
+                  when 'cumulative_layout_shift'
+                    status = value <= 0.1 ? { color: 'green', label: 'Good' } :
+                             value <= 0.25 ? { color: 'yellow', label: 'Needs Improvement' } :
+                             { color: 'red', label: 'Poor' }
+                  else
+                    status = { color: 'gray', label: 'Measured' }
+                  end
+                %>
+                
+                <tr class="hover:bg-gray-50 transition-colors <%= 'bg-yellow-50' if historical_metric.id == @metric.id %>">
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm font-medium text-gray-900">
+                      <%= historical_metric.metric_value %> <span class="text-gray-500"><%= historical_metric.unit %></span>
+                      <% if historical_metric.id == @metric.id %>
+                        <span class="ml-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                          Current
+                        </span>
+                      <% end %>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-<%= status[:color] %>-100 text-<%= status[:color] %>-800">
+                      <div class="w-1.5 h-1.5 bg-<%= status[:color] %>-400 rounded-full mr-1"></div>
+                      <%= status[:label] %>
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <%= historical_metric.measurement_time.strftime("%b %d, %Y %I:%M %p") %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <% if historical_metric.audit_report %>
+                      <%= link_to "Audit ##{historical_metric.audit_report.id}", audit_report_path(historical_metric.audit_report), 
+                          class: "text-indigo-600 hover:text-indigo-900" %>
+                    <% else %>
+                      Manual measurement
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            <% else %>
+              <tr>
+                <td colspan="4" class="px-6 py-12 text-center">
+                  <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                  </svg>
+                  <h3 class="text-lg font-medium text-gray-900">No historical data available</h3>
+                  <p class="text-gray-500 mt-2">Historical measurements will appear here once more audits are completed.</p>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

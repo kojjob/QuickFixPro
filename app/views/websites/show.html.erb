@@ -2,13 +2,13 @@
   <!-- Header -->
   <div class="sm:flex sm:items-center sm:justify-between">
     <div class="min-w-0 flex-1">
-      <h1 class="text-2xl font-semibold leading-6 text-gray-900"><%= @website.name %></h1>
+      <h1 class="text-2xl font-semibold leading-6 text-gray-900"><%= html_escape(@website.name) %></h1>
       <div class="mt-1 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap sm:space-x-6">
         <div class="mt-2 flex items-center text-sm text-gray-500">
           <svg class="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
             <path fill-rule="evenodd" d="M4.25 2A2.25 2.25 0 002 4.25v11.5A2.25 2.25 0 004.25 18h11.5A2.25 2.25 0 0018 15.75V4.25A2.25 2.25 0 0015.75 2H4.25zm4.03 6.28a.75.75 0 00-1.06-1.06L6 8.44l-1.22-1.22a.75.75 0 00-1.06 1.06L5.44 10l-1.72 1.72a.75.75 0 101.06 1.06L6 11.56l1.22 1.22a.75.75 0 001.06-1.06L6.56 10l1.72-1.72z" clip-rule="evenodd" />
           </svg>
-          <%= @website.url %>
+          <%= html_escape(@website.url) %>
         </div>
         <div class="mt-2 flex items-center text-sm text-gray-500">
           <svg class="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -36,6 +36,65 @@
           data: { turbo: true } %>
       <%= link_to "Edit", edit_website_path(@website), 
           class: "inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" %>
+    </div>
+  </div>
+
+  <!-- Website Navigation -->
+  <div class="mt-8">
+    <div class="border-b border-gray-200">
+      <nav class="-mb-px flex space-x-8" aria-label="Website sections">
+        <!-- Analytics -->
+        <%= link_to analytics_website_audit_reports_path(@website), 
+            class: "group inline-flex items-center border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:border-blue-300 hover:text-blue-600 transition-colors" do %>
+          <svg class="w-5 h-5 mr-2 text-gray-400 group-hover:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+          </svg>
+          Analytics
+        <% end %>
+        
+        <!-- Performance Metrics -->
+        <%= link_to website_performance_metrics_path(@website), 
+            class: "group inline-flex items-center border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:border-indigo-300 hover:text-indigo-600 transition-colors" do %>
+          <svg class="w-5 h-5 mr-2 text-gray-400 group-hover:text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+          Performance Metrics
+        <% end %>
+        
+        <!-- Monitoring Alerts -->
+        <%= link_to website_monitoring_alerts_path(@website), 
+            class: "group inline-flex items-center border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:border-red-300 hover:text-red-600 transition-colors" do %>
+          <svg class="w-5 h-5 mr-2 text-gray-400 group-hover:text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+          </svg>
+          Monitoring Alerts
+          <% if @website.monitoring_alerts.active.count > 0 %>
+            <span class="ml-2 inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800">
+              <%= @website.monitoring_alerts.active.count %>
+            </span>
+          <% end %>
+        <% end %>
+        
+        <!-- Audit Reports -->
+        <%= link_to website_audit_reports_path(@website), 
+            class: "group inline-flex items-center border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:border-green-300 hover:text-green-600 transition-colors" do %>
+          <svg class="w-5 h-5 mr-2 text-gray-400 group-hover:text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+          Audit Reports
+          <span class="ml-2 text-xs text-gray-400">(<%= @website.audit_reports.count %>)</span>
+        <% end %>
+        
+        <!-- Settings -->
+        <%= link_to edit_website_path(@website), 
+            class: "group inline-flex items-center border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-600 transition-colors" do %>
+          <svg class="w-5 h-5 mr-2 text-gray-400 group-hover:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+          Settings
+        <% end %>
+      </nav>
     </div>
   </div>
 

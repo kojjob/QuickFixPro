@@ -1,0 +1,355 @@
+<%# Audit History View with Detailed Historical Analysis %>
+
+<% content_for :title, "Audit History - #{@website.name}" %>
+
+<div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+  <!-- Header Section -->
+  <div class="bg-white border-b border-gray-200 px-6 py-8">
+    <div class="max-w-7xl mx-auto">
+      <div class="md:flex md:items-center md:justify-between">
+        <div class="min-w-0 flex-1">
+          <h1 class="text-3xl font-bold leading-7 text-gray-900 sm:truncate sm:text-4xl sm:tracking-tight">
+            Audit History & Insights
+          </h1>
+          <div class="mt-2 flex flex-col sm:mt-4 sm:flex-row sm:flex-wrap sm:space-x-6">
+            <div class="mt-2 flex items-center text-sm text-gray-500">
+              <svg class="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+              </svg>
+              Historical trends and performance analysis for <%= @website.name %>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mt-4 flex md:ml-4 md:mt-0">
+          <%= link_to schedule_audit_website_audit_reports_path(@website), 
+              class: "ml-3 inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-colors" do %>
+            <svg class="-ml-0.5 mr-1.5 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+            Schedule New Audit
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-6 py-8">
+    <!-- Key Insights Cards -->
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+      <div class="bg-white overflow-hidden shadow-lg rounded-xl border border-gray-100">
+        <div class="p-6">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="flex items-center justify-center h-12 w-12 rounded-lg bg-blue-100">
+                <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+              </div>
+            </div>
+            <div class="ml-4">
+              <p class="text-sm font-medium text-gray-500">Total Audits</p>
+              <p class="text-2xl font-bold text-gray-900"><%= @history_insights[:total_audits] %></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white overflow-hidden shadow-lg rounded-xl border border-gray-100">
+        <div class="p-6">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="flex items-center justify-center h-12 w-12 rounded-lg bg-green-100">
+                <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+              </div>
+            </div>
+            <div class="ml-4">
+              <p class="text-sm font-medium text-gray-500">Average Score</p>
+              <p class="text-2xl font-bold text-gray-900"><%= @history_insights[:average_score] || 0 %></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white overflow-hidden shadow-lg rounded-xl border border-gray-100">
+        <div class="p-6">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="flex items-center justify-center h-12 w-12 rounded-lg bg-purple-100">
+                <svg class="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/>
+                </svg>
+              </div>
+            </div>
+            <div class="ml-4">
+              <p class="text-sm font-medium text-gray-500">Improvement Trend</p>
+              <div class="flex items-center">
+                <p class="text-2xl font-bold <%= @history_insights[:improvement_trend] >= 0 ? 'text-green-600' : 'text-red-600' %>">
+                  <%= @history_insights[:improvement_trend] %>%
+                </p>
+                <% if @history_insights[:improvement_trend] >= 0 %>
+                  <svg class="ml-1 w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+                  </svg>
+                <% else %>
+                  <svg class="ml-1 w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                  </svg>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white overflow-hidden shadow-lg rounded-xl border border-gray-100">
+        <div class="p-6">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="flex items-center justify-center h-12 w-12 rounded-lg bg-yellow-100">
+                <svg class="h-6 w-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+              </div>
+            </div>
+            <div class="ml-4">
+              <p class="text-sm font-medium text-gray-500">Audit Frequency</p>
+              <p class="text-2xl font-bold text-gray-900"><%= @history_insights[:audit_frequency] %>%</p>
+              <p class="text-xs text-gray-500">of days in last 30</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Performance Timeline Chart -->
+    <div class="bg-white shadow-lg rounded-xl border border-gray-100 mb-8">
+      <div class="px-6 py-5 border-b border-gray-200">
+        <h3 class="text-lg font-semibold text-gray-900">Performance Timeline</h3>
+        <p class="mt-1 text-sm text-gray-500">Track your website's performance over time</p>
+      </div>
+      <div class="p-6">
+        <div id="performance-timeline-chart" class="h-80 w-full">
+          <!-- Chart implementation would go here using Chart.js or similar -->
+          <div class="flex items-center justify-center h-full bg-gray-50 rounded-lg">
+            <div class="text-center">
+              <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+              </svg>
+              <h3 class="text-lg font-medium text-gray-900 mb-2">Performance Timeline Chart</h3>
+              <p class="text-sm text-gray-500">
+                <% if @history_insights[:performance_timeline].any? %>
+                  Shows <%= @history_insights[:performance_timeline].count %> data points over the last 6 months
+                <% else %>
+                  No historical data available yet. Run more audits to see trends.
+                <% end %>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Score Distribution and Historical Audits -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+      <!-- Score Distribution -->
+      <div class="bg-white shadow-lg rounded-xl border border-gray-100">
+        <div class="px-6 py-5 border-b border-gray-200">
+          <h3 class="text-lg font-semibold text-gray-900">Score Distribution</h3>
+          <p class="mt-1 text-sm text-gray-500">Breakdown of audit scores</p>
+        </div>
+        <div class="p-6">
+          <% if @history_insights[:score_distribution].any? %>
+            <div class="space-y-4">
+              <% score_categories = [
+                { key: :excellent, label: 'Excellent (90-100)', color: 'bg-green-500' },
+                { key: :good, label: 'Good (70-89)', color: 'bg-blue-500' },
+                { key: :needs_improvement, label: 'Needs Improvement (50-69)', color: 'bg-yellow-500' },
+                { key: :poor, label: 'Poor (<50)', color: 'bg-red-500' }
+              ] %>
+              
+              <% score_categories.each do |category| %>
+                <% percentage = @history_insights[:score_distribution][category[:key]] || 0 %>
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center">
+                    <div class="w-3 h-3 <%= category[:color] %> rounded-full mr-3"></div>
+                    <span class="text-sm font-medium text-gray-700"><%= category[:label] %></span>
+                  </div>
+                  <div class="flex items-center">
+                    <div class="w-24 bg-gray-200 rounded-full h-2 mr-3">
+                      <div class="<%= category[:color] %> h-2 rounded-full" style="width: <%= percentage %>%"></div>
+                    </div>
+                    <span class="text-sm font-medium text-gray-900 w-10 text-right"><%= percentage %>%</span>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          <% else %>
+            <div class="text-center py-8">
+              <svg class="mx-auto h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+              </svg>
+              <p class="mt-2 text-sm text-gray-500">No audit scores available</p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Recent Audits List -->
+      <div class="bg-white shadow-lg rounded-xl border border-gray-100">
+        <div class="px-6 py-5 border-b border-gray-200">
+          <h3 class="text-lg font-semibold text-gray-900">Recent Audits</h3>
+          <p class="mt-1 text-sm text-gray-500">Latest completed audit reports</p>
+        </div>
+        <div class="divide-y divide-gray-200">
+          <% if @audit_reports.any? %>
+            <% @audit_reports.limit(5).each do |audit| %>
+              <div class="px-6 py-4 hover:bg-gray-50 transition-colors">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center space-x-3">
+                    <div class="flex-shrink-0">
+                      <% score_color = case audit.overall_score
+                         when 90..100 then 'bg-green-100 text-green-800'
+                         when 70..89 then 'bg-blue-100 text-blue-800'
+                         when 50..69 then 'bg-yellow-100 text-yellow-800'
+                         else 'bg-red-100 text-red-800'
+                         end %>
+                      <span class="inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-semibold <%= score_color %>">
+                        <%= audit.overall_score || '-' %>
+                      </span>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                      <p class="text-sm font-medium text-gray-900">
+                        Audit #<%= audit.id.to_s.last(8) %>
+                      </p>
+                      <p class="text-sm text-gray-500">
+                        <%= audit.created_at.strftime("%B %d, %Y at %I:%M %p") %>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="flex-shrink-0">
+                    <%= link_to website_audit_report_path(@website, audit), 
+                        class: "text-indigo-600 hover:text-indigo-900 text-sm font-medium transition-colors" do %>
+                      View →
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          <% else %>
+            <div class="px-6 py-12 text-center">
+              <svg class="mx-auto h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+              </svg>
+              <p class="mt-2 text-sm text-gray-500">No completed audits yet</p>
+              <div class="mt-4">
+                <%= link_to schedule_audit_website_audit_reports_path(@website), 
+                    class: "text-indigo-600 hover:text-indigo-900 text-sm font-medium" do %>
+                  Schedule your first audit →
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+        
+        <% if @audit_reports.count > 5 %>
+          <div class="px-6 py-3 border-t border-gray-200 bg-gray-50">
+            <%= link_to all_audits_website_audit_reports_path(@website), 
+                class: "text-center block text-sm text-indigo-600 hover:text-indigo-900 font-medium transition-colors" do %>
+              View all <%= @audit_reports.count %> audits
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Detailed Historical Analysis -->
+    <div class="bg-white shadow-lg rounded-xl border border-gray-100">
+      <div class="px-6 py-5 border-b border-gray-200">
+        <h3 class="text-lg font-semibold text-gray-900">Detailed Analysis</h3>
+        <p class="mt-1 text-sm text-gray-500">In-depth historical insights and trends</p>
+      </div>
+      <div class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Audit Frequency Insight -->
+          <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+              </div>
+              <div class="ml-3">
+                <h4 class="text-sm font-medium text-blue-900">Audit Frequency</h4>
+                <p class="text-sm text-blue-700">
+                  <% frequency = @history_insights[:audit_frequency] %>
+                  <% case frequency
+                     when 0..10 %>
+                    Audits are infrequent. Consider scheduling regular audits for better monitoring.
+                  <% when 11..30 %>
+                    Good audit frequency. You're monitoring your site regularly.
+                  <% else %>
+                    Excellent audit frequency! Your site is well-monitored.
+                  <% end %>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Performance Trend Insight -->
+          <div class="bg-green-50 rounded-lg p-4 border border-green-200">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+              </div>
+              <div class="ml-3">
+                <h4 class="text-sm font-medium text-green-900">Performance Trend</h4>
+                <p class="text-sm text-green-700">
+                  <% trend = @history_insights[:improvement_trend] %>
+                  <% if trend > 5 %>
+                    Great job! Your site performance is improving consistently.
+                  <% elsif trend < -5 %>
+                    Performance is declining. Review recent changes and optimizations.
+                  <% else %>
+                    Performance is stable. Keep monitoring for continued optimization.
+                  <% end %>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Score Average Insight -->
+          <div class="bg-purple-50 rounded-lg p-4 border border-purple-200">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <svg class="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+              </div>
+              <div class="ml-3">
+                <h4 class="text-sm font-medium text-purple-900">Average Performance</h4>
+                <p class="text-sm text-purple-700">
+                  <% avg_score = @history_insights[:average_score] || 0 %>
+                  <% case avg_score
+                     when 90..100 %>
+                    Excellent overall performance! Keep up the great work.
+                  <% when 70..89 %>
+                    Good performance with room for optimization.
+                  <% when 50..69 %>
+                    Performance needs improvement. Focus on key optimization areas.
+                  <% else %>
+                    Performance requires immediate attention. Consider professional optimization.
+                  <% end %>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

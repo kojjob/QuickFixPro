@@ -25,7 +25,7 @@ require 'active_support/testing/time_helpers'
 # directory. Alternatively, in the individual `*_spec.rb` files, manually
 # require only the support files necessary.
 #
-# Rails.root.glob('spec/support/**/*.rb').sort_by(&:to_s).each { |f| require f }
+Rails.root.glob('spec/support/**/*.rb').sort_by(&:to_s).each { |f| require f }
 
 # Ensures that the test database schema matches the current schema file.
 # If there are pending migrations it will invoke `db:test:prepare` to
@@ -77,6 +77,9 @@ RSpec.configure do |config|
   
   # Include time helpers for time manipulation in tests
   config.include ActiveSupport::Testing::TimeHelpers
+  
+  # Include controller helpers for authentication
+  config.include ControllerHelpers, type: :controller
   
   # Disable ActiveJob in tests to avoid Solid Queue issues
   config.before(:each) do

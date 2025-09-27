@@ -4,6 +4,10 @@ class WebsitesController < ApplicationController
   before_action :ensure_account_context
   before_action :set_website, only: [:show, :edit, :update, :destroy, :monitor, :audit_history, :quick_edit, :delete_confirmation, :quick_update, :quick_destroy]
   before_action :check_website_limit, only: [:new, :create]
+
+  # Additional rate limiting for form submissions and monitoring actions
+  before_action :rate_limit_form_submission!, only: [:create, :update, :quick_update]
+  before_action :rate_limit_form_submission!, only: [:monitor] # Protect monitoring endpoint
   
   def index
     # Temporary pagination workaround

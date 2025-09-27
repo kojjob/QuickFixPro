@@ -2,7 +2,7 @@
 
 <tr id="website_<%= website.id %>">
   <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-    <%= link_to website.name, website_path(website), 
+    <%= link_to html_escape(website.name), website_path(website),
         class: "text-indigo-600 hover:text-indigo-900 font-medium" %>
     <div class="text-xs text-gray-500 mt-1">
       Added <%= time_ago_in_words(website.created_at) %> ago
@@ -11,9 +11,9 @@
   
   <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
     <div class="flex items-center">
-      <span class="truncate max-w-xs"><%= website.url %></span>
-      <a href="<%= website.url %>" target="_blank" rel="noopener" 
-         class="ml-2 text-gray-400 hover:text-gray-600" 
+      <span class="truncate max-w-xs"><%= html_escape(website.url) %></span>
+      <a href="<%= html_escape(website.url) %>" target="_blank" rel="noopener"
+         class="ml-2 text-gray-400 hover:text-gray-600"
          title="Visit website">
         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />

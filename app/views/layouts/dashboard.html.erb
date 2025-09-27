@@ -21,7 +21,7 @@
     <!-- JavaScript -->
     <%= javascript_importmap_tags %>
     
-    <style>
+    <style nonce="<%= csp_nonce %>">
       /* Custom scrollbar */
       ::-webkit-scrollbar {
         width: 6px;
@@ -466,7 +466,7 @@
       </div>
     </footer>
     
-    <script>
+    <script nonce="<%= csp_nonce %>">
       function toggleDropdown(id) {
         const dropdown = document.getElementById(id + '-dropdown');
         const allDropdowns = document.querySelectorAll('[id$="-dropdown"]');

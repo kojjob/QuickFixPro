@@ -12,6 +12,7 @@ class Website < ApplicationRecord
   validates :name, presence: true, length: { maximum: 100 }
   validates :url, presence: true, format: { with: URI::DEFAULT_PARSER.make_regexp(%w[http https]) }
   validates :url, uniqueness: { scope: :account_id, message: "is already being monitored in this account" }
+  validate :url_security_check
 
   # Enums
   enum :status, { active: 0, paused: 1, archived: 2 }, default: :active
@@ -104,10 +105,31 @@ class Website < ApplicationRecord
 
   def normalize_url
     return unless url.present?
-    
+
     self.url = url.strip
     unless url.match?(/^https?:\/\//)
       self.url = "https://#{url}"
     end
+  end
+
+  def url_security_check
+    return unless url.present?
+
+    # Additional security checks to prevent XSS
+    parsed_uri = URI.parse(url)
+
+    # Ensure scheme is only http or https
+    unless %w[http https].include?(parsed_uri.scheme&.downcase)
+      errors.add(:url, "must be a valid HTTP or HTTPS URL")
+    end
+
+    # Block dangerous patterns that could bypass encoding
+    dangerous_patterns = ['javascript:', 'data:', 'vbscript:', 'file:', 'ftp:']
+    if dangerous_patterns.any? { |pattern| url.downcase.include?(pattern) }
+      errors.add(:url, "contains invalid URL scheme")
+    end
+
+  rescue URI::InvalidURIError
+    errors.add(:url, "is not a valid URL")
   end
 end

@@ -6,16 +6,87 @@
         A complete history of performance audits for your websites.
       </p>
     </div>
-    <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-      <%= link_to "Back to Websites", websites_path, 
-          class: "block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
+    <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none space-x-3">
+      <% if @website %>
+        <%= link_to "Schedule New Audit", schedule_audit_website_audit_reports_path(@website), 
+            class: "inline-flex items-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600" %>
+        <%= link_to "Back to Website", website_path(@website), 
+            class: "inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
+      <% else %>
+        <%= link_to "Back to Websites", websites_path, 
+            class: "block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
+      <% end %>
     </div>
   </div>
+
+  <!-- Audit Navigation Tabs -->
+  <% if @website %>
+    <div class="mt-8">
+      <div class="border-b border-gray-200">
+        <nav class="-mb-px flex space-x-8" aria-label="Audit sections">
+          
+          <!-- All Audits -->
+          <%= link_to all_audits_website_audit_reports_path(@website), 
+              class: "group inline-flex items-center border-b-2 #{params[:action] == 'all_audits' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'} py-4 px-1 text-sm font-medium transition-colors" do %>
+            <svg class="w-5 h-5 mr-2 #{params[:action] == 'all_audits' ? 'text-blue-500' : 'text-gray-400 group-hover:text-gray-500'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+            </svg>
+            All Audits
+          <% end %>
+          
+          <!-- Schedule Audit -->
+          <%= link_to schedule_audit_website_audit_reports_path(@website), 
+              class: "group inline-flex items-center border-b-2 #{params[:action] == 'schedule_audit' ? 'border-green-500 text-green-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'} py-4 px-1 text-sm font-medium transition-colors" do %>
+            <svg class="w-5 h-5 mr-2 #{params[:action] == 'schedule_audit' ? 'text-green-500' : 'text-gray-400 group-hover:text-gray-500'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+            </svg>
+            Schedule Audit
+          <% end %>
+          
+          <!-- Audit History -->
+          <%= link_to audit_history_website_audit_reports_path(@website), 
+              class: "group inline-flex items-center border-b-2 #{params[:action] == 'audit_history' ? 'border-purple-500 text-purple-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'} py-4 px-1 text-sm font-medium transition-colors" do %>
+            <svg class="w-5 h-5 mr-2 #{params[:action] == 'audit_history' ? 'text-purple-500' : 'text-gray-400 group-hover:text-gray-500'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            History
+          <% end %>
+          
+          <!-- Optimizations -->
+          <%= link_to optimizations_website_audit_reports_path(@website), 
+              class: "group inline-flex items-center border-b-2 #{params[:action] == 'optimizations' ? 'border-orange-500 text-orange-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'} py-4 px-1 text-sm font-medium transition-colors" do %>
+            <svg class="w-5 h-5 mr-2 #{params[:action] == 'optimizations' ? 'text-orange-500' : 'text-gray-400 group-hover:text-gray-500'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+            Optimizations
+          <% end %>
+          
+          <!-- Analytics -->
+          <%= link_to analytics_website_audit_reports_path(@website), 
+              class: "group inline-flex items-center border-b-2 #{params[:action] == 'analytics' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'} py-4 px-1 text-sm font-medium transition-colors" do %>
+            <svg class="w-5 h-5 mr-2 #{params[:action] == 'analytics' ? 'text-indigo-500' : 'text-gray-400 group-hover:text-gray-500'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+            </svg>
+            Analytics
+          <% end %>
+          
+          <!-- Reports -->
+          <%= link_to reports_website_audit_reports_path(@website), 
+              class: "group inline-flex items-center border-b-2 #{params[:action] == 'reports' ? 'border-teal-500 text-teal-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'} py-4 px-1 text-sm font-medium transition-colors" do %>
+            <svg class="w-5 h-5 mr-2 #{params[:action] == 'reports' ? 'text-teal-500' : 'text-gray-400 group-hover:text-gray-500'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            Reports
+          <% end %>
+        </nav>
+      </div>
+    </div>
+  <% end %>
 
   <!-- Filters -->
   <div class="mt-6 bg-white shadow sm:rounded-lg">
     <div class="px-4 py-5 sm:p-6">
-      <%= form_with url: audit_reports_path, method: :get, local: true, class: "sm:flex sm:items-center sm:space-x-4" do |form| %>
+      <%= form_with url: website_audit_reports_path(@website), method: :get, local: true, class: "sm:flex sm:items-center sm:space-x-4" do |form| %>
         <div class="w-full sm:max-w-xs">
           <%= form.select :website_id, 
               options_from_collection_for_select(current_account.websites, :id, :name, params[:website_id]),
@@ -102,43 +173,46 @@
                     <% end %>
                   </td>
                   <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    <% if report.performance_score %>
-                      <span class="<%= report.performance_score >= 90 ? 'text-green-600' : report.performance_score >= 50 ? 'text-yellow-600' : 'text-red-600' %>">
-                        <%= report.performance_score %>
+                    <% if report.overall_score %>
+                      <span class="<%= report.overall_score >= 90 ? 'text-green-600' : report.overall_score >= 50 ? 'text-yellow-600' : 'text-red-600' %>">
+                        <%= report.overall_score %>
                       </span>
                     <% else %>
                       <span class="text-gray-400">—</span>
                     <% end %>
                   </td>
                   <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    <% if report.seo_score %>
-                      <span class="<%= report.seo_score >= 90 ? 'text-green-600' : report.seo_score >= 50 ? 'text-yellow-600' : 'text-red-600' %>">
-                        <%= report.seo_score %>
+                    <% seo_score = report.summary_data&.dig('seo_score') %>
+                    <% if seo_score %>
+                      <span class="<%= seo_score >= 90 ? 'text-green-600' : seo_score >= 50 ? 'text-yellow-600' : 'text-red-600' %>">
+                        <%= seo_score %>
                       </span>
                     <% else %>
                       <span class="text-gray-400">—</span>
                     <% end %>
                   </td>
                   <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    <% if report.best_practices_score %>
-                      <span class="<%= report.best_practices_score >= 90 ? 'text-green-600' : report.best_practices_score >= 50 ? 'text-yellow-600' : 'text-red-600' %>">
-                        <%= report.best_practices_score %>
+                    <% best_practices_score = report.summary_data&.dig('best_practices_score') %>
+                    <% if best_practices_score %>
+                      <span class="<%= best_practices_score >= 90 ? 'text-green-600' : best_practices_score >= 50 ? 'text-yellow-600' : 'text-red-600' %>">
+                        <%= best_practices_score %>
                       </span>
                     <% else %>
                       <span class="text-gray-400">—</span>
                     <% end %>
                   </td>
                   <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    <% if report.accessibility_score %>
-                      <span class="<%= report.accessibility_score >= 90 ? 'text-green-600' : report.accessibility_score >= 50 ? 'text-yellow-600' : 'text-red-600' %>">
-                        <%= report.accessibility_score %>
+                    <% accessibility_score = report.summary_data&.dig('accessibility_score') %>
+                    <% if accessibility_score %>
+                      <span class="<%= accessibility_score >= 90 ? 'text-green-600' : accessibility_score >= 50 ? 'text-yellow-600' : 'text-red-600' %>">
+                        <%= accessibility_score %>
                       </span>
                     <% else %>
                       <span class="text-gray-400">—</span>
                     <% end %>
                   </td>
                   <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                    <%= link_to "View", audit_report_path(report), 
+                    <%= link_to "View", website_audit_report_path(@website, report), 
                         class: "text-indigo-600 hover:text-indigo-900" %>
                   </td>
                 </tr>
@@ -153,11 +227,11 @@
             </div>
             <div class="flex space-x-2">
               <% if params[:page].to_i > 1 %>
-                <%= link_to "Previous", audit_reports_path(page: params[:page].to_i - 1, website_id: params[:website_id], status: params[:status]), 
+                <%= link_to "Previous", website_audit_reports_path(@website, page: params[:page].to_i - 1, website_id: params[:website_id], status: params[:status]), 
                     class: "relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" %>
               <% end %>
               
-              <%= link_to "Next", audit_reports_path(page: (params[:page] || 1).to_i + 1, website_id: params[:website_id], status: params[:status]), 
+              <%= link_to "Next", website_audit_reports_path(@website, page: (params[:page] || 1).to_i + 1, website_id: params[:website_id], status: params[:status]), 
                   class: "relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" %>
             </div>
           </div>

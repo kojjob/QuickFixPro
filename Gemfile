@@ -88,4 +88,7 @@ group :test do
   
   # Shoulda Matchers for testing helpers
   gem "shoulda-matchers", "~> 6.0"
+  
+  # Controller testing support
+  gem "rails-controller-testing"
 end

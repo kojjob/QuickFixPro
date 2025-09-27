@@ -1,0 +1,244 @@
+<div class="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50" data-controller="analytics-trends">
+  <!-- Enhanced Header -->
+  <div class="relative bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 shadow-xl">
+    <div class="absolute inset-0 bg-black opacity-10"></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="flex items-center justify-between">
+        <div>
+          <nav class="flex items-center text-white/80 text-sm mb-2">
+            <%= link_to "Analytics", analytics_path, class: "hover:text-white transition-colors" %>
+            <svg class="w-4 h-4 mx-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+            <span class="text-white">Trend Analysis</span>
+          </nav>
+          <h1 class="text-4xl font-bold text-white tracking-tight flex items-center">
+            <svg class="w-10 h-10 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/>
+            </svg>
+            Trend Analysis
+          </h1>
+          <p class="mt-2 text-purple-100 text-lg">Track performance patterns and improvements over time</p>
+        </div>
+        
+        <!-- Time Range Quick Selectors -->
+        <div class="flex items-center space-x-2">
+          <% [
+            { label: "7D", days: 7 },
+            { label: "30D", days: 30 },
+            { label: "90D", days: 90 }
+          ].each do |range| %>
+            <%= link_to range[:label], 
+                analytics_trends_path(start_date: range[:days].days.ago.to_date, end_date: Date.current),
+                class: "px-4 py-2 bg-white/20 backdrop-blur-sm text-white rounded-lg hover:bg-white/30 transition-all duration-200 #{'bg-white/40' if (@end_date - @start_date).to_i == range[:days]}" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Insights Panel -->
+    <% if @insights.any? %>
+      <div class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl shadow-lg p-6 mb-8 text-white">
+        <h3 class="text-lg font-semibold mb-3 flex items-center">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          Key Insights
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <% @insights.each do |insight| %>
+            <div class="flex items-start space-x-2">
+              <svg class="w-4 h-4 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+              </svg>
+              <p class="text-sm text-white/90"><%= insight %></p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Trend Charts Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+      <!-- Overall Score Trends -->
+      <div class="bg-white rounded-2xl shadow-lg p-6">
+        <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+          <svg class="w-6 h-6 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+          </svg>
+          Overall Score Trends
+        </h3>
+        
+        <div class="h-64 relative">
+          <canvas id="overall-score-chart" data-scores="<%= @trend_data[:overall_scores].to_json %>"></canvas>
+          
+          <!-- Placeholder for actual chart -->
+          <div class="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl">
+            <div class="text-center">
+              <svg class="w-16 h-16 text-purple-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/>
+              </svg>
+              <p class="text-sm text-gray-600">Score trend visualization</p>
+              <% if @trend_data[:overall_scores].any? %>
+                <div class="mt-4 space-y-1">
+                  <% @trend_data[:overall_scores].last(5).each do |point| %>
+                    <div class="flex items-center justify-between text-xs">
+                      <span class="text-gray-500"><%= point[:date].strftime("%b %d") %></span>
+                      <span class="font-medium text-gray-700"><%= point[:score] %>%</span>
+                    </div>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Audit Frequency Trends -->
+      <div class="bg-white rounded-2xl shadow-lg p-6">
+        <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+          <svg class="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+          </svg>
+          Audit Frequency
+        </h3>
+        
+        <div class="h-64 relative">
+          <div class="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl">
+            <div class="text-center">
+              <svg class="w-16 h-16 text-blue-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+              <p class="text-sm text-gray-600">Audit frequency chart</p>
+              <% if @trend_data[:audit_frequency].any? %>
+                <div class="mt-4 space-y-1">
+                  <% @trend_data[:audit_frequency].last(5).each do |point| %>
+                    <div class="flex items-center justify-between text-xs">
+                      <span class="text-gray-500"><%= point[:date].strftime("%b %d") %></span>
+                      <span class="font-medium text-gray-700"><%= point[:count] %> audits</span>
+                    </div>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Core Web Vitals Trends -->
+    <div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+      <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+        <svg class="w-6 h-6 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+        Core Web Vitals Trends
+      </h3>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <% [
+          { key: 'largest_contentful_paint', label: 'LCP Trend', color: 'blue', unit: 'ms', good: 2500 },
+          { key: 'first_contentful_paint', label: 'FCP Trend', color: 'green', unit: 'ms', good: 1800 },
+          { key: 'cumulative_layout_shift', label: 'CLS Trend', color: 'purple', unit: '', good: 0.1 }
+        ].each do |metric| %>
+          <div class="bg-gradient-to-br from-<%= metric[:color] %>-50 to-<%= metric[:color] %>-100 rounded-xl p-6 border border-<%= metric[:color] %>-200">
+            <h4 class="text-sm font-bold text-<%= metric[:color] %>-900 mb-4"><%= metric[:label] %></h4>
+            
+            <% metric_data = @trend_data[:core_web_vitals][metric[:key]] || [] %>
+            <% if metric_data.any? %>
+              <% latest = metric_data.last[:value] %>
+              <% previous = metric_data[-2]&.dig(:value) %>
+              <% change = previous ? ((latest - previous) / previous * 100).round(1) : 0 %>
+              
+              <div class="mb-4">
+                <p class="text-3xl font-bold text-gray-900">
+                  <%= latest %><span class="text-sm text-gray-500"><%= metric[:unit] %></span>
+                </p>
+                <p class="text-sm mt-1">
+                  <% if change != 0 %>
+                    <span class="<%= change < 0 ? 'text-green-600' : 'text-red-600' %>">
+                      <%= change > 0 ? '↑' : '↓' %> <%= change.abs %>%
+                    </span>
+                  <% else %>
+                    <span class="text-gray-500">No change</span>
+                  <% end %>
+                </p>
+              </div>
+              
+              <!-- Mini sparkline -->
+              <div class="h-16 flex items-end space-x-1">
+                <% max_value = metric_data.map { |d| d[:value] }.max %>
+                <% metric_data.last(10).each do |point| %>
+                  <% height = max_value > 0 ? (point[:value].to_f / max_value * 100) : 0 %>
+                  <div class="flex-1 bg-<%= metric[:color] %>-400 rounded-t" 
+                       style="height: <%= height %>%"
+                       title="<%= point[:date].strftime('%b %d') %>: <%= point[:value] %><%= metric[:unit] %>">
+                  </div>
+                <% end %>
+              </div>
+              
+              <div class="mt-2 pt-2 border-t border-<%= metric[:color] %>-200">
+                <p class="text-xs text-<%= metric[:color] %>-700">
+                  Target: < <%= metric[:good] %><%= metric[:unit] %>
+                </p>
+              </div>
+            <% else %>
+              <p class="text-sm text-gray-500">No data available</p>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Improvement Rate Trends -->
+    <div class="bg-white rounded-2xl shadow-lg p-8">
+      <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+        <svg class="w-6 h-6 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+        </svg>
+        Week-over-Week Improvement Rate
+      </h3>
+      
+      <% if @trend_data[:improvement_rate].any? %>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <% @trend_data[:improvement_rate].last(4).each do |point| %>
+            <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-4 border border-gray-200">
+              <p class="text-xs text-gray-500 mb-2">Week of <%= point[:date].strftime("%b %d") %></p>
+              <p class="text-2xl font-bold <%= point[:improvement] > 0 ? 'text-green-600' : point[:improvement] < 0 ? 'text-red-600' : 'text-gray-600' %>">
+                <%= point[:improvement] > 0 ? '+' : '' %><%= point[:improvement] %>%
+              </p>
+              <div class="mt-2 flex items-center">
+                <% if point[:improvement] > 0 %>
+                  <svg class="w-4 h-4 text-green-500 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+                  </svg>
+                  <span class="text-xs text-green-600">Improving</span>
+                <% elsif point[:improvement] < 0 %>
+                  <svg class="w-4 h-4 text-red-500 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                  </svg>
+                  <span class="text-xs text-red-600">Declining</span>
+                <% else %>
+                  <svg class="w-4 h-4 text-gray-500 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/>
+                  </svg>
+                  <span class="text-xs text-gray-600">Stable</span>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="text-center py-12 bg-gray-50 rounded-xl">
+          <svg class="w-16 h-16 text-gray-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/>
+          </svg>
+          <p class="text-gray-500">Not enough data to show improvement trends</p>
+          <p class="text-sm text-gray-400 mt-1">Check back after a few weeks of monitoring</p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
