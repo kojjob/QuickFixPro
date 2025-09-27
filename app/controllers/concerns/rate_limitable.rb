@@ -68,10 +68,10 @@ module RateLimitable
     )
 
     # Set appropriate headers
-    response.headers['X-RateLimit-Limit'] = config[:limit].to_s
-    response.headers['X-RateLimit-Remaining'] = '0'
-    response.headers['X-RateLimit-Reset'] = (Time.current + config[:period]).to_i.to_s
-    response.headers['Retry-After'] = config[:period].to_s
+    response.headers["X-RateLimit-Limit"] = config[:limit].to_s
+    response.headers["X-RateLimit-Remaining"] = "0"
+    response.headers["X-RateLimit-Reset"] = (Time.current + config[:period]).to_i.to_s
+    response.headers["Retry-After"] = config[:period].to_s
 
     # Respond based on request format
     respond_to do |format|
@@ -82,7 +82,7 @@ module RateLimitable
 
       format.json do
         render json: {
-          error: 'Rate limit exceeded',
+          error: "Rate limit exceeded",
           message: "Too many requests. Limit: #{config[:limit]} per #{config[:period] / 60} minutes.",
           retry_after: config[:period]
         }, status: :too_many_requests
@@ -95,9 +95,9 @@ module RateLimitable
   end
 
   def set_rate_limit_headers(config, current_count)
-    response.headers['X-RateLimit-Limit'] = config[:limit].to_s
-    response.headers['X-RateLimit-Remaining'] = (config[:limit] - current_count).to_s
-    response.headers['X-RateLimit-Reset'] = (Time.current + config[:period]).to_i.to_s
+    response.headers["X-RateLimit-Limit"] = config[:limit].to_s
+    response.headers["X-RateLimit-Remaining"] = (config[:limit] - current_count).to_s
+    response.headers["X-RateLimit-Reset"] = (Time.current + config[:period]).to_i.to_s
   end
 
   # Convenience methods for common rate limiting scenarios
