@@ -252,7 +252,7 @@
   </div>
 </div>
 
-<script>
+<script nonce="<%= csp_nonce %>">
 // Show/hide schedule time input based on schedule type
 document.addEventListener('DOMContentLoaded', function() {
   const scheduleRadios = document.querySelectorAll('input[name="audit[schedule_type]"]');

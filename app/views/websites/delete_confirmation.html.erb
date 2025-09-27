@@ -57,7 +57,7 @@
   </div>
 </div>
 
-<script>
+<script nonce="<%= csp_nonce %>">
 document.addEventListener('turbo:frame-load', function() {
   // Focus the cancel button for better UX
   const cancelButton = document.querySelector('[data-action="modal#close"]')

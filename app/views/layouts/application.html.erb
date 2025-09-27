@@ -63,7 +63,7 @@
     <% if Rails.env.production? %>
       <!-- Google Analytics 4 (replace with your GA4 measurement ID) -->
       <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
-      <script>
+      <script nonce="<%= csp_nonce %>">
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());

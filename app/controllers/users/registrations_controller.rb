@@ -1,6 +1,10 @@
 class Users::RegistrationsController < Devise::RegistrationsController
+  include RateLimitable
+
   before_action :configure_sign_up_params, only: [:create]
   before_action :configure_account_update_params, only: [:update]
+  before_action :rate_limit_form_submission!, only: [:create, :update]
+  before_action :rate_limit_general!, only: [:new, :edit]
 
   # GET /resource/sign_up
   # def new

@@ -350,7 +350,7 @@
 </div>
 
 <!-- JavaScript for Interactions -->
-<script>
+<script nonce="<%= csp_nonce %>">
 function filterOptimizations() {
   const category = document.querySelector('select[onchange="filterOptimizations()"]').value;
   const status = document.querySelectorAll('select[onchange="filterOptimizations()"]')[1].value;
